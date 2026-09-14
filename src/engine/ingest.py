@@ -27,6 +27,7 @@ from typing import IO, Iterator
 
 from engine.config import CaseConfig
 from engine.contigs import canonical, naming_style, primary_names
+from engine.sex import SexTally, effective_sex
 from engine.manifest import Manifest
 
 STAGE_DIR = "01_ingest"
@@ -332,6 +333,8 @@ def run_ingest(
     })
 
     counts = IngestCounts()
+    tally = SexTally()
+    gt_col, chrom_col, pos_col = COLUMNS.index("gt"), COLUMNS.index("chrom"), COLUMNS.index("pos")
     with open(log_path, "w") as log:
         log.write("$ " + " ".join(ncmd) + "\n$ " + " ".join(qcmd) + "\n\n")
         log.flush()
@@ -344,6 +347,9 @@ def run_ingest(
             out.write("\t".join(COLUMNS) + "\n")
             for row in transform(query.stdout, counts):
                 out.write(row)
+                cells = row.split("\t")
+                if cells[chrom_col] in ("X", "Y"):
+                    tally.add(cells[chrom_col], int(cells[pos_col]), cells[gt_col])
         finally:
             out.close()
             if bgz is not None:
@@ -371,6 +377,20 @@ def run_ingest(
                f"star-only records ≠ {n_primary} records on primary contigs per the index.")
     elif regions_bed is None:
         m.note(f"Consistency check passed: every one of the {n_primary} primary-contig records is accounted for.")
+    inferred = tally.inferred()
+    m.params["sex_stated"] = case.sex
+    m.params["sex_inference"] = tally.as_dict()
+    m.params["sex"] = effective_sex(case.sex, inferred)
+    if case.sex in ("male", "female") and inferred in ("male", "female") and inferred != case.sex:
+        m.note(f"Sex check FAILED: the case file says {case.sex} but the calls look {inferred} "
+               f"(X non-PAR het fraction {tally.x_het_fraction:.3f}, {tally.y_nonpar_carrier} Y calls). "
+               "The stated sex is used; check the sample.")
+    elif case.sex == "unknown" and inferred != "unknown":
+        m.note(f"Sex not stated in the case file; inferred {inferred} from the calls "
+               f"(X non-PAR het fraction {tally.x_het_fraction:.3f}, {tally.y_nonpar_carrier} Y calls).")
+    elif case.sex in ("male", "female"):
+        m.note(f"Sex check passed: stated {case.sex}, calls agree" if inferred == case.sex
+               else f"Sex stated {case.sex}; too few X calls to check ({tally.x_nonpar_carrier}).")
     m.add_output("index", csi)
     m.add_output("variants", variants_path)
     m.write(manifest_path)

@@ -24,6 +24,18 @@ class CaseConfig(BaseModel):
     regions: Path | None = None
     sample: str | None = None
     """Sample name inside the VCF. Optional for a single-sample file."""
+    sex: str = "unknown"
+    """``male``, ``female`` or ``unknown``. Stated sex wins over the sex inferred from
+    the calls; the filter stage uses it to refuse genotypes a karyotype cannot carry
+    (see :mod:`engine.sex`)."""
+
+    @field_validator("sex")
+    @classmethod
+    def _sex(cls, v: str) -> str:
+        v = (v or "unknown").strip().lower()
+        if v not in ("male", "female", "unknown"):
+            raise ValueError(f"sex must be male, female or unknown (got {v!r})")
+        return v
 
     @field_validator("hpo")
     @classmethod

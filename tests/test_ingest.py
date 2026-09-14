@@ -127,6 +127,21 @@ def test_whole_genome_ingest(tmp_path: Path):
     assert m["inputs"]["vcf"]["sha256"] and m["outputs"]["variants"]["sha256"]
     assert "bcftools" in m["tools"] and m["tools"]["bcftools"].startswith("bcftools")
     assert any("not left-aligned" in n for n in m["notes"])
+    # sex: not stated, one X call -> too thin to infer, recorded as such
+    assert m["params"]["sex_stated"] == "unknown" and m["params"]["sex"] == "unknown"
+    assert m["params"]["sex_inference"]["x_nonpar_carrier_calls"] == 1  # X:700 is outside PAR1 (starts at 10,001)
+    assert m["params"]["sex_inference"]["inferred"] == "unknown"
+
+
+def test_stated_sex_is_recorded_and_wins(tmp_path: Path):
+    vcf = make_vcf(tmp_path)
+    case = make_case(tmp_path, vcf, sex="male")
+    assert case.sex == "male"
+    m = json.loads(run_ingest(case, tmp_path / "run", threads=1).read_text())
+    assert m["params"]["sex_stated"] == "male" and m["params"]["sex"] == "male"
+    assert any(n.startswith("Sex stated male; too few X calls") for n in m["notes"])
+    with pytest.raises(ValueError, match="sex must be"):
+        make_case(tmp_path, vcf, sex="boy")
 
 
 def test_ucsc_named_vcf_is_canonicalised(tmp_path: Path):

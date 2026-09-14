@@ -14,5 +14,11 @@ reference_fasta: null
 # Coded phenotype terms (HPO ids). Used by the blind phenotype ranker only.
 hpo: []
 
+# Optional: male | female | unknown. Stage 1 also infers sex from the calls (X
+# heterozygosity, Y calls) and records both; a stated sex wins. Stage 3 uses it to
+# refuse genotypes a karyotype cannot carry (a male's X heterozygote is never half
+# of a compound heterozygote).
+sex: unknown
+
 # Optional. Restrict ingest to these regions (BED). Omit for whole genome.
 regions: null

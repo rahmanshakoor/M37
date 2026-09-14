@@ -15,14 +15,19 @@ reading ``''`` for every row.
 Order of the per-row rules (evaluated lazily; the first that drops is the one
 recorded, and nothing after it is evaluated)::
 
-    duplicate → genotype → consequence → clinvar_benign → rarity → (quality caveats)
+    duplicate → genotype → sex → consequence → clinvar_benign → rarity → (quality caveats)
 
 then the gene-level models — ``hom``, ``hemi``, ``mito``, ``comphet`` with phasing
 from PID/PGT, ``het_single`` — and a deterministic priority over the candidates.
 ``duplicate`` and ``genotype`` precede the contract's rule 1: a repeated variant key
 and a non-carrier call (the ``0/0`` a multi-allelic split leaves behind) cannot
 support any model, and dropping them first keeps ``comphet``'s "distinct
-heterozygous rows" and the downstream counts honest.
+heterozygous rows" and the downstream counts honest. ``sex`` (:mod:`engine.sex`)
+follows: in a male a heterozygous call on X outside the pseudoautosomal regions is
+a genotype a haploid chromosome cannot carry (``sex:x_het_in_male``; a ClinVar P/LP
+row is kept as ``hemi`` with the caveat ``het_call_on_haploid_x``), and in a female
+any Y call is dropped (``sex:y_call_in_female``). With sex unknown the rule is
+silent and two such X hets can still form a comphet — the manifest says so.
 
 ClinVar P/LP rescues (each a recorded hit, each refusal recorded too): from the
 consequence rule (contract rule 1, no star bound); from the rarity ceiling and the
@@ -66,6 +71,7 @@ from engine.retrieve.clinvar import ClinvarRetriever
 from engine.retrieve.gnomad import GnomadRetriever
 from engine.retrieve.store import VariantKey, key_str
 from engine.retrieve.vep import VepRetriever
+from engine.sex import in_par
 
 MODEL_ORDER: tuple[str, ...] = ("hom", "comphet", "hemi", "mito", "het_single")
 MODEL_RANK = {m: i for i, m in enumerate(MODEL_ORDER)}
@@ -211,10 +217,11 @@ def zygosity(gt: str) -> str:
     return "hom" if n_alt == len(alleles) else "het"
 
 
-def genotype_model(chrom: str, gt: str) -> str:
+def genotype_model(chrom: str, gt: str, sex: str = "unknown") -> str:
     """The model a carrier genotype can support before any partner is known:
-    ``mito`` on MT, ``hemi`` for a homozygous-looking or haploid call on X/Y, ``hom``
-    for one on an autosome, ``het`` otherwise; ``''`` for a non-carrier."""
+    ``mito`` on MT, ``hemi`` for a homozygous-looking or haploid call on X/Y (``hom``
+    on X when the sample is female), ``hom`` for one on an autosome, ``het``
+    otherwise; ``''`` for a non-carrier."""
     z = zygosity(gt)
     if z == "none":
         return ""
@@ -222,6 +229,8 @@ def genotype_model(chrom: str, gt: str) -> str:
         return "mito"
     if z == "het":
         return "het"
+    if chrom == "X" and sex == "female":
+        return "hom"
     return "hemi" if chrom in SEX_CHROMS else "hom"
 
 
@@ -304,6 +313,26 @@ def genotype_rule(row: dict[str, str]) -> list[Hit]:
     gt = val(row, GT)
     if genotype_model(row[CHROM], gt) == "":
         return [Hit("genotype", f"gt={gt or 'missing'}", drop=True)]
+    return []
+
+
+HET_ON_HAPLOID_X = "het_call_on_haploid_x"
+"""Caveat on a ClinVar P/LP row kept through ``sex:x_het_in_male``: the call is
+heterozygous where a male is haploid, so the genotype itself is in doubt."""
+
+
+def sex_rule(row: dict[str, str], sex: str, cfg: FilterConfig) -> list[Hit]:
+    """A genotype the sample's karyotype cannot carry. Silent when sex is unknown, on
+    autosomes, on MT and inside the pseudoautosomal regions."""
+    chrom = row[CHROM]
+    if sex not in ("male", "female") or chrom not in SEX_CHROMS or in_par(chrom, as_pos(row[POS])):
+        return []
+    if sex == "female" and chrom == "Y":
+        return [Hit("sex", "y_call_in_female", drop=True)]
+    if sex == "male" and chrom == "X" and zygosity(val(row, GT)) == "het":
+        if always_keep(row, cfg):
+            return [Hit("sex", f"x_het_in_male_kept={val(row, CLINVAR_PATHOGENICITY)}")]
+        return [Hit("sex", "x_het_in_male", drop=True)]
     return []
 
 
@@ -453,7 +482,8 @@ class Decision:
         ]
 
 
-def screen_row(index: int, row: dict[str, str], cfg: FilterConfig, *, duplicate: bool = False) -> Decision:
+def screen_row(index: int, row: dict[str, str], cfg: FilterConfig, *, duplicate: bool = False,
+               sex: str = "unknown") -> Decision:
     """Rules 0–4 on one row. A decision with ``rule == ''`` survived to the model
     step (``kept`` is decided there); a decision with a rule was dropped here.
     The AF and caveats are filled for every row, dropped or not, so the decisions
@@ -465,6 +495,7 @@ def screen_row(index: int, row: dict[str, str], cfg: FilterConfig, *, duplicate:
     d.caveats = quality_caveats(row, cfg)
     rules: list[Callable[[], list[Hit]]] = [lambda: [Hit("duplicate", drop=True)]] if duplicate else [
         lambda: genotype_rule(row),
+        lambda: sex_rule(row, sex, cfg),
         lambda: consequence_rule(row, cfg),
         lambda: clinvar_benign_rule(row, cfg),
         lambda: rarity_rule(row, d.af_used, d.af, cfg),
@@ -475,10 +506,13 @@ def screen_row(index: int, row: dict[str, str], cfg: FilterConfig, *, duplicate:
                 d.drop(hit)
                 return d
             d.hits.append(str(hit))
+            if hit.rule == "sex":
+                d.caveats.append(HET_ON_HAPLOID_X)
     return d
 
 
-def screen_rows(rows: Iterable[dict[str, str]], cfg: FilterConfig) -> Iterator[tuple[Decision, dict[str, str]]]:
+def screen_rows(rows: Iterable[dict[str, str]], cfg: FilterConfig, *, sex: str = "unknown",
+                ) -> Iterator[tuple[Decision, dict[str, str]]]:
     """Stream rows through the per-row rules, yielding ``(decision, row)``. The row is
     the caller's to keep (survivors) or forget (dropped). A malformed cell is
     reported by table row number (0-based, header excluded) and column only."""
@@ -486,7 +520,7 @@ def screen_rows(rows: Iterable[dict[str, str]], cfg: FilterConfig) -> Iterator[t
     for i, row in enumerate(rows):
         try:
             k = row_key(row)
-            d = screen_row(i, row, cfg, duplicate=k in seen)
+            d = screen_row(i, row, cfg, duplicate=k in seen, sex=sex)
         except ValueError as e:
             raise ValueError(f"table row {i}: {e}") from e
         seen.add(k)
@@ -693,12 +727,17 @@ def _comphet_candidates(gene: str, hets: list[Survivor], cfg: FilterConfig) -> l
     return out
 
 
-def resolve_gene(gene: str, members: list[Survivor], cfg: FilterConfig) -> list[Candidate]:
+def resolve_gene(gene: str, members: list[Survivor], cfg: FilterConfig, sex: str = "unknown") -> list[Candidate]:
     """Step 5 for one gene: assign models, drop what fits none, return the candidates.
-    Marks every decision in ``members`` (kept/model/rule/phase) as a side effect."""
+    Marks every decision in ``members`` (kept/model/rule/phase) as a side effect.
+    A male's X het kept through the sex rule is a doubtful hemizygote, never half
+    of a compound heterozygote."""
     by_model: dict[str, list[Survivor]] = {"hom": [], "hemi": [], "mito": [], "het": []}
     for d, r in members:
-        by_model[genotype_model(r[CHROM], val(r, GT))].append((d, r))
+        model = genotype_model(r[CHROM], val(r, GT), sex)
+        if model == "het" and HET_ON_HAPLOID_X in d.caveats:
+            model = "hemi"
+        by_model[model].append((d, r))
     out: list[Candidate] = []
     out += _hom_candidates(gene, by_model["hom"], cfg)
     out += _simple_candidates(gene, "hemi", by_model["hemi"], "homozygous-looking call on a sex chromosome; hemizygous in a male")
@@ -719,12 +758,12 @@ def group_by_gene(survivors: Iterable[Survivor]) -> dict[str, list[Survivor]]:
     return groups
 
 
-def resolve_models(survivors: list[Survivor], cfg: FilterConfig) -> list[Candidate]:
+def resolve_models(survivors: list[Survivor], cfg: FilterConfig, sex: str = "unknown") -> list[Candidate]:
     """Steps 5–6 over every gene: candidates sorted by the contract's priority, with
     ``priority`` numbered from 1."""
     cands: list[Candidate] = []
     for gene, members in group_by_gene(survivors).items():
-        cands.extend(resolve_gene(gene, members, cfg))
+        cands.extend(resolve_gene(gene, members, cfg, sex))
     cands.sort(key=lambda c: c.sort_key(cfg))
     for i, c in enumerate(cands, 1):
         c.priority = i

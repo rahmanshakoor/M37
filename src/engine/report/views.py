@@ -493,6 +493,8 @@ def _chain(doc: dict[str, Any], path: Path, stage: Path, index: dict[str, dict[s
         variants.append({
             "key": v.get("key"),
             "classification": v.get("classification"),
+            "points": v.get("points"),
+            "classification_richards_2015": v.get("classification_richards_2015"),
             "summary": v.get("summary", ""),
             "criteria": [{
                 "code": c.get("code"), "strength": c.get("strength"), "met": c.get("met"),

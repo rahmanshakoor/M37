@@ -90,6 +90,15 @@ can support any model and counting them would make "distinct heterozygous rows" 
    rescued and the rescue (or its refusal) is a recorded hit (built: the "regardless of AF" clause
    of `always_keep`, bounded). (Single-het dominant candidates apply `dominant_max_af` in step 5.)
 4. Quality caveats are attached, never dropped on: `dp<10`, `gq<20`, `flagged:<filter>`.
+   **Sex** (built 2026-09-14, `engine.sex`): stage 1 records the sex stated in the case file
+   (`sex: male|female|unknown`) and the sex inferred from the calls (X non-PAR heterozygous
+   fraction, Y non-PAR carrier calls; GRCh38 PARs); stated wins, inferred fills in, and a
+   disagreement is a manifest note. Stage 3 applies it after the genotype rule: in a male a
+   heterozygous call on X outside the PARs is a genotype a haploid chromosome cannot carry —
+   dropped as `sex:x_het_in_male` (a ClinVar P/LP row is kept as `hemi` with the caveat
+   `het_call_on_haploid_x`, never as half of a comphet); in a female any Y call is dropped as
+   `sex:y_call_in_female`; a female's X homozygote is `hom`. Sex unknown: the rule is off and the
+   manifest says so.
 5. **Group by gene** (`gene_symbol`, fall back to `gene_id`). Models:
    - `hom`: GT is homozygous alt (`1/1`, `1|1`) and `gnomad_nhom ≤ homozygote_max_nhom` (the same
      bounded ClinVar rescue applies to the homozygote ceiling, with a trace).
@@ -191,8 +200,18 @@ API shapes come from the `claude-api` skill files, not memory.
   HPO terms, and a compact text rendering for the prompt. Bundles are written to
   `05_reason/bundles/<candidate_id>.json` so a judge can see exactly what the model saw.
 - `schema.py` — the pydantic output models below. The **classification is computed by the
-  engine** from the criteria (ACMG/AMP 2015 combining rules, Richards et al.), never asked
-  of the model.
+  engine** from the criteria, never asked of the model — by the ClinGen SVI point system
+  (Tavtigian et al. 2020: supporting 1, moderate 2, strong 4, very strong 8, benign negative;
+  P ≥ 10, LP 6–9, VUS 0–5, LB −1 to −6, B ≤ −7; BA1 stand-alone), with the 2015 Table 5
+  verdict recorded beside it (`classification_richards_2015`) and the point total (`points`).
+  PP5/BP6 are retired (Biesecker & Harrison 2018): accepted from the model, marked
+  `[RETIRED — …]`, set not met, never counted. PP3/BP4 are recomputed from the `vep:` record
+  at the ClinGen SVI calibration (Pejaver et al. 2022: REVEL 0.644/0.773/0.932 for PP3
+  supporting/moderate/strong, 0.290/0.183/0.016 for BP4; CADD 25.3/22.7 without REVEL;
+  SpliceAI 0.2/0.1 for splicing) — a claimed strength above what the scores support is
+  lowered, a claim below every threshold is disputed to not met, a variant without a record
+  is unverified. AlphaMissense is carried for the reader and never counted. (Built
+  2026-09-14, replacing the 2015 Table 5 as the verdict.)
 
 ```python
 class Criterion(BaseModel):
@@ -205,6 +224,8 @@ class VariantChain(BaseModel):
     key: str
     criteria: list[Criterion]
     classification: Literal["pathogenic","likely_pathogenic","vus","likely_benign","benign"] | None = None  # filled by the engine
+    points: int | None = None                       # filled by the engine: the SVI point total
+    classification_richards_2015: Literal[...] | None = None  # filled by the engine: the 2015 Table 5 verdict
     summary: str
 class EvidenceChain(BaseModel):
     candidate_id: str
@@ -415,6 +436,9 @@ keys — the lead row, only its first allele, and an absent key — recording th
 Rules: chromosomes via `contigs.to_submission`; a compound-het candidate is one row with its two
 most consequential alleles; `--also-pair` rows follow the lead (alternative partners the funnel may
 not carry); backups are ordered by blind-ranker rank, then stage-3 priority, with known artefact gene
-families (HLA, MUC, KIR, …) last; candidates a stage-5 chain classified benign are skipped;
-`finding_type` is `secondary` for dominant single heterozygotes; EPCRs 0.95, 0.90, … unique and
-strictly decreasing; at most ten rows; notes never contain a comma.
+families (HLA, MUC, KIR, …) last; candidates a stage-5 chain classified benign are skipped, as
+are pairs whose every allele ClinVar calls benign/likely benign and compound heterozygotes on X
+when stage 1 recorded a male (a guard for runs older than the sex rule); `finding_type` follows
+the template's meaning — `secondary` is an incidental finding: a dominant single heterozygote the
+stage-5 chain classified P/LP; an unclassified lone heterozygote is a weak `primary`; EPCRs 0.95,
+0.90, … unique and strictly decreasing; at most ten rows; notes never contain a comma.

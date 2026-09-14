@@ -11,7 +11,8 @@
  "phase_statement": "p.Phe508del is read-phased (PGT 1|0, PID 117559403_A_G) against two common alleles 76 and 111 bp upstream, so it is in trans to those; p.Gly542Ter, 28.2 kb downstream, carries no PID, so the two pathogenic alleles share no read-level phasing and this data cannot show whether they lie on different chromosomes [vep:7:117559590:ATCT:A] [vep:7:117587778:G:T]. Two ClinVar-pathogenic alleles of one recessive gene in a proband with the phenotype make trans the likelier configuration, but only parental genotypes or long-read phasing can show it.",
  "variants": [
   {
-   "classification": "likely_pathogenic",
+   "classification": "vus",
+   "classification_richards_2015": "vus",
    "criteria": [
     {
      "code": "PM4",
@@ -37,8 +38,8 @@
      "evidence_ids": [
       "clinvar:VCV000007105"
      ],
-     "justification": "ClinVar Pathogenic, practice guideline (4 stars), for cystic fibrosis",
-     "met": true,
+     "justification": "[RETIRED — PP5 is retired (retired by the ClinGen SVI (Biesecker & Harrison 2018): accepted for the record, marked, never counted); the ClinVar classification is concordance, not a criterion] ClinVar Pathogenic, practice guideline (4 stars), for cystic fibrosis",
+     "met": false,
      "strength": "supporting"
     },
     {
@@ -59,10 +60,12 @@
     }
    ],
    "key": "7:117559590:ATCT:A",
+   "points": 5,
    "summary": "Heterozygous p.Phe508del (0/1, AD 23,19), the commonest cystic fibrosis allele: an in-frame single-residue deletion in NBD1, ClinVar Pathogenic at practice-guideline level [vep:7:117559590:ATCT:A] [clinvar:VCV000007105]; its gnomAD frequency and 58 homozygotes reflect a recessive allele at carrier frequency, not benignity [gnomad:7-117559590-ATCT-A]."
   },
   {
    "classification": "pathogenic",
+   "classification_richards_2015": "pathogenic",
    "criteria": [
     {
      "code": "PVS1",
@@ -88,8 +91,8 @@
      "evidence_ids": [
       "clinvar:VCV000007115"
      ],
-     "justification": "ClinVar Pathogenic, practice guideline (4 stars), for cystic fibrosis",
-     "met": true,
+     "justification": "[RETIRED — PP5 is retired (retired by the ClinGen SVI (Biesecker & Harrison 2018): accepted for the record, marked, never counted); the ClinVar classification is concordance, not a criterion] ClinVar Pathogenic, practice guideline (4 stars), for cystic fibrosis",
+     "met": false,
      "strength": "supporting"
     },
     {
@@ -110,6 +113,7 @@
     }
    ],
    "key": "7:117587778:G:T",
+   "points": 11,
    "summary": "Heterozygous p.Gly542Ter (0/1, AD 25,22), a nonsense allele in exon 12 of 27 predicted to trigger nonsense-mediated decay, ClinVar Pathogenic at practice-guideline level [vep:7:117587778:G:T] [clinvar:VCV000007115]; 585 alleles and no homozygotes in gnomAD [gnomad:7-117587778-G-T]."
   }
  ],

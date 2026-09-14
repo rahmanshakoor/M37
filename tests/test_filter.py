@@ -936,3 +936,55 @@ def test_live_vep_still_agrees_with_the_real_fixture_rows(tmp_path: Path):
         cols = vep.extract(found[k])
         for c in ("gene_symbol", "gene_id", "transcript_id", "consequence", "impact", "impact_any_coding", "hgvsp"):
             assert cols[c] == fixture[ks][c], (ks, c, cols[c])
+
+
+# ---------------------------------------------------------------- sex rule (engine.sex)
+
+def _ingest_manifest(run: Path, sex: str, stated: str = "unknown", inferred: str = "unknown") -> None:
+    (run / "01_ingest").mkdir(parents=True, exist_ok=True)
+    (run / "01_ingest" / "manifest.json").write_text(json.dumps(
+        {"stage": "ingest", "params": {"sex": sex, "sex_stated": stated, "sex_inference": {"inferred": inferred}}}))
+
+
+def _x_het(pos: str, **kw: str) -> dict[str, str]:
+    # public gene on X: DMD (ENSG00000198947, Xp21) — the positions are invented but non-PAR
+    return row(chrom="X", pos=pos, gene_symbol="DMD", gene_id="ENSG00000198947", **kw)
+
+
+def test_sex_rule_male_x_het_is_impossible_unless_clinvar_plp(cfg: FilterConfig):
+    from engine.filter.rules import HET_ON_HAPLOID_X, sex_rule
+    assert sex_rule(_x_het("32000000"), "unknown", cfg) == []
+    assert str(sex_rule(_x_het("32000000"), "male", cfg)[0]) == "sex:x_het_in_male"
+    assert sex_rule(_x_het("32000000", gt="1/1"), "male", cfg) == []           # homozygous-looking = hemizygous
+    assert sex_rule(_x_het("1000000"), "male", cfg) == []                       # PAR1: diploid in a male
+    assert sex_rule(_x_het("155800000"), "male", cfg) == []                     # PAR2
+    kept = sex_rule(_x_het("32000000", clinvar_pathogenicity="Pathogenic"), "male", cfg)
+    assert [str(h) for h in kept] == ["sex:x_het_in_male_kept=Pathogenic"] and not kept[0].drop
+    d = screen_row(0, _x_het("32000000", clinvar_pathogenicity="Pathogenic"), cfg, sex="male")
+    assert d.rule == "" and HET_ON_HAPLOID_X in d.caveats
+    # a female has no Y; her X homozygote is a homozygote
+    assert str(sex_rule(row(chrom="Y", pos="12000000", gene_symbol="USP9Y", gene_id="ENSG00000114374"), "female", cfg)[0]) == "sex:y_call_in_female"
+    assert genotype_model("X", "1/1", "female") == "hom" and genotype_model("X", "1/1", "male") == "hemi"
+    assert genotype_model("X", "1/1") == "hemi"
+
+
+def test_male_x_hets_never_form_a_comphet_and_the_manifest_says_why(tmp_path: Path):
+    rows = [_x_het("32000000"), _x_het("32000500", ref="C", alt="T"),
+            _x_het("32001000", ref="A", alt="G", clinvar_pathogenicity="Pathogenic", clinvar_stars="2")]
+    run = make_run(tmp_path, rows)
+    # sex unknown: the rule is off and the two hets pair (the old behaviour, now stated)
+    m = json.loads(run_filter(run, DEFAULT_CONFIG).read_text())
+    assert m["params"]["sex"] == "unknown" and m["counts"]["candidates_by_model"].get("comphet") == 1
+    _ingest_manifest(run, "male", inferred="male")
+    m = json.loads(run_filter(run, DEFAULT_CONFIG).read_text())
+    assert m["params"]["sex"] == "male" and "sex" in m["params"]["rule_order"]
+    assert m["counts"]["dropped_by_rule"] == {"sex:x_het_in_male": 2}
+    assert m["counts"]["candidates_by_model"] == {"hemi": 1}
+    by = decisions_by_key(run)
+    assert by["X:32000000:G:A"]["rule"] == "sex:x_het_in_male" and by["X:32000000:G:A"]["kept"] == "0"
+    kept = by["X:32001000:A:G"]
+    assert kept["kept"] == "1" and kept["model"] == "hemi" and "het_call_on_haploid_x" in kept["caveats"]
+    assert "sex:x_het_in_male_kept=Pathogenic" in kept["rule_hits"]
+    assert any(n.startswith("Sample sex male (inferred") for n in m["notes"])
+    cands = json.loads((run / STAGE_DIR / "candidates.json").read_text())["candidates"]
+    assert cands[0]["model"] == "hemi" and "het_call_on_haploid_x" in cands[0]["caveats"]

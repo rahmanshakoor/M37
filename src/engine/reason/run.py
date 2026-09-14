@@ -64,7 +64,7 @@ from engine.agents import client as ac
 from engine.agents import providers
 from engine.agents.bundle import Bundle, build_bundle, write_bundle
 from engine.agents.render import cited_ids, render_evidence_chain
-from engine.agents.schema import ALL_CODES, EvidenceChain, VariantChain, combine_acmg
+from engine.agents.schema import ALL_CODES, EvidenceChain, VariantChain, acmg_points, combine_acmg, combine_richards_2015
 from engine.agents.validator import (
     AF_FIELD, AF_FIELDS, THRESHOLDS, EvidenceIndex, Rejection, ValidationReport, canonical_key, frequency_rules, validate,
 )
@@ -404,11 +404,13 @@ def align_chain(chain: EvidenceChain, bundle: Bundle) -> tuple[EvidenceChain, li
 
 
 def classify(chain: EvidenceChain) -> EvidenceChain:
-    """Every variant's classification from its surviving criteria (ACMG/AMP 2015
-    combining rules). The validator already did this; doing it here too keeps the
-    stage's own promise visible and idempotent."""
+    """Every variant's classification from its surviving criteria (ClinGen SVI points;
+    the 2015 Table 5 verdict beside it). The validator already did this; doing it
+    here too keeps the stage's own promise visible and idempotent."""
     for v in chain.variants:
+        v.points = acmg_points(v.criteria)
         v.classification = combine_acmg(v.criteria)
+        v.classification_richards_2015 = combine_richards_2015(v.criteria)
     return chain
 
 
@@ -420,7 +422,7 @@ def render_document(chains: list[tuple[Bundle, EvidenceChain, EvidenceIndex]], *
     resolved against the index the chain was validated with."""
     out = ["# Evidence chains", ""]
     out.append(f"{len(chains)} candidate(s) · model {model} · effort {effort} · classification computed by the "
-               "engine from the validated criteria (ACMG/AMP 2015). Every claim cites a record id; the References "
+               "engine from the validated criteria (ClinGen SVI points over ACMG/AMP 2015 codes). Every claim cites a record id; the References "
                "under each chain resolve them.")
     out.append("")
     out.extend(["| # | candidate | gene | model | variant | classification |", "|---|---|---|---|---|---|"])

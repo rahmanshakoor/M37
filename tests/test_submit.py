@@ -50,9 +50,10 @@ def _run_dir(tmp_path: Path, *, with_rank=True, with_chains=True, extra=()) -> P
             {"candidate_id": "HLA-DRB1:comphet", "exomiser_rank": 2}, {"candidate_id": "MTHFR:hom", "exomiser_rank": None}]}))
     if with_chains:
         (run / "05_reason" / "chains").mkdir(parents=True)
-        (run / "05_reason" / "chains" / "MTHFR:hom.json").write_text(json.dumps(
-            {"candidate_id": "MTHFR:hom", "variants": [{"key": MTHFR, "classification": "benign", "criteria": [], "summary": ""}],
-             "phase_statement": "", "mechanism_hypothesis": "", "limits": [], "what_would_change_the_call": [], "literature": []}))
+        for cid, key, cls in (("MTHFR:hom", MTHFR, "benign"), ("TP53:het_single", TP53, "pathogenic")):
+            (run / "05_reason" / "chains" / f"{cid}.json").write_text(json.dumps(
+                {"candidate_id": cid, "variants": [{"key": key, "classification": cls, "criteria": [], "summary": ""}],
+                 "phase_statement": "", "mechanism_hypothesis": "", "limits": [], "what_would_change_the_call": [], "literature": []}))
     return run
 
 
@@ -112,8 +113,33 @@ def test_dry_run_against_the_real_scorer(tmp_path: Path):
     assert split["rank_points"] == 50.0 and split["full_match_rank"] is None and split["partial_match_rank"] == 1
 
 
+def test_clinvar_benign_pairs_and_male_x_comphets_take_no_row(tmp_path: Path):
+    benign = {"candidate_id": "SERPINA1:comphet", "gene_symbol": "SERPINA1", "gene_id": "ENSG6", "model": "comphet", "priority": 5,
+              "phase": {"status": "unknown", "evidence": ""}, "rule_hits": [], "caveats": [],
+              "variants": [_variant("14:94379548:C:CTA", clinvar_pathogenicity="Benign", clinvar_stars="1"),
+                           _variant("14:94379541:G:GA", clinvar_pathogenicity="Likely_benign", clinvar_stars="1")]}
+    x_pair = {"candidate_id": "DMD:comphet", "gene_symbol": "DMD", "gene_id": "ENSG7", "model": "comphet", "priority": 6,
+              "phase": {"status": "unknown", "evidence": ""}, "rule_hits": [], "caveats": [],
+              "variants": [_variant("X:32000000:G:A"), _variant("X:32000500:C:T")]}
+    run = _run_dir(tmp_path, extra=[benign, x_pair])
+    p = plan(run)
+    assert "SERPINA1:comphet" not in [r.candidate_id for r in p.rows]
+    assert "DMD:comphet" in [r.candidate_id for r in p.rows]  # sex unknown: a stage-3 comphet stands
+    assert {"candidate_id": "SERPINA1:comphet", "why": "every allele ClinVar Benign/Likely_benign"} in p.skipped
+    (run / "01_ingest").mkdir()
+    (run / "01_ingest" / "manifest.json").write_text(json.dumps({"params": {"sex": "male"}}))
+    p = plan(run)
+    assert "DMD:comphet" not in [r.candidate_id for r in p.rows]
+    assert {"candidate_id": "DMD:comphet", "why": "compound heterozygote on X in a male"} in p.skipped
+    # one benign allele beside a pathogenic one is not a benign pair
+    mixed = dict(benign, candidate_id="MIX:comphet", gene_symbol="MIX",
+                 variants=[_variant("14:94379548:C:CTA", clinvar_pathogenicity="Benign"), _variant("14:94379541:G:GA")])
+    assert "MIX:comphet" in [r.candidate_id for r in plan(_run_dir(tmp_path / "b", extra=[mixed])).rows]
+
+
 def test_without_rank_or_chains_still_writes(tmp_path: Path):
     run = _run_dir(tmp_path, with_rank=False, with_chains=False)
     csv_path = run_submit(run, proband_id="PUBLIC01", scorer=None)
     rows = list(csv.DictReader(open(csv_path)))
-    assert [r["finding_type"] for r in rows] == ["primary", "secondary", "primary", "primary"]  # MTHFR kept: no chain
+    # MTHFR kept (no chain says benign); TP53 is primary (nobody classified it, so not an incidental finding)
+    assert [r["finding_type"] for r in rows] == ["primary", "primary", "primary", "primary"]

@@ -305,14 +305,18 @@ def test_end_to_end_chain_validated_classified_and_rendered(run_dir: Path):
     # -- the chain: fabricated ids gone, the frequency claim overruled, the verdict the engine's
     chain = EvidenceChain.model_validate(read(out / "chains" / "CFTR:hom.json"))
     v = chain.variants[0]
-    assert v.key == CFTR and v.classification == "likely_pathogenic"  # PS3 + PM4 + 3×PP; the model had said "pathogenic"
+    assert v.key == CFTR and v.classification == "likely_pathogenic"  # PS3 4 + PM4 2 + PP4 1 = 7; the model had said "pathogenic"
+    assert v.points == 7 and v.classification_richards_2015 == "likely_pathogenic"
     assert [c.code for c in v.criteria] == ["PS3", "PM2", "PM4", "PP5", "PP4", "PP3"]
     assert v.criteria[1].met is False and v.criteria[1].justification.startswith("[DISPUTED — PM2 recomputed from gnomad:7-117559590-ATCT-A: af=0.0119")
-    assert v.criteria[5].justification == "CADD 17.55; see also PMID [citation removed: no such record]"
+    assert v.criteria[3].met is False and v.criteria[3].justification.startswith("[RETIRED — PP5 is retired")  # ClinVar is concordance, not a criterion
+    assert v.criteria[5].met is False and v.criteria[5].justification.startswith("[DISPUTED — PP3 recomputed from vep:7:117559590:ATCT:A: CADD 17.55")
+    assert v.criteria[5].justification.endswith("CADD 17.55; see also PMID [citation removed: no such record]")
     assert chain.literature == [SEARCH_TOP, ZELICHA, FROSST]
     assert FAKE_CLINVAR not in chain.model_dump_json() and "99999999" not in chain.model_dump_json()
     tp53 = EvidenceChain.model_validate(read(out / "chains" / "TP53:het_single.json"))
     assert tp53.variants[0].classification == "vus" and [c.code for c in tp53.variants[0].criteria] == ["PM2", "PP3", "PP5"]
+    assert tp53.variants[0].points == 3 and tp53.variants[0].criteria[1].strength == "supporting"  # REVEL 0.922 allows moderate; the model's lower call stands
 
     validation = read(out / "validation" / "CFTR:hom.json")
     assert {(r["path"], r["reason"]) for r in validation["rejections"]} == {
@@ -654,19 +658,22 @@ def test_an_unverifiable_frequency_criterion_is_not_met_and_a_raised_strength_is
     pm2, pp3, pp5 = chain.variants[0].criteria
     assert pm2.met is False and pm2.justification.startswith(
         f"[UNVERIFIED — no gnomAD or VEP record for {TP53} in the store; PM2 cannot be checked → not met; the model said met]")
-    assert pp3.strength == "strong" and pp3.justification.startswith("[STRENGTH CAPPED — PP3 at most strong")
-    assert pp5.met is True and chain.variants[0].classification == "vus"
+    assert pp3.strength == "strong" and pp3.met is False
+    assert pp3.justification.startswith(f"[UNVERIFIED — no VEP record for {TP53} in the store; PP3 cannot be checked → not met; the model said met] [STRENGTH CAPPED — PP3 at most strong")
+    assert pp5.met is False and pp5.justification.startswith("[RETIRED — PP5") and chain.variants[0].classification == "vus"
     v = read(run_dir / "05_reason" / "validation" / "TP53:het_single.json")
     assert v["counts"]["frequency_unverified"] == 1 and v["counts"]["frequency_disputed"] == 1 and v["counts"]["strength_capped"] == 1
-    assert v["disputes"] == [{"path": "variants[0].criteria[0]", "code": "PM2", "record_id": None, "claimed_met": True,
-                              "recomputed_met": False, "af": None,
-                              "reason": f"no gnomAD or VEP record for {TP53} in the store; PM2 cannot be checked → not met; the model said met"}]
+    assert v["counts"]["computational_unverified"] == 1 and v["counts"]["computational_disputed"] == 1 and v["counts"]["retired_not_counted"] == 1
+    assert v["disputes"][0] == {"path": "variants[0].criteria[0]", "code": "PM2", "record_id": None, "claimed_met": True,
+                                "recomputed_met": False, "af": None,
+                                "reason": f"no gnomAD or VEP record for {TP53} in the store; PM2 cannot be checked → not met; the model said met"}
+    assert v["disputes"][1]["code"] == "PP3" and v["disputes"][1]["record_id"] is None
     assert m["counts"]["classifications"]["TP53:het_single"] == {TP53: "vus"}
     assert any(n.startswith(f"TP53:het_single: disputed variants[0].criteria[0]: no gnomAD or VEP record for {TP53}") for n in m["notes"])
     assert any(n.startswith("TP53:het_single: variants[0].criteria[1].strength: PP3 at most strong") for n in m["notes"])
     md = (run_dir / "05_reason" / "evidence_chain.md").read_text()
     assert "- **PM2** · moderate · not met — [UNVERIFIED — no gnomAD or VEP record" in md
-    assert "- **PP3** · strong · met — [STRENGTH CAPPED — PP3 at most strong" in md
+    assert "- **PP3** · strong · not met — [UNVERIFIED — no VEP record" in md
 
 
 def test_the_validator_is_told_the_candidates_keys(run_dir: Path, monkeypatch: pytest.MonkeyPatch):

@@ -10,10 +10,16 @@ zero with the right answer, so this stage owns them:
 * a compound-het candidate is one row with both alleles;
 * EPCRs are unique and strictly decreasing, so no tie can pull a wrong variant into
   the same threshold bucket as the right one;
-* candidates the stage-5 chain classified benign or likely benign are left out;
-* ``finding_type`` is ``primary`` for a candidate that explains the phenotype under a
-  recessive/X-linked/mitochondrial model, ``secondary`` for a dominant single
-  heterozygote (a real finding, not the answer to this case);
+* candidates the stage-5 chain classified benign or likely benign are left out, as
+  are pairs whose every allele ClinVar calls benign or likely benign (a rare
+  frameshift pair that ClinVar has already looked at is not a ranked answer), and
+  compound heterozygotes on X when the sample is male (a haploid chromosome has no
+  second allele; stage 3 now refuses them, this guards older runs);
+* ``finding_type`` follows the template's meaning — ``secondary`` is an incidental
+  finding: a variant the stage-5 chain classified pathogenic or likely pathogenic
+  under a model that does not explain this presentation (a dominant single
+  heterozygote). A lone heterozygote nobody has classified is a weak ``primary``
+  candidate, not an incidental finding;
 * the file is dry-run through the scorer against the top row as a hypothetical key,
   so a format error is caught before a submission is spent.
 """
@@ -39,8 +45,11 @@ MAX_ROWS = 10
 TOP_EPCR = 0.95
 EPCR_STEP = 0.05
 BENIGN = {"benign", "likely_benign"}
+PLP = {"pathogenic", "likely_pathogenic"}
+CLINVAR_BENIGN = {"Benign", "Likely_benign"}
 SECONDARY_MODELS = {"het_single"}
-"""Models that do not explain a recessive presentation: reported, not ranked as the answer."""
+"""Models that do not explain a recessive presentation: a P/LP variant under one is
+an incidental (``secondary``) finding."""
 ARTEFACT_FAMILIES = ("HLA-", "MUC", "KIR", "NBPF", "PRAMEF", "TAS2R", "OR", "LILR", "FCGB", "GOLGA", "USP17L", "TBC1D3", "NPIPA", "NPIPB")
 """Gene families whose apparent rare compound-hets are mostly mapping artefacts in
 short-read WGS (paralogs, high polymorphism). Ordered last, never removed."""
@@ -98,6 +107,33 @@ def _ranks(run_dir: Path) -> dict[str, int | None]:
     return {c["candidate_id"]: c.get("exomiser_rank") for c in j.get("candidates", [])}
 
 
+def _sex(run_dir: Path) -> str:
+    m = _load(run_dir, "01_ingest/manifest.json") or {}
+    return (m.get("params") or {}).get("sex") or "unknown"
+
+
+def _clinvar_benign(v: dict[str, Any]) -> bool:
+    members = [m.split(",")[0] for m in (v.get("clinvar_pathogenicity") or "").split("/") if m]
+    return bool(members) and all(m in CLINVAR_BENIGN for m in members)
+
+
+def _skip_reason(c: dict[str, Any], cl: dict[str, str], sex: str) -> str:
+    """Why a candidate takes no row, or ``''``."""
+    if cl and any(cl.values()) and all(cl.get(v["key"], "") in BENIGN for v in c["variants"] if cl.get(v["key"])):
+        return "stage-5 chain classified benign/likely benign"
+    if all(_clinvar_benign(v) for v in c["variants"]):
+        return "every allele ClinVar Benign/Likely_benign"
+    if c["model"] == "comphet" and sex == "male" and all(v["key"].startswith("X:") for v in c["variants"]):
+        return "compound heterozygote on X in a male"
+    return ""
+
+
+def _finding_type(c: dict[str, Any], cl: dict[str, str]) -> str:
+    if c["model"] in SECONDARY_MODELS and any(cl.get(v["key"], "") in PLP for v in c["variants"]):
+        return "secondary"
+    return "primary"
+
+
 def _pair_for(candidate: dict[str, Any]) -> list[dict[str, Any]]:
     """The two alleles a compound-het row should carry: the two most consequential
     (HIGH before MODERATE, then lowest frequency). More than two rare hets in a gene
@@ -137,6 +173,7 @@ def plan(run_dir: Path, *, also_pairs: list[tuple[str, str]] | None = None, max_
         raise FileNotFoundError(f"no 03_filter/candidates.json under {run_dir}")
     classes = _classifications(run_dir)
     ranks = _ranks(run_dir)
+    sex = _sex(run_dir)
     rows: list[Row] = []
     skipped: list[dict[str, str]] = []
     seen: set[frozenset] = set()
@@ -156,11 +193,11 @@ def plan(run_dir: Path, *, also_pairs: list[tuple[str, str]] | None = None, max_
     first = True
     for c in ordered:
         cl = classes.get(c["candidate_id"], {})
-        if cl and all(cl.get(v["key"], "") in BENIGN for v in c["variants"] if cl.get(v["key"])) and any(cl.values()):
-            skipped.append({"candidate_id": c["candidate_id"], "why": "stage-5 chain classified benign/likely benign"})
+        if why := _skip_reason(c, cl, sex):
+            skipped.append({"candidate_id": c["candidate_id"], "why": why})
             continue
         vs = _pair_for(c) if c["model"] == "comphet" else c["variants"][:1]
-        ft = "secondary" if c["model"] in SECONDARY_MODELS else "primary"
+        ft = _finding_type(c, cl)
         add([parse_key(v["key"]) for v in vs], ft, _notes(c, vs, cl, ranks.get(c["candidate_id"])), c["candidate_id"])
         if first and also_pairs:
             # Alternative partners for the lead allele: a different second hit the

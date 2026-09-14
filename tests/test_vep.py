@@ -166,7 +166,7 @@ def test_retrieve_builds_one_record_per_key():
     assert len(posts) == 1
     _, url, params, body, timeout, _ = posts[0]
     assert url == f"{BASE}/vep/homo_sapiens/region"
-    assert params == {"canonical": 1, "mane": 1, "hgvs": 1, "numbers": 1, "SpliceAI": 1, "CADD": 1}
+    assert params == {"canonical": 1, "mane": 1, "hgvs": 1, "numbers": 1, "SpliceAI": 1, "CADD": 1, "REVEL": 1, "AlphaMissense": 1}
     assert body == {"variants": [vcf_line(k) for k in PUBLIC]}
     assert timeout == 300.0
 
@@ -187,7 +187,7 @@ def test_retrieve_builds_one_record_per_key():
         # payload is the full raw item: every number extract() quotes is in there
         assert "transcript_consequences" in rec.payload and "colocated_variants" in rec.payload
     assert out[MTHFR][0].url == (f"{BASE}/vep/homo_sapiens/region/1:11796321-11796321/A"
-                                 "?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1")
+                                 "?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1&REVEL=1&AlphaMissense=1")
     assert out[CFTR][0].url.startswith(f"{BASE}/vep/homo_sapiens/region/7:117559590-117559593/A?")
     assert r.dropped == 0
 
@@ -473,3 +473,17 @@ def test_live_public_variant(tmp_path: Path):
     assert again[MTHFR][0].to_json() == out[MTHFR][0].to_json()
     offline = Http(HttpCache(tmp_path / "cache"), offline=True)
     assert VepRetriever(offline).retrieve([MTHFR])[MTHFR][0].to_json() == out[MTHFR][0].to_json()
+
+
+def test_extract_carries_revel_and_alphamissense_for_missense_only():
+    """REVEL and AlphaMissense (the SVI-calibrated missense predictors) from the
+    chosen transcript; empty for a non-missense change."""
+    http = StubHttp()
+    out = VepRetriever(http).retrieve(PUBLIC)
+    r = VepRetriever(http)
+    tp53 = r.extract(out[TP53])
+    assert (tp53["revel"], tp53["alphamissense_score"], tp53["alphamissense_class"]) == ("0.922", "0.9857", "likely_pathogenic")
+    mthfr = r.extract(out[MTHFR])
+    assert (mthfr["revel"], mthfr["alphamissense_class"]) == ("0.842", "likely_pathogenic")  # a common benign allele can score high: that is what BA1 is for
+    cftr = r.extract(out[CFTR])
+    assert (cftr["revel"], cftr["alphamissense_score"], cftr["alphamissense_class"]) == ("", "", "")

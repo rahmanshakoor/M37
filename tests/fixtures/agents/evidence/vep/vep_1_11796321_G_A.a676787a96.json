@@ -231,6 +231,10 @@
   "strand": 1,
   "transcript_consequences": [
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "protein_coding",
     "cadd_phred": 28.3,
@@ -276,6 +280,10 @@
     "variant_allele": "A"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "protein_coding",
     "cadd_phred": 28.3,
@@ -300,6 +308,7 @@
     "polyphen_score": 0.987,
     "protein_end": 263,
     "protein_start": 263,
+    "revel": 0.842,
     "sift_prediction": "deleterious",
     "sift_score": 0,
     "spliceai": {
@@ -318,6 +327,10 @@
     "variant_allele": "A"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "protein_coding",
     "cadd_phred": 28.3,
@@ -342,6 +355,7 @@
     "polyphen_score": 0.987,
     "protein_end": 263,
     "protein_start": 263,
+    "revel": 0.842,
     "sift_prediction": "deleterious",
     "sift_score": 0,
     "spliceai": {
@@ -360,6 +374,10 @@
     "variant_allele": "A"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "protein_coding",
     "cadd_phred": 28.3,
@@ -389,6 +407,7 @@
     "polyphen_score": 0.943,
     "protein_end": 222,
     "protein_start": 222,
+    "revel": 0.842,
     "sift_prediction": "deleterious",
     "sift_score": 0,
     "spliceai": {
@@ -407,6 +426,10 @@
     "variant_allele": "A"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "protein_coding",
     "cadd_phred": 28.3,
@@ -431,6 +454,7 @@
     "polyphen_score": 0.943,
     "protein_end": 222,
     "protein_start": 222,
+    "revel": 0.842,
     "sift_prediction": "deleterious",
     "sift_score": 0,
     "spliceai": {
@@ -480,6 +504,10 @@
     "variant_allele": "A"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "protein_coding",
     "cadd_phred": 28.3,
@@ -550,6 +578,10 @@
     "variant_allele": "A"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "protein_coding",
     "cadd_phred": 28.3,
@@ -620,6 +652,10 @@
     "variant_allele": "A"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "nonsense_mediated_decay",
     "cadd_phred": 28.3,
@@ -846,6 +882,10 @@
     "variant_allele": "A"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "protein_coding",
     "cadd_phred": 28.3,
@@ -886,6 +926,10 @@
     "variant_allele": "A"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "protein_coding",
     "cadd_phred": 28.3,
@@ -928,6 +972,10 @@
     "variant_allele": "A"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "protein_coding",
     "cadd_phred": 28.3,
@@ -968,6 +1016,10 @@
     "variant_allele": "A"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "protein_coding",
     "cadd_phred": 28.3,
@@ -1008,6 +1060,10 @@
     "variant_allele": "A"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "protein_coding",
     "cadd_phred": 28.3,
@@ -1048,6 +1104,10 @@
     "variant_allele": "A"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "protein_coding",
     "cadd_phred": 28.3,
@@ -1088,6 +1148,10 @@
     "variant_allele": "A"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "protein_coding",
     "cadd_phred": 28.3,
@@ -1128,6 +1192,10 @@
     "variant_allele": "A"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "protein_coding",
     "cadd_phred": 28.3,
@@ -1170,6 +1238,10 @@
     "variant_allele": "A"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "protein_coding",
     "cadd_phred": 28.3,
@@ -1212,6 +1284,10 @@
     "variant_allele": "A"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "protein_coding",
     "cadd_phred": 28.3,
@@ -1252,6 +1328,10 @@
     "variant_allele": "A"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.6324
+    },
     "amino_acids": "A/V",
     "biotype": "protein_coding",
     "cadd_phred": 28.3,
@@ -1296,20 +1376,22 @@
  "query": {
   "method": "POST",
   "params": {
+   "AlphaMissense": 1,
    "CADD": 1,
+   "REVEL": 1,
    "SpliceAI": 1,
    "canonical": 1,
    "hgvs": 1,
    "mane": 1,
    "numbers": 1
   },
-  "request_key": "fixture",
+  "request_key": "2a187491cfa0592ad3d7be47ad39399d67c74b7e5149c1217b4d015319cbf028",
   "url": "https://rest.ensembl.org/vep/homo_sapiens/region",
   "variant": "1 11796321 1:11796321:G:A G A . . ."
  },
  "record_id": "vep:1:11796321:G:A",
- "retrieved_at": "2026-09-12T16:40:57+00:00",
+ "retrieved_at": "2026-09-14T18:15:55+00:00",
  "source": "vep",
- "source_version": "Ensembl VEP REST (recorded fixture region_post_public3)",
- "url": "https://rest.ensembl.org/vep/homo_sapiens/region/1:11796321-11796321/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+ "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
+ "url": "https://rest.ensembl.org/vep/homo_sapiens/region/1:11796321-11796321/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1&REVEL=1&AlphaMissense=1"
 }

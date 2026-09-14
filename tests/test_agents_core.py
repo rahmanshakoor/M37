@@ -145,8 +145,8 @@ def test_happy_path_chain_validates_cleanly_and_renders(index: EvidenceIndex):
     out = chain([
         criterion("PS3", "strong", [PAPER], just="functional study [pmid:7647779]"),
         criterion("PM2", "moderate", [CFTR_GNOMAD], met=False, just="af 0.0119 is not rare"),
-        criterion("PP3", "supporting", [CFTR_VEP], just="CADD 17.6"),
-        criterion("PP5", "supporting", [CFTR_CLINVAR], just="ClinVar practice guideline"),
+        criterion("PP3", "supporting", [CFTR_VEP], met=False, just="CADD 17.6, below the 25.3 calibration"),
+        criterion("PM4", "moderate", [CFTR_VEP], just=f"in-frame deletion of one residue; ClinVar concordant [{CFTR_CLINVAR}]"),
         criterion("PP4", "supporting", [], just="sweat chloride phenotype"),
     ], literature=[PAPER])
     fake = ac.FakeClient(out, turns=[ac.FakeTurn([("get_record", {"record_id": CFTR_GNOMAD}),
@@ -167,9 +167,11 @@ def test_happy_path_chain_validates_cleanly_and_renders(index: EvidenceIndex):
     cleaned, report = validate(result.output, index)
     assert report.clean and report.rejections == [] and report.disputes == [] and report.notes == []
     assert report.counts["frequency_recomputed"] == 1 and report.counts["frequency_disputed"] == 0
+    assert report.counts["computational_recomputed"] == 1 and report.counts["computational_disputed"] == 0
     crit = cleaned.variants[0].criteria
-    assert [c.code for c in crit] == ["PS3", "PM2", "PP3", "PP5", "PP4"]
+    assert [c.code for c in crit] == ["PS3", "PM2", "PP3", "PM4", "PP4"]
     assert cleaned.variants[0].classification == combine_acmg(crit) == "likely_pathogenic"  # the engine's, not the model's
+    assert cleaned.variants[0].points == 7 and cleaned.variants[0].classification_richards_2015 == "likely_pathogenic"
     assert report.rules["af_field"] == "gnomad_af" and report.rules["PM2"] == "met iff af < 0.0001 or absent"
 
     md = render_evidence_chain(cleaned, index, disclosure=ac.disclosure("claude-opus-5", "high"))
@@ -218,8 +220,9 @@ def test_fabricated_pmid_is_dropped_everywhere(index: EvidenceIndex):
     cleaned, report = validate(out, index)
     assert cleaned.literature == [PAPER]
     assert [c.code for c in cleaned.variants[0].criteria] == ["PP3"]
-    assert cleaned.variants[0].criteria[0].justification == \
-        "in silico; also PMID 7647779 and PMID [citation removed: no such record]"
+    pp3 = cleaned.variants[0].criteria[0]
+    assert pp3.met is False and pp3.justification.startswith("[DISPUTED — PP3 recomputed from vep:7:117559590:ATCT:A: CADD 17.55")
+    assert pp3.justification.endswith("in silico; also PMID 7647779 and PMID [citation removed: no such record]")
     assert cleaned.mechanism_hypothesis == f"LoF [{CFTR_VEP}] [citation removed: no such record]"
     reasons = {r.path: r.reason for r in report.rejections}
     assert reasons["literature[1]"] == f"no such literature record in the store: {FAKE_PMID}"
@@ -345,7 +348,9 @@ def test_pm2_disputed_and_recomputed_from_gnomad(index: EvidenceIndex):
     assert [(r.path, r.reason) for r in report.rejections] == [
         ("variants[0].criteria[2]", "BS2 cites no evidence record and is not a case-level criterion")]
     assert report.thresholds == {"ba1_min_af": 0.05, "bs1_min_af": 0.01, "pm2_max_af": 0.0001}
-    assert (mthfr.classification, tp53.classification, cftr.classification) == ("benign", "vus", "vus")
+    assert (mthfr.classification, tp53.classification, cftr.classification) == ("benign", "vus", "likely_benign")
+    assert (mthfr.points, tp53.points, cftr.points) == (-12, 2, -4)  # BS1 alone is likely benign in the point system
+    assert cftr.classification_richards_2015 == "vus"
     md = render_evidence_chain(cleaned, index)
     assert "- **PM2** · moderate · not met — [DISPUTED — PM2 recomputed" in md
 
@@ -366,7 +371,8 @@ def test_frequency_criterion_citing_another_variants_gnomad_record_is_rejected(i
     ba1 = cleaned.variants[0].criteria[2]
     assert ba1.met is True and ba1.evidence_ids == [MTHFR_VEP, MTHFR_GNOMAD]  # recomputed from the key's own record
     assert report.disputes[0].record_id == MTHFR_GNOMAD and report.counts["frequency_disputed"] == 1
-    assert cleaned.variants[0].classification == "benign"  # BA1 stands alone; one PS3 + PP3 never reached likely pathogenic
+    assert cleaned.variants[0].classification == "benign"  # BA1 stands alone whatever PS3 + PP3 add up to
+    assert cleaned.variants[0].points == -8 + 4 + 1 and cleaned.variants[0].criteria[1].strength == "supporting"  # stated below REVEL 0.842's moderate: honoured
 
     swapped = chain([criterion("BA1", "stand_alone", [MTHFR_GNOMAD], met=True, just="common")], key=CFTR)
     cleaned, report = validate(swapped, index)
@@ -473,8 +479,11 @@ def test_strength_is_capped_at_what_the_code_may_carry(index: EvidenceIndex):
     pp3, pm1, pm2, bp4, bs1 = cleaned.variants[0].criteria
     assert (pp3.strength, pm1.strength, pm2.strength, bp4.strength, bs1.strength) == \
         ("strong", "moderate", "supporting", "strong", "strong")
-    assert pp3.justification == ("[STRENGTH CAPPED — PP3 at most strong (a code counts at most at its ACMG/AMP 2015 default "
-                                 "level (PP3/BP4 at most strong)); the model said very_strong] REVEL 0.99")
+    # capped to strong first, then recomputed: the record holds no REVEL and CADD 17.55, so the claimed PP3 is disputed
+    assert pp3.met is False and pp3.justification.startswith("[DISPUTED — PP3 recomputed from vep:7:117559590:ATCT:A: CADD 17.55")
+    assert pp3.justification.endswith("[STRENGTH CAPPED — PP3 at most strong (a code counts at most at its ACMG/AMP 2015 default "
+                                      "level (PP3/BP4 at most strong)); the model said very_strong] REVEL 0.99")
+    assert bp4.met is False and not bp4.justification.startswith("[DISPUTED")  # not met and the scores support nothing: agreed
     assert bs1.justification.startswith("[STRENGTH CAPPED — BS1 at most strong")
     assert pm2.justification == "PM2_Supporting"  # a downgrade is the model's call
     assert report.counts["strength_capped"] == 2 and report.rejections == []
@@ -484,10 +493,9 @@ def test_strength_is_capped_at_what_the_code_may_carry(index: EvidenceIndex):
         "variants[0].criteria[4].strength: BS1 at most strong (a code counts at most at its ACMG/AMP 2015 default level "
         "(PP3/BP4 at most strong)); the model said stand_alone; lowered to strong",
     ]
-    # at the stated strengths: PVS-level PP3 + PM1 → pathogenic, against a stand-alone BS1 → "vus" by contradiction;
-    # at the capped strengths: PS-level PP3 + PM1 → likely pathogenic, and one BS1 strong is not benign evidence
-    assert cleaned.variants[0].classification == "likely_pathogenic"
-    assert "strength_cap" in report.rules and "- **PP3** · strong · met — [STRENGTH CAPPED" in render_evidence_chain(cleaned, index)
+    # PP3 was disputed away (no calibrated score), so what counts is PM1 (+2) against BS1 (−4): −2 → likely benign
+    assert cleaned.variants[0].classification == "likely_benign" and cleaned.variants[0].points == -2
+    assert "strength_cap" in report.rules and "- **PP3** · strong · not met — [DISPUTED" in render_evidence_chain(cleaned, index)
 
     inflated = chain([criterion("BP4", "stand_alone", [CFTR_VEP])])
     cleaned, _ = validate(inflated, index)
@@ -528,7 +536,7 @@ def test_classification_is_the_engines_never_the_models(index: EvidenceIndex):
     assert cleaned.variants[0].classification == "likely_pathogenic"
     assert report.counts["classification_replaced"] == 1
     assert report.notes == [("variants[0].classification: the model said 'benign'; replaced by the engine's "
-                             "'likely_pathogenic' (ACMG/AMP 2015 combining rules over the met criteria)")]
+                             "'likely_pathogenic' (+6 SVI points over the met criteria)")]
     assert "— likely pathogenic" in render_evidence_chain(cleaned, index)
 
     empty = chain([criterion("PS1", "strong", [FAKE_CLINVAR])])
@@ -1120,7 +1128,7 @@ def test_answer_schema_asks_for_every_field_but_never_the_engines_and_pins_the_c
     to the ACMG codes — the API refuses an invented code before parse_answer sees it."""
     default = ac.AgentRequest(system="s", user="u", output_model=EvidenceChain).output_schema
     assert default == ac.default_answer_schema(EvidenceChain) == \
-        ac.answer_schema(EvidenceChain, drop=("classification",), enum={"code": sorted(ALL_CODES)})
+        ac.answer_schema(EvidenceChain, drop=("classification", "points", "classification_richards_2015"), enum={"code": sorted(ALL_CODES)})
     crit = default["$defs"]["Criterion"]
     assert crit["required"] == ["code", "evidence_ids", "justification", "met", "strength"]  # nothing may be omitted
     assert crit["additionalProperties"] is False and crit["properties"]["code"]["enum"] == sorted(ALL_CODES)

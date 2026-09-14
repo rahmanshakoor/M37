@@ -453,7 +453,7 @@ def _chains_section(ch: dict[str, Any], linker: _Linker) -> str:
         out.append(f"<p>Stage 5 was {mode}; candidates selected: "
                    f"{_ids(ch.get('candidates_selected') or []) or 'none'}; "
                    f"chains written by the stage: {_dash(ch.get('chains_written'))}. The classification of every variant is computed by the "
-                   "engine from the criteria that survived validation (ACMG/AMP 2015 combining rules), never asserted by the model.</p>")
+                   "engine from the criteria that survived validation (ClinGen SVI points over the ACMG/AMP 2015 codes; PP5/BP6 retired), never asserted by the model.</p>")
         if ch.get("disclosure"):
             out.append(f"<p class=\"muted small\">{esc(ch['disclosure'])}</p>")
     else:
@@ -479,7 +479,13 @@ def _chain_block(chain: dict[str, Any], linker: _Linker) -> str:
     verdicts = " · ".join(f"<span class=\"id\">{esc(v.get('key'))}</span> {_classification_mark(v.get('classification'))}" for v in chain["variants"])
     out.append(f"<p class=\"verdict\"><strong>Classification (engine-computed):</strong> {verdicts or '–'}</p>")
     for v in chain["variants"]:
-        out.append(f"<h4>Variant <span class=\"id\">{esc(v.get('key'))}</span> {_classification_mark(v.get('classification'))}</h4>")
+        pts = v.get("points")
+        pts_html = ""
+        if pts is not None:
+            table = v.get("classification_richards_2015")
+            pts_html = (f" <span class=\"muted\">({pts:+d} SVI points"
+                        + (f"; 2015 Table 5: {esc(str(table).replace('_', ' '))}" if table else "") + ")</span>")
+        out.append(f"<h4>Variant <span class=\"id\">{esc(v.get('key'))}</span> {_classification_mark(v.get('classification'))}{pts_html}</h4>")
         if str(v.get("summary") or "").strip():
             out.append(f"<p>{linker.prose(v['summary'])}</p>")
         rows = []
@@ -533,7 +539,8 @@ def _validation_block(v: dict[str, Any] | None, what: str) -> str:
     counts = v.get("counts") or {}
     shown = [(k, counts[k]) for k in ("ids_checked", "ids_unknown", "items_dropped", "duplicates_dropped", "literature_removed",
                                        "redactions", "identifiers_unverified", "strength_capped", "chembl_cleared",
-                                       "frequency_recomputed", "frequency_disputed", "frequency_unverified", "classification_replaced")
+                                       "frequency_recomputed", "frequency_disputed", "frequency_unverified", "computational_recomputed",
+                                       "computational_disputed", "computational_unverified", "retired_not_counted", "classification_replaced")
              if k in counts]
     out.append("<p>" + " · ".join(f"{esc(k.replace('_', ' '))} <span class=\"num\">{esc(n)}</span>" for k, n in shown) + "</p>")
     rej = v.get("rejections") or []

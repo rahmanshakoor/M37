@@ -220,7 +220,7 @@ def test_chain_view_resolves_every_evidence_id_and_keeps_the_rejection(full_run:
     chain = ch["chains"][0]
     assert chain["claimed_by_manifest"] is True and chain["manifest_note"] is None
     assert chain["gene_symbol"] == "CFTR" and chain["model"] == "comphet" and chain["priority"] == 1
-    assert [(v["key"], v["classification"]) for v in chain["variants"]] == [(F508DEL, "likely_pathogenic"), (G542X, "pathogenic")]
+    assert [(v["key"], v["classification"]) for v in chain["variants"]] == [(F508DEL, "vus"), (G542X, "pathogenic")]
     index = json.loads((full_run / "02_retrieve" / "evidence" / "index.json").read_text())
     for v in chain["variants"]:
         for c in v["criteria"]:
@@ -241,7 +241,7 @@ def test_chain_view_resolves_every_evidence_id_and_keeps_the_rejection(full_run:
 def test_medicine_view_in_rubric_order(full_run: Path):
     m = views.medicine_view(full_run)
     assert m["present"] and m["dry_run"] is False and m["candidate_id"] == "CFTR:comphet" and m["gene_symbol"] == "CFTR" and m["failures"] == []
-    assert m["stage5_verdicts"] == [{"key": F508DEL, "classification": "likely_pathogenic"}, {"key": G542X, "classification": "pathogenic"}]
+    assert m["stage5_verdicts"] == [{"key": F508DEL, "classification": "vus"}, {"key": G542X, "classification": "pathogenic"}]
     r = m["report"]
     assert list(r)[:7] == ["candidate_id", "gene_symbol", "mechanism", "pathway_targets", "candidates", "follow_up_experiments", "limits"]
     assert [e["id"] for e in r["mechanism"][0]["evidence"]] == [f"vep:{F508DEL}", f"vep:{G542X}"]
@@ -417,7 +417,7 @@ def test_html_links_every_evidence_id_to_its_record(full_run: Path):
 def test_html_shows_classification_phase_limits_and_the_validator(full_run: Path):
     html = render_run(full_run)
     assert "Classification (engine-computed)" in html
-    assert '<span class="mark crit">likely pathogenic</span>' in html and '<span class="mark crit">pathogenic</span>' in html
+    assert '<span class="mark crit">pathogenic</span>' in html and ">vus<" in html.replace('class="mark crit">', '>')
     chain = json.loads((full_run / "05_reason" / "chains" / "CFTR:comphet.json").read_text())
     assert "this data cannot show whether they lie on different chromosomes" in html  # the phase statement
     for text in chain["limits"] + chain["what_would_change_the_call"]:
@@ -576,7 +576,7 @@ def test_public_run_renders_as_recorded():
     ch = views.chain_view(PUBLIC_RUN)
     if ch["chains"]:
         chain = ch["chains"][0]
-        assert [(v["key"], v["classification"]) for v in chain["variants"]] == [(F508DEL, "likely_pathogenic"), (G542X, "pathogenic")]
+        assert [(v["key"], v["classification"]) for v in chain["variants"]] == [(F508DEL, "vus"), (G542X, "pathogenic")]
         if ch["dry_run"]:
             assert chain["claimed_by_manifest"] is False and "dry run" in chain["manifest_note"]
     html = render_run(PUBLIC_RUN)

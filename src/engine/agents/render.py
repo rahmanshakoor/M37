@@ -47,10 +47,14 @@ def render_evidence_chain(chain: EvidenceChain, index: EvidenceIndex | None = No
 
 def _variant_section(v: VariantChain) -> list[str]:
     label = v.classification.replace("_", " ") if v.classification else "not computed"
+    if v.points is not None:
+        table = f"; 2015 Table 5: {v.classification_richards_2015.replace('_', ' ')}" if v.classification_richards_2015 else ""
+        label += f" ({v.points:+d} SVI points{table})"
     out = [f"## Variant {v.key} — {label}", ""]
     if v.summary.strip():
         out.extend([_para(v.summary), ""])
-    out.append("Criteria (classification computed by the engine from the met criteria, ACMG/AMP 2015):")
+    out.append("Criteria (classification computed by the engine from the met criteria: ClinGen SVI points, Tavtigian 2020; "
+               "PP5/BP6 retired and never counted):")
     out.append("")
     if not v.criteria:
         out.append("- none survived validation")

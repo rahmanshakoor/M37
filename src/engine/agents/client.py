@@ -68,7 +68,7 @@ EFFORTS = ("low", "medium", "high", "xhigh", "max")
 THINKING = {"type": "adaptive"}
 """Adaptive thinking: the documented mode for claude-opus-5 (``budget_tokens`` is
 rejected there)."""
-ENGINE_FIELDS = ("classification",)
+ENGINE_FIELDS = ("classification", "points", "classification_richards_2015")
 """Fields the engine fills in after validation; never asked of the model, so the
 default answer schema drops them wherever they occur."""
 FINAL_CALL = "messages.stream"

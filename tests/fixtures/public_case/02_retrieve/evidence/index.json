@@ -97,122 +97,122 @@
  },
  "gnomad:17-7675088-C-T": {
   "path": "gnomad/gnomad_17-7675088-C-T.7f90f89034.json",
-  "retrieved_at": "2026-09-12T23:45:31+00:00",
-  "sha256": "3f5de1327315ae30ca6b3e6cc310a63dc425c0d7bfa395a6656fbe90b6f31003",
+  "retrieved_at": "2026-09-14T18:19:59+00:00",
+  "sha256": "763dfaf48b3c9fcbfbf9103e5cba8cf68bb9d8bd3a56f34728c33b060821f752",
   "source": "gnomad",
   "source_version": "gnomad_r4 clinvar_release_date=2026-06-06",
   "url": "https://gnomad.broadinstitute.org/variant/17-7675088-C-T?dataset=gnomad_r4"
  },
  "gnomad:7-117559590-ATCT-A": {
   "path": "gnomad/gnomad_7-117559590-ATCT-A.4d1e44900e.json",
-  "retrieved_at": "2026-09-12T23:45:31+00:00",
-  "sha256": "68c53203f137e3e19b110748ad308aac3008f62ee78085d894b39dd3146fba5f",
+  "retrieved_at": "2026-09-14T18:19:59+00:00",
+  "sha256": "7828f728eda324e5c55961cc1f7e5b490880f952e2f356f08a5b12f9755bbe79",
   "source": "gnomad",
   "source_version": "gnomad_r4 clinvar_release_date=2026-06-06",
   "url": "https://gnomad.broadinstitute.org/variant/7-117559590-ATCT-A?dataset=gnomad_r4"
  },
  "gnomad:7-117587778-G-T": {
   "path": "gnomad/gnomad_7-117587778-G-T.4730bd64b5.json",
-  "retrieved_at": "2026-09-12T23:45:31+00:00",
-  "sha256": "f62dc5772a682c5182b0afac06ca14764b5df046650dd3f2613d5de8caf51561",
+  "retrieved_at": "2026-09-14T18:19:59+00:00",
+  "sha256": "880c671c545b42e4801e7463685e2f8093cd455958d774965dede40c5b5a88a6",
   "source": "gnomad",
   "source_version": "gnomad_r4 clinvar_release_date=2026-06-06",
   "url": "https://gnomad.broadinstitute.org/variant/7-117587778-G-T?dataset=gnomad_r4"
  },
  "vep:15:40185630:G:A": {
   "path": "vep/vep_15_40185630_G_A.72b380763c.json",
-  "retrieved_at": "2026-09-12T23:45:30+00:00",
-  "sha256": "52c32dd0bfebeee128f1a315e998435ab218ecbb6ebc9bac1246fd40d5706d02",
+  "retrieved_at": "2026-09-14T18:19:58+00:00",
+  "sha256": "a87caf4bc41e26bd02223d611d18668190c15967b2c6b057b54d548896eedcce",
   "source": "vep",
   "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
-  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/15:40185630-40185630/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/15:40185630-40185630/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1&REVEL=1&AlphaMissense=1"
  },
  "vep:17:7675088:C:T": {
   "path": "vep/vep_17_7675088_C_T.48c25bda3f.json",
-  "retrieved_at": "2026-09-12T23:45:30+00:00",
-  "sha256": "66b4d61036bf074023728f96c0d4cf22f34fab3c142310bc36b474b43a016be7",
+  "retrieved_at": "2026-09-14T18:19:58+00:00",
+  "sha256": "769b9aed5c90a642fc1c111636b49771f558ac4c08d586e3e7c67385d6b539dc",
   "source": "vep",
   "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
-  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/17:7675088-7675088/T?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/17:7675088-7675088/T?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1&REVEL=1&AlphaMissense=1"
  },
  "vep:17:7676154:G:C": {
   "path": "vep/vep_17_7676154_G_C.4f6aa44348.json",
-  "retrieved_at": "2026-09-12T23:45:30+00:00",
-  "sha256": "dbada2a640c802e75100412d3f939605cce1f64a9ac549f0393f4bdcbff0da4f",
+  "retrieved_at": "2026-09-14T18:19:58+00:00",
+  "sha256": "e7a31bc058e01ea7187247527e8ce4cf5710c6d9c7efbb582ad0aecc6fbb4d94",
   "source": "vep",
   "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
-  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/17:7676154-7676154/C?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/17:7676154-7676154/C?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1&REVEL=1&AlphaMissense=1"
  },
  "vep:1:11794419:T:G": {
   "path": "vep/vep_1_11794419_T_G.4702ada09e.json",
-  "retrieved_at": "2026-09-12T23:45:30+00:00",
-  "sha256": "aa5e38e506cde60646c41764e1a82661a7fcfdae76024fbcfa76c20b16f6bcf7",
+  "retrieved_at": "2026-09-14T18:19:58+00:00",
+  "sha256": "6d1fc386d5b90d0b5b4d0ee75719a32a9e5881d40ee89968b51e1dcd2c1d40a5",
   "source": "vep",
   "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
-  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/1:11794419-11794419/G?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/1:11794419-11794419/G?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1&REVEL=1&AlphaMissense=1"
  },
  "vep:1:11796321:G:A": {
   "path": "vep/vep_1_11796321_G_A.a676787a96.json",
-  "retrieved_at": "2026-09-12T23:45:30+00:00",
-  "sha256": "c730d4a67e66f9743286ef7ea08747ec0154a9ef8c1ebcbdbec8c484b19cf31b",
+  "retrieved_at": "2026-09-14T18:19:58+00:00",
+  "sha256": "16febd4813091458fb9c7aff520d129505cdd9c67c79ada5138c4e3eacc3e82c",
   "source": "vep",
   "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
-  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/1:11796321-11796321/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/1:11796321-11796321/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1&REVEL=1&AlphaMissense=1"
  },
  "vep:7:117559403:A:G": {
   "path": "vep/vep_7_117559403_A_G.03e288a93d.json",
-  "retrieved_at": "2026-09-12T23:45:30+00:00",
-  "sha256": "ca0d95ad378554f21dd19e8c7618b76b32eff277de6d9aafa46a8a1c9580fb8b",
+  "retrieved_at": "2026-09-14T18:19:58+00:00",
+  "sha256": "1fe2d5d11ae07325442e7cc330adbfb1c06cfc9b98a582d7da95b270acd015ac",
   "source": "vep",
   "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
-  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117559403-117559403/G?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117559403-117559403/G?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1&REVEL=1&AlphaMissense=1"
  },
  "vep:7:117559479:G:A": {
   "path": "vep/vep_7_117559479_G_A.a865109d99.json",
-  "retrieved_at": "2026-09-12T23:45:30+00:00",
-  "sha256": "58e25fb0d9bc3147a0dae4461b6259d5c6999008895dfd26a2cab223683bc0a9",
+  "retrieved_at": "2026-09-14T18:19:58+00:00",
+  "sha256": "4b0aa2fedc2a168d8987121beeceee8d7c7089034b93f6925e2fb93a4b934e71",
   "source": "vep",
   "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
-  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117559479-117559479/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117559479-117559479/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1&REVEL=1&AlphaMissense=1"
  },
  "vep:7:117559590:ATCT:A": {
   "path": "vep/vep_7_117559590_ATCT_A.ece85625f7.json",
-  "retrieved_at": "2026-09-12T23:45:30+00:00",
-  "sha256": "0d1b7d52491bbd7c04389782b69ce40ea1a1c9d87b49c6c51ef31cf0229d9fff",
+  "retrieved_at": "2026-09-14T18:19:58+00:00",
+  "sha256": "fdf8e9b68aad8e1832018d22f6a86d32e49735f8f8c8256d812bcebaf3abb061",
   "source": "vep",
   "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
-  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117559590-117559593/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117559590-117559593/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1&REVEL=1&AlphaMissense=1"
  },
  "vep:7:117578521:G:A": {
   "path": "vep/vep_7_117578521_G_A.d31cce3739.json",
-  "retrieved_at": "2026-09-12T23:45:30+00:00",
-  "sha256": "bf04c28b11387796507b6d9138096750a78be1d64c95b9382fa5ea85269d014e",
+  "retrieved_at": "2026-09-14T18:19:58+00:00",
+  "sha256": "8bef35a6f6052204ecf713780b81530e967423c73bd89fb9e6ec847ff316b016",
   "source": "vep",
   "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
-  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117578521-117578521/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117578521-117578521/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1&REVEL=1&AlphaMissense=1"
  },
  "vep:7:117587778:G:T": {
   "path": "vep/vep_7_117587778_G_T.5b71dfc81f.json",
-  "retrieved_at": "2026-09-12T23:45:30+00:00",
-  "sha256": "4727569f91f79f3895e124ff10e5386a534e9a3b4247055e7885334a446cf634",
+  "retrieved_at": "2026-09-14T18:19:58+00:00",
+  "sha256": "c57c32e185ff7c5fa42550fa05c934ebc5b8fefc3fab70888b9cea54b7d2c52e",
   "source": "vep",
   "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
-  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117587778-117587778/T?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117587778-117587778/T?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1&REVEL=1&AlphaMissense=1"
  },
  "vep:7:117589483:T:A": {
   "path": "vep/vep_7_117589483_T_A.914124d2f7.json",
-  "retrieved_at": "2026-09-12T23:45:30+00:00",
-  "sha256": "8c463d58f38b1e9c8f9f23b4bba6fad54973d1e794db85ef36c5947f785db560",
+  "retrieved_at": "2026-09-14T18:19:58+00:00",
+  "sha256": "b8eb216ed58c6682de84f4a77fec4ce1fffc9841ed8f2ec045ec3f652e2f4bb1",
   "source": "vep",
   "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
-  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117589483-117589483/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117589483-117589483/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1&REVEL=1&AlphaMissense=1"
  },
  "vep:7:117595001:T:G": {
   "path": "vep/vep_7_117595001_T_G.2304eb56c9.json",
-  "retrieved_at": "2026-09-12T23:45:30+00:00",
-  "sha256": "6460cdb990a1d6e0e27d74de9913d512bc5cc316651df65ca83e46cfe13a8c47",
+  "retrieved_at": "2026-09-14T18:19:58+00:00",
+  "sha256": "186a18e7b6e0ef6851b1958ed6968b632789f43dd566d770deaec67dafab5a42",
   "source": "vep",
   "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
-  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117595001-117595001/G?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117595001-117595001/G?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1&REVEL=1&AlphaMissense=1"
  }
 }

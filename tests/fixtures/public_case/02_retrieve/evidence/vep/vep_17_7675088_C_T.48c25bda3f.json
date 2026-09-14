@@ -236,6 +236,10 @@
   "strand": 1,
   "transcript_consequences": [
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -263,6 +267,7 @@
     "mane_select": "NM_000546.6",
     "protein_end": 175,
     "protein_start": 175,
+    "revel": 0.922,
     "sift_prediction": "tolerated",
     "sift_score": 0.08,
     "spliceai": {
@@ -281,6 +286,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -305,6 +314,7 @@
     "polyphen_score": 0.704,
     "protein_end": 175,
     "protein_start": 175,
+    "revel": 0.922,
     "sift_prediction": "tolerated",
     "sift_score": 0.07,
     "spliceai": {
@@ -323,6 +333,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -347,6 +361,7 @@
     "polyphen_score": 0.691,
     "protein_end": 175,
     "protein_start": 175,
+    "revel": 0.922,
     "sift_prediction": "tolerated",
     "sift_score": 0.07,
     "spliceai": {
@@ -365,6 +380,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -387,6 +406,7 @@
     "impact": "MODERATE",
     "protein_end": 175,
     "protein_start": 175,
+    "revel": 0.922,
     "sift_prediction": "tolerated",
     "sift_score": 0.07,
     "spliceai": {
@@ -405,6 +425,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -427,6 +451,7 @@
     "impact": "MODERATE",
     "protein_end": 175,
     "protein_start": 175,
+    "revel": 0.922,
     "sift_prediction": "tolerated",
     "sift_score": 0.08,
     "spliceai": {
@@ -445,6 +470,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -467,6 +496,7 @@
     "impact": "MODERATE",
     "protein_end": 175,
     "protein_start": 175,
+    "revel": 0.922,
     "sift_prediction": "deleterious",
     "sift_score": 0.05,
     "spliceai": {
@@ -485,6 +515,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -525,6 +559,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -565,6 +603,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -636,6 +678,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -676,6 +722,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -698,6 +748,7 @@
     "impact": "MODERATE",
     "protein_end": 43,
     "protein_start": 43,
+    "revel": 0.922,
     "sift_prediction": "tolerated",
     "sift_score": 0.09,
     "spliceai": {
@@ -716,6 +767,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -756,6 +811,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -780,6 +839,7 @@
     "polyphen_score": 0.704,
     "protein_end": 82,
     "protein_start": 82,
+    "revel": 0.922,
     "sift_prediction": "tolerated",
     "sift_score": 0.07,
     "spliceai": {
@@ -829,6 +889,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -869,6 +933,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -911,6 +979,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -951,6 +1023,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -991,6 +1067,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -1031,6 +1111,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -1071,6 +1155,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -1111,6 +1199,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -1151,6 +1243,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -1191,6 +1287,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -1231,6 +1331,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "nonsense_mediated_decay",
     "cadd_phred": 25.9,
@@ -1274,6 +1378,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -1314,6 +1422,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -1386,6 +1498,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -1426,6 +1542,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -1466,6 +1586,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -1506,6 +1630,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -1546,6 +1674,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -1586,6 +1718,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -1626,6 +1762,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -1666,6 +1806,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -1706,6 +1850,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "protein_coding",
     "cadd_phred": 25.9,
@@ -1746,6 +1894,10 @@
     "variant_allele": "T"
    },
    {
+    "alphamissense": {
+     "am_class": "likely_pathogenic",
+     "am_pathogenicity": 0.9857
+    },
     "amino_acids": "R/H",
     "biotype": "nonsense_mediated_decay",
     "cadd_phred": 25.9,
@@ -1791,20 +1943,22 @@
  "query": {
   "method": "POST",
   "params": {
+   "AlphaMissense": 1,
    "CADD": 1,
+   "REVEL": 1,
    "SpliceAI": 1,
    "canonical": 1,
    "hgvs": 1,
    "mane": 1,
    "numbers": 1
   },
-  "request_key": "1b516d44f090a32a59350c2c2b3383c269773f88c8b63e489eaceedb43fad7e7",
+  "request_key": "3f3559501d3a673c8225d5f4a6700cd5e3c44e09bceef554881f21d451c55ef3",
   "url": "https://rest.ensembl.org/vep/homo_sapiens/region",
   "variant": "17 7675088 17:7675088:C:T C T . . ."
  },
  "record_id": "vep:17:7675088:C:T",
- "retrieved_at": "2026-09-12T23:45:30+00:00",
+ "retrieved_at": "2026-09-14T18:19:58+00:00",
  "source": "vep",
  "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
- "url": "https://rest.ensembl.org/vep/homo_sapiens/region/17:7675088-7675088/T?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+ "url": "https://rest.ensembl.org/vep/homo_sapiens/region/17:7675088-7675088/T?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1&REVEL=1&AlphaMissense=1"
 }

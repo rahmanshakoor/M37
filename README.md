@@ -13,12 +13,12 @@ came from.
 
 | # | Command | Stage | Status |
 |---|---|---|---|
-| 1 | `engine ingest` | Normalize the VCF into a flat, checksummed variant table | ✅ built |
+| 1 | `engine ingest` | Normalize the VCF into a flat, checksummed variant table; record the stated and inferred sex | ✅ built |
 | — | `engine regions` | Gene panel → merged, padded BED (optional restriction for stage 1) | ✅ built |
-| 2 | `engine retrieve` | Fetch citable records: Ensembl VEP, gnomAD, ClinVar (Europe PMC literature is fetched by stage 5's tools) | ✅ built |
-| 3 | `engine filter` | Rule-based biallelic shortlist with a recorded reason per variant | ✅ built |
+| 2 | `engine retrieve` | Fetch citable records: Ensembl VEP (with SpliceAI, CADD, REVEL, AlphaMissense), gnomAD, ClinVar (Europe PMC literature is fetched by stage 5's tools) | ✅ built |
+| 3 | `engine filter` | Rule-based biallelic shortlist with a recorded reason per variant; genotypes the sample's sex cannot carry are refused | ✅ built |
 | 4 | `engine rank` | Blind phenotype ranking (Exomiser in Docker), no gene prior | ✅ built |
-| 5 | `engine reason` | ACMG/AMP evidence chain, every criterion tied to a record id | ✅ built |
+| 5 | `engine reason` | ACMG/AMP evidence chain, every criterion tied to a record id; verdict by ClinGen SVI points, PP3/BP4 recomputed at the SVI calibration, PP5/BP6 retired | ✅ built |
 | 6 | `engine medicine` | Mechanism → pathway → drug candidates with counter-arguments | ✅ built |
 | — | `engine report` | One self-contained HTML document over whatever stages a run holds | ✅ built |
 | — | `engine ui` | Live mode: a local web app that browses runs and launches stages | ✅ built |

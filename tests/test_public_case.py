@@ -328,7 +328,7 @@ def test_recorded_chain_is_stage5_output_over_the_recorded_evidence():
         assert next(c for c in v.criteria if c.code == "PP4").evidence_ids == []  # cites the case, as the schema allows
         assert next(c for c in v.criteria if c.code == "PM3").met  # the partner allele, cited by its own records
     by_key = {v.key: v for v in chain.variants}
-    assert by_key[F508DEL].classification == "likely_pathogenic" and by_key[G542X].classification == "pathogenic"
+    assert by_key[F508DEL].classification == "vus" and by_key[G542X].classification == "pathogenic"  # PP5 retired: PM4 + PM3 + PP4 = 5 points
     assert [c.code for c in by_key[G542X].criteria if c.code == "PVS1" and c.strength == "very_strong" and c.met] == ["PVS1"]
     assert "cannot show" in chain.phase_statement and "no PID" in chain.phase_statement  # phase unknown, said as such
     assert "no literature search" in " ".join(chain.limits)
@@ -360,7 +360,7 @@ def test_medicine_dry_run_builds_on_the_recorded_chain(tmp_path: Path):
     assert bundle["candidate_id"] == "CFTR:comphet" and bundle["gene_symbol"] == "CFTR" and bundle["gene_id"] == "ENSG00000001626"
     assert bundle["missing_ids"] == [] and set(bundle["record_ids"]) == set(CFTR_PAIR_IDS)
     assert [(v["key"], v["classification"]) for v in bundle["chain"]["variants"]] == \
-        [(F508DEL, "likely_pathogenic"), (G542X, "pathogenic")]
+        [(F508DEL, "vus"), (G542X, "pathogenic")]
     text = bundle["text"]
     assert text.startswith("# Candidate CFTR:comphet\n") and f"## Variant {F508DEL}" in text and f"## Variant {G542X}" in text
     assert "case HPO: " + ", ".join(sorted(HPO)) in text and "17:7675088" not in text
@@ -412,7 +412,7 @@ def test_stages_5_and_6_run_on_the_recorded_evidence_with_a_scripted_client(tmp_
     assert [c.name for c in reader.calls] == ["get_record"] * 6 and not any(c.is_error for c in reader.calls)
     assert (out5 / "chains" / "CFTR:comphet.json").read_bytes() == CHAIN.read_bytes()
     chain = EvidenceChain.model_validate(json.loads((out5 / "chains" / "CFTR:comphet.json").read_text()))
-    assert [(v.key, v.classification) for v in chain.variants] == [(F508DEL, "likely_pathogenic"), (G542X, "pathogenic")]
+    assert [(v.key, v.classification) for v in chain.variants] == [(F508DEL, "vus"), (G542X, "pathogenic")]
     validation = json.loads((out5 / "validation" / "CFTR:comphet.json").read_text())
     assert validation["rejections"] == [] and validation.get("redactions", []) == []
     m5 = json.loads(manifest_path.read_text())
@@ -420,7 +420,7 @@ def test_stages_5_and_6_run_on_the_recorded_evidence_with_a_scripted_client(tmp_
     assert m5["counts"]["evidence_records_added"] == 0  # no paper fetched: the stage-5 store stays empty
     assert sorted(p.name for p in (out5 / "transcripts").iterdir()) == ["CFTR:comphet.json"]
     md = (out5 / "evidence_chain.md").read_text()
-    assert "CFTR:comphet" in md and "likely pathogenic" in md and f"## Variant {G542X}" in md and "17:7675088" not in md
+    assert "CFTR:comphet" in md and "— pathogenic" in md and f"## Variant {G542X}" in md and "17:7675088" not in md
 
     # -- stage 6: the real retrievers over the recorded fixtures; the model cites only what the tools returned
     report = {

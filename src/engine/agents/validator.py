@@ -67,7 +67,8 @@ from typing import Any, Iterable, Iterator, get_args, get_origin
 from pydantic import BaseModel
 
 from engine.agents.schema import (
-    ALL_CODES, BENIGN_CODES, CASE_LEVEL_CODES, PATHOGENIC_CODES, EvidenceChain, MedicineReport, combine_acmg,
+    ALL_CODES, BENIGN_CODES, CASE_LEVEL_CODES, PATHOGENIC_CODES, RETIRED_CODES, EvidenceChain, MedicineReport,
+    acmg_points, combine_acmg, combine_richards_2015,
 )
 from engine.contigs import canonical
 from engine.retrieve.gnomad import GnomadRetriever, unaskable, variant_id
@@ -87,6 +88,21 @@ AF_FIELDS = ("gnomad_af", "gnomad_faf95_popmax", "gnomad_grpmax_af")
 VEP_AF_FIELDS = ("vep_gnomade_af", "vep_gnomadg_af")
 VEP_AF_LABELS = {"vep_gnomade_af": "exomes", "vep_gnomadg_af": "genomes"}
 FREQUENCY_CODES = ("PM2", "BS1", "BA1")
+COMPUTATIONAL_CODES = ("PP3", "BP4")
+REVEL_PP3 = ((0.932, "strong"), (0.773, "moderate"), (0.644, "supporting"))
+REVEL_BP4 = ((0.016, "strong"), (0.183, "moderate"), (0.290, "supporting"))
+CADD_PP3_MIN = 25.3
+CADD_BP4_MAX = 22.7
+SPLICEAI_PP3_MIN = 0.2
+SPLICEAI_BP4_MAX = 0.1
+"""The ClinGen SVI calibration of computational evidence (Pejaver et al. 2022, Am J
+Hum Genet 109:2163): REVEL ≥ 0.644 / 0.773 / 0.932 → PP3 supporting / moderate /
+strong, REVEL ≤ 0.290 / 0.183 / 0.016 → BP4 supporting / moderate / strong; CADD
+PHRED ≥ 25.3 → PP3 supporting, ≤ 22.7 → BP4 supporting, used only when REVEL is
+absent (a non-missense variant). SpliceAI ≥ 0.2 → PP3 supporting for a splicing
+effect (ClinGen SVI splicing recommendations, Walker et al. 2023), ≤ 0.1 → BP4
+supporting, applied to non-coding and synonymous changes. AlphaMissense is carried
+in the bundle for the reader but is not calibrated by the SVI and never counts."""
 EVIDENCE_STAGES = ("02_retrieve", "04_rank", "05_reason", "06_medicine")
 """Run-directory stages that hold an ``evidence/`` directory in the stage-2 format."""
 KNOWN_SOURCES = frozenset({"vep", "clinvar", "gnomad", "exomiser", "pmid", "nct", "opentargets", "dgidb", "chembl"})
@@ -236,7 +252,8 @@ class ValidationReport:
         "ids_checked": 0, "ids_unknown": 0, "items_dropped": 0, "duplicates_dropped": 0, "literature_removed": 0,
         "redactions": 0, "identifiers_unverified": 0, "keys_respelled": 0, "strength_capped": 0, "chembl_cleared": 0,
         "frequency_recomputed": 0, "frequency_from_vep": 0, "frequency_disputed": 0, "frequency_unverified": 0,
-        "classification_replaced": 0,
+        "computational_recomputed": 0, "computational_disputed": 0, "computational_unverified": 0,
+        "retired_not_counted": 0, "classification_replaced": 0,
     })
 
     @property
@@ -258,6 +275,18 @@ def frequency_rules(th: dict[str, float], af_field: str) -> dict[str, str]:
         "PM2": f"met iff af < {th['pm2_max_af']:g} or absent",
         "BS1": f"met iff af > {th['bs1_min_af']:g}",
         "BA1": f"met iff af > {th['ba1_min_af']:g}",
+        "PP3": ("met at the strength the vep: record's scores support: missense by REVEL "
+                f"(≥{REVEL_PP3[2][0]} supporting, ≥{REVEL_PP3[1][0]} moderate, ≥{REVEL_PP3[0][0]} strong); "
+                f"otherwise CADD PHRED ≥{CADD_PP3_MIN} supporting; a splice effect by SpliceAI ≥{SPLICEAI_PP3_MIN} supporting "
+                "(Pejaver 2022; Walker 2023). A stated strength above what the scores support is lowered; "
+                "no qualifying score → not met; no vep: record → unverified, not met"),
+        "BP4": ("met at the strength the vep: record's scores support: missense by REVEL "
+                f"(≤{REVEL_BP4[2][0]} supporting, ≤{REVEL_BP4[1][0]} moderate, ≤{REVEL_BP4[0][0]} strong); "
+                f"otherwise CADD PHRED ≤{CADD_BP4_MAX} supporting; non-coding/synonymous by SpliceAI ≤{SPLICEAI_BP4_MAX} supporting"),
+        "PP5/BP6": "retired by the ClinGen SVI (Biesecker & Harrison 2018): accepted for the record, marked, never counted",
+        "classification": "ClinGen SVI points (Tavtigian 2020) over the met, non-retired criteria: supporting 1, moderate 2, "
+                          "strong 4, very strong 8, benign negative; P ≥ 10, LP 6–9, VUS 0–5, LB −1 to −6, B ≤ −7. "
+                          "The 2015 Table 5 verdict is recorded beside it",
         "unverified": "PM2/BS1/BA1 with no gnomAD or VEP record for the variant's key in the store → not met, marked [UNVERIFIED]",
         "strength_cap": ("a code counts at most at its ACMG/AMP 2015 default level (PP3/BP4 at most strong); "
                          "a higher stated strength is lowered to the cap and marked [STRENGTH CAPPED]"),
@@ -449,6 +478,8 @@ def _clean_items(items: list[Any], model: type[BaseModel], path: str, w: _Walk, 
             # after the prose walk: the marks these add are not citations
             _cap_strength(item, child, w)
             _recompute_frequency(item, child, w, key)
+            _recompute_computational(item, child, w, key)
+            _mark_retired(item, child, w)
         kept.append(item)
     return kept
 
@@ -908,6 +939,120 @@ def _unverified(item: dict[str, Any], code: str, path: str, w: _Walk, key: str |
     item["justification"] = f"{UNVERIFIED_MARK.format(reason=reason)} {item.get('justification', '')}".rstrip()
 
 
+# ---------------------------------------------------------------- computational
+
+RETIRED_MARK = "[RETIRED — {reason}]"
+
+
+def _mark_retired(item: dict[str, Any], path: str, w: _Walk) -> None:
+    """PP5/BP6 stay in the chain as the model's note of another laboratory's view,
+    marked and set to not met so nothing downstream counts them."""
+    code = _code_of(item)
+    if code not in RETIRED_CODES:
+        return
+    w.report.counts["retired_not_counted"] += 1
+    reason = f"{code} is retired ({w.report.rules['PP5/BP6']}); the ClinVar classification is concordance, not a criterion"
+    w.report.notes.append(f"{path}: {reason}")
+    item["met"] = False
+    if not str(item.get("justification", "")).startswith("[RETIRED — "):  # a re-validated chain is not marked twice
+        item["justification"] = f"{RETIRED_MARK.format(reason=reason)} {item.get('justification', '')}".rstrip()
+
+
+def computational_support(cols: dict[str, str]) -> dict[str, tuple[str | None, str]]:
+    """What the VEP columns of one variant support for PP3 and BP4: ``code → (strength
+    or None, the score line it rests on)``. A missense is judged by REVEL, else by
+    CADD; a change with no predicted protein effect (intronic, synonymous, UTR,
+    splice-region) by SpliceAI; any variant earns a PP3 at supporting for a SpliceAI
+    splice effect. The calibrations are for missense and splicing — an in-frame or
+    truncating change has no calibrated predictor, so PP3/BP4 are not supported for
+    it (PVS1/PM4 are its criteria)."""
+    revel = _float(cols.get("revel"))
+    cadd = _float(cols.get("cadd_phred"))
+    splice = _float(cols.get("spliceai_ds_max"))
+    consequence = cols.get("consequence") or ""
+    missense = "missense_variant" in consequence
+    protein_changing = missense or any(t in consequence for t in ("inframe", "stop_", "frameshift", "start_lost",
+                                                                  "protein_altering", "splice_acceptor", "splice_donor"))
+    pp3: str | None = None
+    bp4: str | None = None
+    lines: list[str] = []
+    if missense and revel is not None:
+        lines.append(f"REVEL {revel:g}")
+        pp3 = next((lvl for cut, lvl in REVEL_PP3 if revel >= cut), None)
+        bp4 = next((lvl for cut, lvl in REVEL_BP4 if revel <= cut), None)
+    elif missense and cadd is not None:
+        lines.append(f"CADD {cadd:g}")
+        pp3 = "supporting" if cadd >= CADD_PP3_MIN else None
+        bp4 = "supporting" if cadd <= CADD_BP4_MAX else None
+    elif cadd is not None:
+        lines.append(f"CADD {cadd:g} (not calibrated for this consequence)")
+    if splice is not None:
+        lines.append(f"SpliceAI max {splice:g}")
+        if splice >= SPLICEAI_PP3_MIN and pp3 is None:
+            pp3 = "supporting"
+        if not protein_changing:
+            bp4 = "supporting" if splice <= SPLICEAI_BP4_MAX else None
+    am = cols.get("alphamissense_score")
+    if am:
+        lines.append(f"AlphaMissense {am} ({cols.get('alphamissense_class') or '?'}; not calibrated, not counted)")
+    detail = "; ".join(lines) if lines else "no REVEL, CADD or SpliceAI score in the record"
+    return {"PP3": (pp3, detail), "BP4": (bp4, detail)}
+
+
+def _float(text: str | None) -> float | None:
+    try:
+        return float(text) if text not in (None, "") else None
+    except ValueError:
+        return None
+
+
+def _recompute_computational(item: dict[str, Any], path: str, w: _Walk, key: str | None) -> None:
+    code = _code_of(item)
+    if code not in COMPUTATIONAL_CODES:
+        return
+    rec = w.index.get(f"vep:{key}") if key else None
+    claimed = bool(item.get("met"))
+    stated = item.get("strength")
+    if rec is None:
+        w.report.counts["computational_unverified"] += 1
+        reason = (f"no VEP record for {key or 'this variant'} in the store; {code} cannot be checked → not met"
+                  f"; the model said {'met' if claimed else 'not met'}")
+        w.report.notes.append(f"{path}: {code} not recomputed — {reason}")
+        if claimed:
+            w.report.counts["computational_disputed"] += 1
+            w.report.disputes.append(Dispute(path, code, None, True, False, None, reason))
+        item["met"] = False
+        item["justification"] = f"{UNVERIFIED_MARK.format(reason=reason)} {item.get('justification', '')}".rstrip()
+        return
+    w.report.counts["computational_recomputed"] += 1
+    cols = VepRetriever(None).extract([rec])  # type: ignore[arg-type]  # extract reads the payload only
+    supported, detail = computational_support(cols)[code]
+    if rec.record_id not in item["evidence_ids"]:
+        item["evidence_ids"].append(rec.record_id)
+    if supported is None:
+        if claimed:
+            w.report.counts["computational_disputed"] += 1
+            reason = f"{code} recomputed from {rec.record_id}: {detail}; below every calibrated threshold → not met; the model said met"
+            w.report.disputes.append(Dispute(path, code, rec.record_id, True, False, None, reason))
+            item["met"] = False
+            item["justification"] = f"{DISPUTED_MARK.format(reason=reason)} {item.get('justification', '')}".rstrip()
+        return
+    if not claimed:
+        w.report.counts["computational_disputed"] += 1
+        reason = f"{code} recomputed from {rec.record_id}: {detail}; supports {supported} → met; the model said not met"
+        w.report.disputes.append(Dispute(path, code, rec.record_id, False, True, None, reason))
+        item["met"] = True
+        item["strength"] = supported
+        item["justification"] = f"{DISPUTED_MARK.format(reason=reason)} {item.get('justification', '')}".rstrip()
+        return
+    if stated in STRENGTH_RANK and STRENGTH_RANK[stated] > STRENGTH_RANK[supported]:
+        w.report.counts["strength_capped"] += 1
+        reason = f"{code} from {rec.record_id}: {detail}; the scores support {supported}, the model said {stated}"
+        w.report.notes.append(f"{path}.strength: {reason}; lowered to {supported}")
+        item["strength"] = supported
+        item["justification"] = f"{CAPPED_MARK.format(reason=reason)} {item.get('justification', '')}".rstrip()
+
+
 # ---------------------------------------------------------------- classification
 
 def _set_classification(data: dict[str, Any], criterion_model: type[BaseModel] | None, path: str, w: _Walk) -> None:
@@ -918,12 +1063,15 @@ def _set_classification(data: dict[str, Any], criterion_model: type[BaseModel] |
         return
     criteria = [criterion_model.model_validate(c) for c in items]  # a malformed criterion raises, as documented
     computed = combine_acmg(criteria)  # type: ignore[arg-type]
+    points = acmg_points(criteria)  # type: ignore[arg-type]
     claimed = data.get("classification")
     if claimed is not None and claimed != computed:
         w.report.counts["classification_replaced"] += 1
         w.report.notes.append(f"{_join(path, 'classification')}: the model said {claimed!r}; "
-                              f"replaced by the engine's {computed!r} (ACMG/AMP 2015 combining rules over the met criteria)")
+                              f"replaced by the engine's {computed!r} ({points:+d} SVI points over the met criteria)")
     elif claimed is not None:
         w.report.counts["classification_replaced"] += 1
         w.report.notes.append(f"{_join(path, 'classification')}: the model wrote {claimed!r}; recomputed by the engine (same verdict)")
     data["classification"] = computed
+    data["points"] = points
+    data["classification_richards_2015"] = combine_richards_2015(criteria)  # type: ignore[arg-type]

@@ -306,7 +306,9 @@ def _variant_lines(v: VariantBundle) -> list[str]:
     lines.append(f"consequence: {get('consequence')} ({get('impact')}) · {get('transcript_id')}"
                  f"{' (MANE ' + mane + ')' if mane and mane != '-' else ''} · {get('hgvsc')} · {get('hgvsp')}{vep}")
     lines.append(f"in silico: SIFT {get('sift_pred')} · PolyPhen {get('polyphen_pred')} · "
-                 f"SpliceAI ds_max {get('spliceai_ds_max')} · CADD {get('cadd_phred')}{vep}")
+                 f"SpliceAI ds_max {get('spliceai_ds_max')} · CADD {get('cadd_phred')} · REVEL {get('revel')} · "
+                 f"AlphaMissense {get('alphamissense_score')} ({get('alphamissense_class')}){vep}")
+    lines.append(_nmd_line(get))
     lines.append(_gnomad_line(v, get, by_source))
     lines.append(f"stage-3 AF: {_num(get('af_used'))} from {get('af_source') if get('af_source') != '-' else 'nothing (absent everywhere = 0)'}")
     lines.append(_clinvar_line(v, get, by_source))
@@ -316,6 +318,24 @@ def _variant_lines(v: VariantBundle) -> list[str]:
     if v.missing_ids:
         lines.append("listed but not in the store: " + ", ".join(v.missing_ids))
     return lines
+
+
+def _nmd_line(get) -> str:
+    """The exon position a PVS1 decision needs (ClinGen SVI PVS1 decision tree): a
+    stop or frameshift in the last exon, or in the last 50 bp of the penultimate
+    exon, is predicted to escape nonsense-mediated decay."""
+    exon = get("exon")
+    if not exon or exon == "-" or "/" not in exon:
+        return "exon: -"
+    try:
+        n, total = (int(x) for x in exon.split("/"))
+    except ValueError:
+        return f"exon: {exon}"
+    if n == total:
+        return f"exon: {exon} (last exon: a truncation here is predicted to escape NMD)"
+    if n == total - 1:
+        return f"exon: {exon} (penultimate exon: a truncation in its last 50 bp is predicted to escape NMD)"
+    return f"exon: {exon} (not last or penultimate: a truncation here is predicted to trigger NMD)"
 
 
 def _gnomad_line(v: VariantBundle, get: Any, by_source: dict[str, list[str]]) -> str:

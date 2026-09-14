@@ -49,7 +49,7 @@ SOURCE_COLUMNS: dict[str, tuple[str, ...]] = {
 """What each retriever contributes to the table — read from the classes, echoed into
 the manifest so the column contract this stage ran against is on record."""
 
-RULE_ORDER = ("duplicate", "genotype", "consequence", "clinvar_benign", "rarity", "quality(caveats)", "model", "phase")
+RULE_ORDER = ("duplicate", "genotype", "sex", "consequence", "clinvar_benign", "rarity", "quality(caveats)", "model", "phase")
 PRIORITY_KEY = ("clinvar_plp desc", "model rank", "best impact_any_coding desc", "max af_used asc", "gene", "candidate_id")
 
 
@@ -100,6 +100,23 @@ def write_candidates(path: Path, cands: list[Candidate], cfg: FilterConfig, coun
     path.write_text(json.dumps(doc, sort_keys=True, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
+def sample_sex(run_dir: Path) -> tuple[str, str]:
+    """The sex stage 1 recorded (stated in the case file, else inferred from the
+    calls), and a sentence for the manifest. ``unknown`` when stage 1 predates the
+    field or could not tell."""
+    p = run_dir / "01_ingest" / "manifest.json"
+    if not p.exists():
+        return "unknown", ""
+    params = json.loads(p.read_text()).get("params", {})
+    sex = params.get("sex") or "unknown"
+    stated, inferred = params.get("sex_stated", "unknown"), (params.get("sex_inference") or {}).get("inferred", "unknown")
+    if sex == "unknown":
+        return sex, ("Sample sex unknown (not stated, not inferable from the calls): the sex rule is off, so X "
+                     "heterozygotes can pair as comphet and Y calls are kept.")
+    how = "stated in the case file" if stated == sex else "inferred from the calls (X het fraction, Y calls)"
+    return sex, f"Sample sex {sex} ({how}); genotypes a {sex} karyotype cannot carry are dropped as sex:*."
+
+
 def run_filter(run_dir: Path, config_path: Path = DEFAULT_CONFIG) -> Path:
     """Run stage 3 for ``run_dir`` into ``run_dir/03_filter``. Returns the manifest path."""
     run_dir = Path(run_dir)
@@ -118,6 +135,11 @@ def run_filter(run_dir: Path, config_path: Path = DEFAULT_CONFIG) -> Path:
     if retrieve_manifest.exists():
         m.add_input("retrieve_manifest", retrieve_manifest, checksum=False)
     m.tools["python"] = platform.python_version()
+
+    sex, sex_note = sample_sex(run_dir)
+    m.params["sex"] = sex
+    if sex_note:
+        m.note(sex_note)
 
     header = table_header(run_dir)
     present = set(header)
@@ -154,12 +176,12 @@ def run_filter(run_dir: Path, config_path: Path = DEFAULT_CONFIG) -> Path:
     # ---- pass 1: per-row rules, streaming; only survivors keep their full row
     decisions: list[Decision] = []
     survivors: list[Survivor] = []
-    for d, row in screen_rows(read_annotated(run_dir), cfg):
+    for d, row in screen_rows(read_annotated(run_dir), cfg, sex=sex):
         decisions.append(d)
         if d.rule == "":
             survivors.append((d, row))
     # ---- pass 2: gene models and priority (marks the survivors' decisions)
-    cands = resolve_models(survivors, cfg)
+    cands = resolve_models(survivors, cfg, sex)
 
     dropped_by_rule = Counter(rule_family(d.rule) for d in decisions if not d.kept)
     phase = phase_counts(cands, survivors)

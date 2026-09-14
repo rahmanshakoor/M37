@@ -1266,20 +1266,22 @@
  "query": {
   "method": "POST",
   "params": {
+   "AlphaMissense": 1,
    "CADD": 1,
+   "REVEL": 1,
    "SpliceAI": 1,
    "canonical": 1,
    "hgvs": 1,
    "mane": 1,
    "numbers": 1
   },
-  "request_key": "1b516d44f090a32a59350c2c2b3383c269773f88c8b63e489eaceedb43fad7e7",
+  "request_key": "3f3559501d3a673c8225d5f4a6700cd5e3c44e09bceef554881f21d451c55ef3",
   "url": "https://rest.ensembl.org/vep/homo_sapiens/region",
   "variant": "7 117559590 7:117559590:ATCT:A ATCT A . . ."
  },
  "record_id": "vep:7:117559590:ATCT:A",
- "retrieved_at": "2026-09-12T23:45:30+00:00",
+ "retrieved_at": "2026-09-14T18:19:58+00:00",
  "source": "vep",
  "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
- "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117559590-117559593/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+ "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117559590-117559593/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1&REVEL=1&AlphaMissense=1"
 }

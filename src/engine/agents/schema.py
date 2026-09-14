@@ -1,9 +1,18 @@
 """Output schemas for the two agents, and the ACMG combining rules.
 
 The model produces criteria with justifications and evidence ids; the *engine* combines
-them into a classification (Richards et al. 2015, Table 5). Keeping the arithmetic out of
-the model means the verdict is reproducible from the criteria, and a judge can recompute
-it by hand.
+them into a classification. Keeping the arithmetic out of the model means the verdict
+is reproducible from the criteria, and a judge can recompute it by hand.
+
+The combining rule is the ClinGen SVI Bayesian point system (Tavtigian et al. 2020,
+Genet Med 22:1001: supporting 1, moderate 2, strong 4, very strong 8; benign evidence
+negative; pathogenic ≥ 10, likely pathogenic 6–9, uncertain 0–5, likely benign −1 to
+−6, benign ≤ −7), which is the 2015 Table 5 made additive and closes its gaps — Table 5
+has no rule for PVS1 + PM2_Supporting, the commonest null-variant chain, and points
+give it likely pathogenic. The 2015 Table 5 verdict is computed beside it for the
+record. PP5 and BP6 (another laboratory's classification as evidence) were retired
+by the SVI (Biesecker & Harrison 2018, Genet Med 20:1687) and never count: a ClinVar
+classification is reported as concordance, not as a criterion.
 """
 
 from __future__ import annotations
@@ -28,6 +37,14 @@ BENIGN_CODES = {
     "BP5": "supporting", "BP6": "supporting", "BP7": "supporting",
 }
 ALL_CODES = set(PATHOGENIC_CODES) | set(BENIGN_CODES)
+
+RETIRED_CODES = frozenset({"PP5", "BP6"})
+"""Retired by the ClinGen SVI (Biesecker & Harrison 2018): a reputable source's
+classification is not evidence. Accepted from the model for the record, marked, and
+never counted."""
+
+POINTS = {"supporting": 1, "moderate": 2, "strong": 4, "very_strong": 8, "stand_alone": 8}
+"""Tavtigian et al. 2020: the exponent ladder that makes ACMG/AMP 2015 additive."""
 
 CASE_LEVEL_CODES = {"PP4", "PM3", "PS2", "PS4", "PP1", "PM6", "BS4", "BP2", "BP5"}
 """Criteria that may legitimately cite the case itself (phenotype, segregation, phase)
@@ -54,6 +71,10 @@ class VariantChain(BaseModel):
     key: str
     criteria: list[Criterion]
     classification: Classification | None = None
+    points: int | None = None
+    """The SVI point total the classification is read from; the engine's, never the model's."""
+    classification_richards_2015: Classification | None = None
+    """The verdict the 2015 Table 5 gives the same criteria, for comparison."""
     summary: str = ""
 
 
@@ -95,12 +116,48 @@ class MedicineReport(BaseModel):
 
 
 def _count(criteria: list[Criterion], codes: dict[str, str], strength: str) -> int:
-    return sum(1 for c in criteria if c.met and c.code in codes and c.strength == strength)
+    return sum(1 for c in criteria if c.met and c.code in codes and c.code not in RETIRED_CODES and c.strength == strength)
+
+
+def acmg_points(criteria: list[Criterion]) -> int:
+    """Tavtigian et al. 2020 point total over the *met*, non-retired criteria at their
+    stated strength (a modified strength, e.g. PM2_Supporting, is honoured because
+    the model states it). Pathogenic evidence adds, benign evidence subtracts."""
+    total = 0
+    for c in criteria:
+        if not c.met or c.code in RETIRED_CODES:
+            continue
+        if c.code in PATHOGENIC_CODES:
+            total += POINTS[c.strength]
+        elif c.code in BENIGN_CODES:
+            total -= POINTS[c.strength]
+    return total
+
+
+def classify_points(points: int) -> Classification:
+    """Tavtigian et al. 2020 categories."""
+    if points >= 10:
+        return "pathogenic"
+    if points >= 6:
+        return "likely_pathogenic"
+    if points >= 0:
+        return "vus"
+    if points >= -6:
+        return "likely_benign"
+    return "benign"
 
 
 def combine_acmg(criteria: list[Criterion]) -> Classification:
-    """Richards et al. 2015 Table 5. Applied to *met* criteria at their stated strength
-    (a modified strength, e.g. PM2_Supporting, is honoured because the model states it)."""
+    """The engine's classification: the SVI point system over the met criteria, with
+    BA1 kept stand-alone as Tavtigian et al. recommend (a variant above the BA1
+    frequency is benign whatever else is claimed for it)."""
+    if any(c.met and c.code == "BA1" for c in criteria):
+        return "benign"
+    return classify_points(acmg_points(criteria))
+
+
+def combine_richards_2015(criteria: list[Criterion]) -> Classification:
+    """Richards et al. 2015 Table 5 over the same criteria, for the record."""
     pvs = _count(criteria, PATHOGENIC_CODES, "very_strong")
     ps = _count(criteria, PATHOGENIC_CODES, "strong")
     pm = _count(criteria, PATHOGENIC_CODES, "moderate")

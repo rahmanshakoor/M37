@@ -101,6 +101,14 @@ BASE_PARAMS: dict[str, int] = {"canonical": 1, "mane": 1, "hgvs": 1, "numbers": 
 """Flags verified live: they annotate (mane_select/canonical keys, hgvsc/hgvsp,
 exon/intron) but do not filter — every overlapping transcript is still returned."""
 
+DEFAULT_PLUGINS: tuple[str, ...] = ("SpliceAI", "CADD", "REVEL", "AlphaMissense")
+"""Plugins the public endpoint honours (verified live on public variants): SpliceAI
+delta scores, CADD PHRED, REVEL (``revel`` per transcript) and AlphaMissense
+(``alphamissense.am_pathogenicity`` / ``am_class`` per transcript). ``NMD`` is
+accepted but returns nothing on the REST endpoint, so NMD is judged from the exon
+number downstream. REVEL and AlphaMissense are the predictors the ClinGen SVI
+computational recommendation (Pejaver et al. 2022) calibrates PP3/BP4 against."""
+
 SPLICEAI_TAGS: tuple[str, ...] = ("AG", "AL", "DG", "DL")
 
 _BASES = frozenset("ACGT")
@@ -144,7 +152,7 @@ class VepRetriever:
         "gene_symbol", "gene_id", "transcript_id", "mane", "consequence", "impact",
         "hgvsc", "hgvsp", "exon", "intron", "biotype", "protein_position", "amino_acids",
         "sift_pred", "sift_score", "polyphen_pred", "polyphen_score",
-        "spliceai_ds_max", "spliceai_detail", "cadd_phred",
+        "spliceai_ds_max", "spliceai_detail", "cadd_phred", "revel", "alphamissense_score", "alphamissense_class",
         "most_severe_consequence", "impact_any_coding",
         "rsid", "vep_gnomade_af", "vep_gnomadg_af", "vep_clin_sig", "vep_clinvar_ids",
     )
@@ -156,7 +164,7 @@ class VepRetriever:
         batch_size: int = 200,
         species: str = "homo_sapiens",
         base_url: str = "https://rest.ensembl.org",
-        plugins: tuple[str, ...] = ("SpliceAI", "CADD"),
+        plugins: tuple[str, ...] = DEFAULT_PLUGINS,
         workers: int = 4,
         timeout: float = 300.0,
     ):
@@ -321,6 +329,7 @@ class VepRetriever:
         cadd = next((b.get("cadd_phred") for b in _all_blocks(payload) if b.get("cadd_phred") is not None), None)
         cols["cadd_phred"] = _s(cadd)
         cols.update(_spliceai(tcs, tc))
+        cols.update(_missense_predictors(tcs, tc))
         cols["most_severe_consequence"] = _s(payload.get("most_severe_consequence"))
         cols["impact_any_coding"] = impact_any_coding(tcs)
         cols.update(_colocated(payload, allele))
@@ -455,6 +464,24 @@ def _transcript_columns(tc: dict[str, Any]) -> dict[str, str]:
         "polyphen_pred": _s(tc.get("polyphen_prediction")),
         "polyphen_score": _s(tc.get("polyphen_score")),
     }
+
+
+def _missense_predictors(tcs: list[dict[str, Any]], chosen: dict[str, Any] | None) -> dict[str, str]:
+    """REVEL and AlphaMissense from the chosen transcript, else the highest score any
+    transcript carries (the predictors are per protein change, so they differ only
+    when transcripts disagree on the amino acid)."""
+    order = ([chosen] if chosen is not None else []) + [t for t in tcs if t is not chosen]
+    revel = next((t.get("revel") for t in order if t.get("revel") is not None), None)
+    if revel is None:
+        revel = max((t["revel"] for t in tcs if isinstance(t.get("revel"), (int, float))), default=None)
+    am = next((t.get("alphamissense") for t in order if isinstance(t.get("alphamissense"), dict)
+               and t["alphamissense"].get("am_pathogenicity") is not None), None)
+    if am is None:
+        ams = [t["alphamissense"] for t in tcs if isinstance(t.get("alphamissense"), dict)
+               and isinstance(t["alphamissense"].get("am_pathogenicity"), (int, float))]
+        am = max(ams, key=lambda a: a["am_pathogenicity"], default=None)
+    return {"revel": _s(revel), "alphamissense_score": _s((am or {}).get("am_pathogenicity")),
+            "alphamissense_class": _s((am or {}).get("am_class"))}
 
 
 def _spliceai(tcs: list[dict[str, Any]], chosen: dict[str, Any] | None) -> dict[str, str]:
