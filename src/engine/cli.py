@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import logging
+import os
 import sys
 from pathlib import Path
 
@@ -24,7 +26,13 @@ def main() -> None:
 
     Stages run in order and each writes a manifest into the run directory:
     ingest → retrieve → filter → rank → reason → medicine → bench → submit.
+
+    ENGINE_LOG=INFO (or DEBUG) prints the stages' per-batch progress to stderr.
     """
+    level = os.environ.get("ENGINE_LOG", "").upper()
+    if level:
+        logging.basicConfig(level=getattr(logging, level, logging.INFO), stream=sys.stderr,
+                            format="%(asctime)s %(name)s %(levelname)s %(message)s", datefmt="%H:%M:%S")
 
 
 @main.command()
