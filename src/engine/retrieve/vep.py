@@ -38,7 +38,7 @@ from __future__ import annotations
 import logging
 import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Iterable
+from typing import Any, Iterator, Iterable
 
 from engine.contigs import PRIMARY
 from engine.retrieve.http import Http, Response
@@ -228,25 +228,39 @@ class VepRetriever:
     # ----------------------------------------------------------------- retrieve
 
     def retrieve(self, keys: list[VariantKey]) -> dict[VariantKey, list[EvidenceRecord]]:
+        """Every key's records at once. For a genome-scale key list prefer
+        :meth:`retrieve_stream`: this holds every payload in memory."""
         uniq = list(dict.fromkeys(keys))
         out: dict[VariantKey, list[EvidenceRecord]] = {k: [] for k in uniq}
+        for k, recs in self.retrieve_stream(uniq):
+            out[k] = recs
+        return out
+
+    def retrieve_stream(self, keys: list[VariantKey]) -> Iterator[tuple[VariantKey, list[EvidenceRecord]]]:
+        """Yield ``(key, records)`` batch by batch in submission order, so the caller
+        can store and project each record and let it go — 176k VEP payloads kept
+        at once is what exhausted an 8 GB machine."""
+        uniq = list(dict.fromkeys(keys))
         batches = [uniq[i:i + self.batch_size] for i in range(0, len(uniq), self.batch_size)]
         if not batches:
-            return out
+            return
         version = self.version()
         log.info("vep: %d variants in %d batch(es) of up to %d", len(uniq), len(batches), self.batch_size)
         # executor.map yields in submission order, so output is independent of which
         # batch finishes first; Http is thread-safe (cache and limiter are locked).
-        with ThreadPoolExecutor(max_workers=min(self.workers, len(batches))) as pool:
-            for i, (batch, resp) in enumerate(zip(batches, pool.map(self._post, batches)), start=1):
-                found = self._match(batch, resp)
-                self._check_missing(batch, found, resp, f"batch {i}/{len(batches)}")
-                for k in batch:
-                    if k in found:
-                        out[k] = [self._record(k, found[k], resp, version)]
-                log.info("vep: batch %d/%d: %d of %d variants returned a result%s",
-                         i, len(batches), len(found), len(batch), " (cached)" if resp.from_cache else "")
-        return out
+        # The pool is created lazily per chunk of batches so at most ``workers`` responses
+        # are in flight or waiting to be consumed.
+        chunk = max(1, self.workers)
+        with ThreadPoolExecutor(max_workers=chunk) as pool:
+            for start in range(0, len(batches), chunk):
+                group = batches[start:start + chunk]
+                for j, (batch, resp) in enumerate(zip(group, pool.map(self._post, group)), start=start + 1):
+                    found = self._match(batch, resp)
+                    self._check_missing(batch, found, resp, f"batch {j}/{len(batches)}")
+                    for k in batch:
+                        yield k, ([self._record(k, found[k], resp, version)] if k in found else [])
+                    log.info("vep: batch %d/%d: %d of %d variants returned a result%s",
+                             j, len(batches), len(found), len(batch), " (cached)" if resp.from_cache else "")
 
     def _post(self, batch: list[VariantKey]) -> Response:
         body = {"variants": [vcf_line(k) for k in batch]}

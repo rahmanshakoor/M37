@@ -190,10 +190,14 @@ def run_retrieve(run_dir: Path, opts: RetrieveOptions, *, retrievers: RetrieverF
         r = rs[name]
         t0 = time.monotonic()
         opts.progress(f"{name}: {len(subset):,} variants")
-        found = r.retrieve(subset)
+        # Stream where the retriever can (VEP): each record is stored and projected as
+        # it arrives and then dropped, so memory is bounded by the workers, not the genome.
+        stream = r.retrieve_stream(subset) if hasattr(r, "retrieve_stream") else r.retrieve(subset).items()
         n_rec = 0
-        for k in subset:
-            recs = found.get(k, [])
+        with_record = 0
+        for k, recs in stream:
+            if recs:
+                with_record += 1
             for rec in recs:
                 store.put(rec)
                 ids_by_key[k].append(rec.record_id)
@@ -202,7 +206,7 @@ def run_retrieve(run_dir: Path, opts: RetrieveOptions, *, retrievers: RetrieverF
         versions[name] = r.version()
         timings[name] = round(time.monotonic() - t0, 1)
         m.counts[f"{name}_variants_queried"] = len(subset)
-        m.counts[f"{name}_variants_with_record"] = sum(1 for k in subset if found.get(k))
+        m.counts[f"{name}_variants_with_record"] = with_record
         m.counts[f"{name}_records"] = n_rec
         opts.progress(f"{name}: {m.counts[f'{name}_variants_with_record']:,} with a record · {timings[name]}s")
 
