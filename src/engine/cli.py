@@ -179,6 +179,7 @@ STAGE_PACKAGES = {
     "ui": ("ui", "live mode", "P7"),
     "bench": ("bench", "stage 7", "P7"),
     "submit": ("submit", "submission", "P8"),
+    "mosaic": ("mosaic", "side analysis", "P8"),
 }
 
 

@@ -24,6 +24,7 @@ came from.
 | — | `engine ui` | Live mode: a local web app that browses runs and launches stages | ✅ built |
 | 7 | `engine bench` | Replay on known-answer cases; recovery@k and F-max | planned (P7) |
 | — | `engine submit` | Track 1 CSV in the scorer's conventions, dry-run through the challenge's own `evaluation.py` | ✅ built |
+| — | `engine mosaic` | Side analysis: per-chromosome allele balance and depth of the proband's heterozygous calls, a screen for clonal mosaic aneuploidy from the VCF alone | ✅ built |
 
 Each stage reads the previous stage's run directory and writes `manifest.json`:
 input checksums, tool versions, parameters, counts in/out, wall time. A rerun by

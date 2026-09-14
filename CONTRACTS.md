@@ -449,3 +449,17 @@ when stage 1 recorded a male (a guard for runs older than the sex rule); `findin
 the template's meaning — `secondary` is an incidental finding: a dominant single heterozygote the
 stage-5 chain classified P/LP; an unclassified lone heterozygote is a weak `primary`; EPCRs 0.95,
 0.90, … unique and strictly decreasing; at most ten rows; notes never contain a comma.
+
+## Side analysis — `engine mosaic --case <case.yaml> --out <dir>`
+
+Package `engine.mosaic` (built 2026-09-15). Streams the case VCF with `bcftools query` and, per
+contig, tallies PASS heterozygous SNVs with AD depth ≥ `--min-dp` (20): median depth relative
+to the autosomal median, variance of allele balance about 0.5, the fraction outside 0.5 ± `--skew`
+(0.15) and the share of that fraction on the low side; each autosome is z-scored against the
+others and flagged at `--z-flag` (3) SD. A trisomy in cell fraction f raises depth by f/2 and
+splits allele balance *symmetrically* to (1+f)/(2+f) and 1/(2+f); a one-sided low tail is the
+signature of reference/mapping bias and is flagged as such, never as a gain. The manifest
+records the empirical sensitivity (the smallest trisomic fraction that would reach the flag by
+depth and by allele balance). Writes `mosaic/per_contig.tsv`, `mosaic/summary.md`,
+`mosaic/manifest.json`. X and Y are reported, never flagged. Nothing leaves the machine.
+
