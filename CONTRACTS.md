@@ -89,7 +89,12 @@ can support any model and counting them would make "distinct heterozygous rows" 
    always_keep` with ≥ `rescue_min_stars` stars and AF ≤ `rescue_max_af`, in which case the row is
    rescued and the rescue (or its refusal) is a recorded hit (built: the "regardless of AF" clause
    of `always_keep`, bounded). (Single-het dominant candidates apply `dominant_max_af` in step 5.)
-4. Quality caveats are attached, never dropped on: `dp<10`, `gq<20`, `flagged:<filter>`.
+4. Quality caveats are attached, never dropped on: `dp<10`, `gq<20`, `flagged:<filter>`; and, per
+   gene over the surviving rows, `dense_cluster:<n>in<window>bp` when `quality.cluster_min_rows`
+   (5) or more survivors fall within `quality.cluster_window_bp` (200) of a row — the read pile of
+   a paralog, pseudogene or divergent haplotype (SERPINA1, the HLA genes), not a genotype. A
+   candidate whose every allele carries it sorts after clean candidates of its band (priority key
+   `dense_cluster asc`) and the submit stage orders it with the artefact families (built 2026-09-14).
    **Sex** (built 2026-09-14, `engine.sex`): stage 1 records the sex stated in the case file
    (`sex: male|female|unknown`) and the sex inferred from the calls (X non-PAR heterozygous
    fraction, Y non-PAR carrier calls; GRCh38 PARs); stated wins, inferred fills in, and a

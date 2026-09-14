@@ -137,6 +137,20 @@ def test_clinvar_benign_pairs_and_male_x_comphets_take_no_row(tmp_path: Path):
     assert "MIX:comphet" in [r.candidate_id for r in plan(_run_dir(tmp_path / "b", extra=[mixed])).rows]
 
 
+def test_clustered_alleles_go_last_like_artefact_families(tmp_path: Path):
+    pile = {"candidate_id": "SERPINA1:comphet", "gene_symbol": "SERPINA1", "gene_id": "ENSG8", "model": "comphet", "priority": 2,
+            "phase": {"status": "unknown", "evidence": ""}, "rule_hits": [], "caveats": ["dense_cluster:16in200bp"],
+            "variants": [_variant("14:94379487:CCT:C", caveats=["dense_cluster:16in200bp"]),
+                         _variant("14:94379492:G:GAC", caveats=["dense_cluster:16in200bp"])]}
+    run = _run_dir(tmp_path, extra=[pile])
+    j = json.loads((run / "04_rank" / "joined.json").read_text())
+    j["candidates"].append({"candidate_id": "SERPINA1:comphet", "exomiser_rank": 2})  # ranked high by the blind ranker
+    (run / "04_rank" / "joined.json").write_text(json.dumps(j))
+    ids = [r.candidate_id for r in plan(run).rows]
+    assert ids[0] == "CFTR:comphet" and ids.index("SERPINA1:comphet") > ids.index("TP53:het_single")
+    assert ids[-2:] == ["HLA-DRB1:comphet", "SERPINA1:comphet"] or ids[-2:] == ["SERPINA1:comphet", "HLA-DRB1:comphet"]
+
+
 def test_without_rank_or_chains_still_writes(tmp_path: Path):
     run = _run_dir(tmp_path, with_rank=False, with_chains=False)
     csv_path = run_submit(run, proband_id="PUBLIC01", scorer=None)

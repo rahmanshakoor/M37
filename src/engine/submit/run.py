@@ -10,6 +10,9 @@ zero with the right answer, so this stage owns them:
 * a compound-het candidate is one row with both alleles;
 * EPCRs are unique and strictly decreasing, so no tie can pull a wrong variant into
   the same threshold bucket as the right one;
+* candidates whose every allele sits in a dense cluster of rare calls (stage 3's
+  ``dense_cluster`` caveat: a read pile from a paralog or a divergent haplotype, as
+  in SERPINA1 or the HLA genes) are ordered with the artefact families, last;
 * candidates the stage-5 chain classified benign or likely benign are left out, as
   are pairs whose every allele ClinVar calls benign or likely benign (a rare
   frameshift pair that ClinVar has already looked at is not a ranked answer), and
@@ -58,6 +61,13 @@ short-read WGS (paralogs, high polymorphism). Ordered last, never removed."""
 def is_artefact_family(symbol: str) -> bool:
     s = symbol.upper()
     return any(s.startswith(fam) and (fam != "OR" or (len(s) > 2 and s[2].isdigit())) for fam in ARTEFACT_FAMILIES)
+
+
+def is_clustered(candidate: dict[str, Any]) -> bool:
+    """Every allele carries stage 3's ``dense_cluster`` caveat (a read pile, not a
+    genotype): ordered with the artefact families, last."""
+    vs = candidate.get("variants") or []
+    return bool(vs) and all(any(str(cv).startswith("dense_cluster:") for cv in (v.get("caveats") or [])) for v in vs)
 
 
 @dataclass
@@ -188,7 +198,7 @@ def plan(run_dir: Path, *, also_pairs: list[tuple[str, str]] | None = None, max_
     # The lead row is stage 3's #1. Every row below it earns points only if it IS the
     # answer, so the backups are ordered by the blind ranker's phenotype rank (the
     # evidence stage 3 does not use), then by stage-3 priority for unranked genes.
-    ordered = sorted(cands, key=lambda c: (0 if c is cands[0] else 1, is_artefact_family(c["gene_symbol"]),
+    ordered = sorted(cands, key=lambda c: (0 if c is cands[0] else 1, is_artefact_family(c["gene_symbol"]) or is_clustered(c),
                                            ranks.get(c["candidate_id"]) or 10**9, c.get("priority", 10**9)))
     first = True
     for c in ordered:

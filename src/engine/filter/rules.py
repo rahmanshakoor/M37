@@ -604,7 +604,8 @@ class Candidate:
         plp = any(always_keep(r, cfg) for _, r in self.members)
         best_impact = max(IMPACT_RANK.get(val(r, IMPACT_ANY_CODING), -1) for _, r in self.members)
         af = max(d.af for d, _ in self.members)
-        return (0 if plp else 1, MODEL_RANK[self.model], -best_impact, af, self.gene_symbol or self.gene_id, self.candidate_id)
+        return (0 if plp else 1, MODEL_RANK[self.model], 1 if is_clustered(self) else 0, -best_impact, af,
+                self.gene_symbol or self.gene_id, self.candidate_id)
 
 
 def _uniq(items: Iterable[str]) -> list[str]:
@@ -727,11 +728,40 @@ def _comphet_candidates(gene: str, hets: list[Survivor], cfg: FilterConfig) -> l
     return out
 
 
+DENSE_CLUSTER = "dense_cluster"
+"""Caveat prefix: ``dense_cluster:<n>in<window>bp`` — this surviving row sits among
+``n`` surviving rows of its gene inside one window (``quality.cluster_min_rows`` /
+``quality.cluster_window_bp``), the signature of mis-mapped reads rather than of a
+genotype. A caveat, never a drop; candidates made only of such rows sort last."""
+
+
+def mark_dense_clusters(members: list[Survivor], cfg: FilterConfig) -> int:
+    """Attach :data:`DENSE_CLUSTER` to every surviving row of a gene that has at least
+    ``cluster_min_rows`` survivors within ``cluster_window_bp`` of it (itself
+    included). Returns how many rows were marked."""
+    q = cfg.quality
+    positions = sorted(as_pos(r[POS]) for _, r in members)
+    marked = 0
+    for d, r in members:
+        pos = as_pos(r[POS])
+        n = sum(1 for p in positions if abs(p - pos) <= q.cluster_window_bp)
+        if n >= q.cluster_min_rows:
+            d.caveats.append(f"{DENSE_CLUSTER}:{n}in{q.cluster_window_bp}bp")
+            marked += 1
+    return marked
+
+
+def is_clustered(c: "Candidate") -> bool:
+    """Every allele of the candidate carries the dense-cluster caveat."""
+    return all(any(cv.startswith(DENSE_CLUSTER + ":") for cv in d.caveats) for d, _ in c.members)
+
+
 def resolve_gene(gene: str, members: list[Survivor], cfg: FilterConfig, sex: str = "unknown") -> list[Candidate]:
     """Step 5 for one gene: assign models, drop what fits none, return the candidates.
     Marks every decision in ``members`` (kept/model/rule/phase) as a side effect.
     A male's X het kept through the sex rule is a doubtful hemizygote, never half
     of a compound heterozygote."""
+    mark_dense_clusters(members, cfg)
     by_model: dict[str, list[Survivor]] = {"hom": [], "hemi": [], "mito": [], "het": []}
     for d, r in members:
         model = genotype_model(r[CHROM], val(r, GT), sex)

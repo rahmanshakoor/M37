@@ -50,7 +50,7 @@ SOURCE_COLUMNS: dict[str, tuple[str, ...]] = {
 the manifest so the column contract this stage ran against is on record."""
 
 RULE_ORDER = ("duplicate", "genotype", "sex", "consequence", "clinvar_benign", "rarity", "quality(caveats)", "model", "phase")
-PRIORITY_KEY = ("clinvar_plp desc", "model rank", "best impact_any_coding desc", "max af_used asc", "gene", "candidate_id")
+PRIORITY_KEY = ("clinvar_plp desc", "model rank", "dense_cluster asc", "best impact_any_coding desc", "max af_used asc", "gene", "candidate_id")
 
 
 def table_header(run_dir: Path) -> list[str]:

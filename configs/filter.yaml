@@ -77,6 +77,14 @@ clinvar:
 # Caveats are attached to a row, never a reason to drop it: a real variant in
 # difficult sequence should surface with its weakness stated.
 quality:
+  # A gene in which cluster_min_rows or more surviving rare rows fall inside one
+  # cluster_window_bp window is what a read pile from a paralog, a pseudogene or a
+  # divergent haplotype looks like (SERPINA1, the HLA genes): one person does not
+  # carry five ultra-rare alleles in 200 bp. Each such row gets the caveat
+  # "dense_cluster:<n>in<window>bp"; a candidate whose every allele carries it is
+  # ordered last within its priority band and by the submit stage, never removed.
+  cluster_min_rows: 5
+  cluster_window_bp: 200
   caveat_min_dp: 10        # sample depth below this -> caveat "dp<10"
   caveat_min_gq: 20        # genotype quality below this -> caveat "gq<20"
   caveat_flagged_filters: true   # a non-empty quality_flag -> caveat "flagged:<filter>"

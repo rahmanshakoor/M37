@@ -988,3 +988,31 @@ def test_male_x_hets_never_form_a_comphet_and_the_manifest_says_why(tmp_path: Pa
     assert any(n.startswith("Sample sex male (inferred") for n in m["notes"])
     cands = json.loads((run / STAGE_DIR / "candidates.json").read_text())["candidates"]
     assert cands[0]["model"] == "hemi" and "het_call_on_haploid_x" in cands[0]["caveats"]
+
+
+# ---------------------------------------------------------------- dense clusters
+
+def test_five_rare_hets_in_200bp_are_a_read_pile_not_a_genotype(tmp_path: Path):
+    """SERPINA1-style: many ultra-rare heterozygotes within a short window. Each row
+    is kept with the caveat, the comphet is still formed (a caveat never drops), and
+    it sorts after a clean comphet of the same band."""
+    from engine.filter.rules import DENSE_CLUSTER, is_clustered
+    # public gene with a known paralog pile-up: SERPINA1 (ENSG00000197249); positions invented, 30 bp apart
+    pile = [row(chrom="14", pos=str(94_379_000 + 30 * i), ref="C", alt="T", gene_symbol="SERPINA1", gene_id="ENSG00000197249",
+                consequence="missense_variant", impact="MODERATE", impact_any_coding="MODERATE", gnomad_af="2e-06") for i in range(5)]
+    clean = [row(pos="40170100"), row(pos="40170150", ref="C", alt="T", consequence="missense_variant", impact="MODERATE", impact_any_coding="MODERATE")]
+    run = make_run(tmp_path, pile + clean)
+    m = json.loads(run_filter(run, DEFAULT_CONFIG).read_text())
+    by = decisions_by_key(run)
+    for i in range(5):
+        cv = by[f"14:{94_379_000 + 30 * i}:C:T"]["caveats"]
+        assert f"{DENSE_CLUSTER}:5in200bp" in cv, cv
+    assert DENSE_CLUSTER not in by["15:40170100:G:A"]["caveats"]
+    cands = json.loads((run / STAGE_DIR / "candidates.json").read_text())["candidates"]
+    assert [c["candidate_id"] for c in cands] == ["BUB1B:comphet", "SERPINA1:comphet"]  # the pile is last in its band
+    assert all(any(cv.startswith("dense_cluster:") for cv in v["caveats"]) for v in cands[1]["variants"])
+    assert "dense_cluster asc" in m["params"]["priority_key"] and m["params"]["quality"]["cluster_min_rows"] == 5
+    # four rows do not make a cluster
+    run4 = make_run(tmp_path / "four", pile[:4])
+    run_filter(run4, DEFAULT_CONFIG)
+    assert all(DENSE_CLUSTER not in d["caveats"] for d in decisions_by_key(run4).values())

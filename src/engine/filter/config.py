@@ -91,6 +91,8 @@ class ClinvarConfig(_Strict):
 
 
 class QualityConfig(_Strict):
+    cluster_min_rows: int = Field(default=5, ge=2)
+    cluster_window_bp: int = Field(default=200, ge=1)
     caveat_min_dp: int = Field(ge=0)
     caveat_min_gq: int = Field(ge=0)
     caveat_flagged_filters: bool = True
