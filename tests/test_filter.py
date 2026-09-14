@@ -413,7 +413,7 @@ def test_shipped_defaults_are_the_contract_rules():
     decides), since ``first`` let common variants read as rare on the first full
     case. The other readings exist as switches and are echoed when used."""
     cfg = FilterConfig.load(DEFAULT_CONFIG)
-    assert cfg.rarity.af_fallback_pick == "max" and cfg.phase.trust_pgt is False
+    assert cfg.rarity.af_fallback_pick == "max" and cfg.phase.trust_pgt is True  # both departures shipped deliberately
     assert cfg.rarity.rescue_max_af == 0.05 and cfg.clinvar.rescue_min_stars == 1
 
 
@@ -726,10 +726,11 @@ OPPOSITE_PGT_PAIR = [dict(pos="40170100", pid="p1", pgt="0|1", **DEMO_GENE),
 
 
 def test_shared_pid_is_cis_by_default_and_the_callers_trans_is_noted(tmp_path: Path):
-    """CONTRACTS.md rule 5: shared PID → cis, so the pair is dropped as phase:cis even
-    though the caller's PGT phased it in trans; the run says so, twice over."""
+    """CONTRACTS.md rule 5 as written (``trust_pgt: false``): shared PID → cis, so the
+    pair is dropped as phase:cis even though the caller's PGT phased it in trans; the
+    run says so, twice over. (The shipped default is ``true``: see the next test.)"""
     run = make_run(tmp_path, [row(**r) for r in OPPOSITE_PGT_PAIR])
-    m = json.loads(run_filter(run, DEFAULT_CONFIG).read_text())
+    m = json.loads(run_filter(run, write_config(tmp_path, phase={"trust_pgt": False})).read_text())
     assert m["params"]["phase"]["trust_pgt"] is False
     assert m["counts"]["phase"] == {"cis_rows_dropped": 2, "cis_rows_dropped_het_single_eligible": 2,
                                     "shared_pid_opposite_pgt_pairs": 1}

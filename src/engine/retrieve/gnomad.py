@@ -196,6 +196,8 @@ class GnomadRetriever:
             return {c: "" for c in self.columns}
         rec = records[0]
         v = rec.payload
+        if isinstance(v, dict) and v.get("absent"):
+            return {**{c: "" for c in self.columns}, "gnomad_dataset": str(rec.query.get("dataset", ""))}
         ac, an, nhom = _totals(v)
         exome, genome = v.get("exome"), v.get("genome")
         grpmax_af, grpmax_pop = _grpmax(v)
@@ -242,7 +244,20 @@ class GnomadRetriever:
         for k, (alias, vid) in zip(batch, aliases.items()):
             v = data[alias]
             if v is None:
-                continue  # absent from gnomAD: a result, not an error
+                # absent from gnomAD: a result, not an error — and a citable one. PM2 rests
+                # on it, so the store keeps a record that says the variant was asked for
+                # and not found, rather than leaving a gap a missing query would also leave.
+                yield k, EvidenceRecord(
+                    record_id=f"{self.source}:{vid}",
+                    source=self.source,
+                    source_version=self.version(),
+                    query={"api": self.url, "dataset": self.dataset, "variantId": vid, "fragment": FRAGMENT},
+                    url=variant_url(vid, self.dataset),
+                    retrieved_at=resp.retrieved_at,
+                    payload={"variant_id": vid, "absent": True, "dataset": self.dataset,
+                             "note": NOT_FOUND},
+                )
+                continue
             _check_genome(v.get("reference_genome"), self.dataset)
             yield k, EvidenceRecord(
                 record_id=f"{self.source}:{vid}",

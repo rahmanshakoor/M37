@@ -9,7 +9,8 @@ zero with the right answer, so this stage owns them:
 * chromosomes go through :func:`engine.contigs.to_submission` (``15`` → ``chr15``);
 * a compound-het candidate is one row with both alleles;
 * EPCRs are unique and strictly decreasing, so no tie can pull a wrong variant into
-  the same threshold bucket as the right one;
+  the same threshold bucket as the right one — and, since EPCR means an estimated
+  probability, the lead carries 0.95 and the backups descend from 0.10;
 * candidates whose every allele sits in a dense cluster of rare calls (stage 3's
   ``dense_cluster`` caveat: a read pile from a paralog or a divergent haplotype, as
   in SERPINA1 or the HLA genes) are ordered with the artefact families, last;
@@ -46,7 +47,13 @@ COLUMNS = ("proband_id", "chrom_1", "pos_1", "ref_1", "alt_1", "chrom_2", "pos_2
            "epcr", "finding_type", "notes")
 MAX_ROWS = 10
 TOP_EPCR = 0.95
-EPCR_STEP = 0.05
+BACKUP_TOP_EPCR = 0.10
+EPCR_STEP = 0.01
+"""EPCR is the template's *estimated probability of causal relationship*. The lead row
+carries the engine's belief (0.95); every row below it is a backup the engine does
+not believe is the answer, so backups descend from 0.10 in steps of 0.01 — strictly
+decreasing (the scorer breaks ties by file order and the F-max threshold is the lead's
+EPCR, so the score is unchanged) and honest about what they are."""
 BENIGN = {"benign", "likely_benign"}
 PLP = {"pathogenic", "likely_pathogenic"}
 CLINVAR_BENIGN = {"Benign", "Likely_benign"}
@@ -219,7 +226,7 @@ def plan(run_dir: Path, *, also_pairs: list[tuple[str, str]] | None = None, max_
             break
     rows = rows[:max_rows]
     for i, r in enumerate(rows):
-        r.epcr = round(TOP_EPCR - i * EPCR_STEP, 2)
+        r.epcr = TOP_EPCR if i == 0 else round(BACKUP_TOP_EPCR - (i - 1) * EPCR_STEP, 2)
     return SubmitPlan(rows=rows, skipped=skipped)
 
 
@@ -260,7 +267,8 @@ def run_submit(run_dir: Path, *, proband_id: str, out: Path | None = None, score
     m.add_input("candidates", run_dir / "03_filter" / "candidates.json")
     p = plan(run_dir, also_pairs=also_pairs)
     write_csv(p, proband_id, csv_path)
-    m.params.update({"proband_id": proband_id, "top_epcr": TOP_EPCR, "epcr_step": EPCR_STEP, "max_rows": MAX_ROWS,
+    m.params.update({"proband_id": proband_id, "top_epcr": TOP_EPCR, "backup_top_epcr": BACKUP_TOP_EPCR,
+                     "epcr_step": EPCR_STEP, "max_rows": MAX_ROWS, "artefact_families": list(ARTEFACT_FAMILIES),
                      "also_pairs": [list(x) for x in (also_pairs or [])],
                      "rows": [{"candidate_id": r.candidate_id, "epcr": r.epcr, "finding_type": r.finding_type,
                                "n_variants": len(r.variants)} for r in p.rows],

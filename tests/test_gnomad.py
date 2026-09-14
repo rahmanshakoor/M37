@@ -155,9 +155,11 @@ def test_absent_is_a_result_not_an_error():
     r = GnomadRetriever(stub)
     found = r.retrieve([MTHFR, ABSENT])
     assert len(_batch_queries(stub)) == 1  # one POST for both, absence attributed by alias
-    assert found[ABSENT] == []
+    absent = found[ABSENT]
+    assert len(absent) == 1 and absent[0].payload["absent"] is True and absent[0].record_id == "gnomad:1-11796321-G-T"
+    assert absent[0].url.startswith("https://gnomad.broadinstitute.org/variant/1-11796321-G-T")  # a citable observation of absence
     assert found[MTHFR][0].record_id == "gnomad:1-11796321-G-A"
-    assert r.extract(found[ABSENT]) == {c: "" for c in r.columns}
+    assert r.extract(absent) == {**{c: "" for c in r.columns}, "gnomad_dataset": "gnomad_r4"}
 
 
 def test_payload_is_the_raw_variant_object():
@@ -184,7 +186,7 @@ def test_batches_of_25_and_query_size():
     assert [len(_ALIAS.findall(q)) for q in queries] == [25, 25, 9]
     assert all(len(q) < MAX_QUERY_CHARS for q in queries)
     assert all(len(q) < 9000 for q in queries)
-    assert sum(1 for k in synthetic if found[k] == []) == 58
+    assert sum(1 for k in synthetic if found[k] and found[k][0].payload.get("absent")) == 58
     assert found[MTHFR][0].record_id == "gnomad:1-11796321-G-A"
     assert set(re.findall(r"v(\d+):", queries[0])) == {str(i) for i in range(25)}
 
@@ -300,14 +302,14 @@ def _canned(body: dict | str, status: int = 200, dataset: str = "gnomad_r4") -> 
 def test_not_found_in_selected_subset_is_absence():
     r = _canned({"errors": [{"message": NOT_FOUND_IN_SUBSET}], "data": {"v0": None}}, dataset="gnomad_r4_non_ukb")
     found = r.retrieve([MTHFR])
-    assert found[MTHFR] == []
-    assert r.extract(found[MTHFR]) == {c: "" for c in r.columns}
+    assert len(found[MTHFR]) == 1 and found[MTHFR][0].payload["absent"] is True and found[MTHFR][0].query["dataset"] == "gnomad_r4_non_ukb"
+    assert r.extract(found[MTHFR]) == {**{c: "" for c in r.columns}, "gnomad_dataset": "gnomad_r4_non_ukb"}
     # still one message per null alias, and the two absence messages may mix
     v = _found()["1-11796321-G-A"]
     r = _canned({"errors": [{"message": "Variant not found"}, {"message": NOT_FOUND_IN_SUBSET}],
                  "data": {"v0": None, "v1": v, "v2": None}}, dataset="gnomad_r4_non_ukb")
     found = r.retrieve([ABSENT, MTHFR, TP53])
-    assert found[ABSENT] == [] and found[TP53] == [] and found[MTHFR][0].record_id == "gnomad:1-11796321-G-A"
+    assert found[ABSENT][0].payload["absent"] and found[TP53][0].payload["absent"] and found[MTHFR][0].record_id == "gnomad:1-11796321-G-A"
 
 
 def test_invalid_variant_id_raises_not_absent():
@@ -446,7 +448,8 @@ def _records(*keys):
 
 def test_extract_absent_is_all_blank():
     r, found = _records(ABSENT)
-    assert r.extract(found[ABSENT]) == {c: "" for c in r.columns}
+    assert r.extract(found[ABSENT]) == {**{c: "" for c in r.columns}, "gnomad_dataset": "gnomad_r4"}
+    assert r.extract([]) == {c: "" for c in r.columns}
 
 
 def test_extract_mthfr_uses_joint_block():

@@ -172,7 +172,7 @@ def test_happy_path_chain_validates_cleanly_and_renders(index: EvidenceIndex):
     assert [c.code for c in crit] == ["PS3", "PM2", "PP3", "PM4", "PP4"]
     assert cleaned.variants[0].classification == combine_acmg(crit) == "likely_pathogenic"  # the engine's, not the model's
     assert cleaned.variants[0].points == 7 and cleaned.variants[0].classification_richards_2015 == "likely_pathogenic"
-    assert report.rules["af_field"] == "gnomad_af" and report.rules["PM2"] == "met iff af < 0.0001 or absent"
+    assert report.rules["af_field"] == "gnomad_af" and report.rules["PM2"].startswith("met iff af < 0.0001, or the gnomAD record says")
 
     md = render_evidence_chain(cleaned, index, disclosure=ac.disclosure("claude-opus-5", "high"))
     assert "## Variant 7:117559590:ATCT:A — likely pathogenic" in md
@@ -390,7 +390,7 @@ def test_frequency_falls_back_to_veps_copy_of_gnomad(store: EvidenceStore):
     pm2, ba1 = cleaned.variants[0].criteria
     assert pm2.met is False and ba1.met is True
     assert pm2.justification.startswith(f"[DISPUTED — PM2 recomputed from {MTHFR_VEP}: VEP's copy of gnomAD: "
-                                        "exomes 0.3227, genomes 0.2752; max 0.323 used; met iff af < 0.0001 or absent → not met")
+                                        "exomes 0.3227, genomes 0.2752; max 0.323 used; met iff af < 0.0001, or the gnomAD record says")
     assert [d.record_id for d in report.disputes] == [MTHFR_VEP, MTHFR_VEP]
     assert report.counts["frequency_from_vep"] == 2 and report.counts["frequency_recomputed"] == 2
     assert report.disputes[0].af == pytest.approx(0.3227)

@@ -272,7 +272,8 @@ def frequency_rules(th: dict[str, float], af_field: str) -> dict[str, str]:
     return {
         "af_field": af_field,
         "fallback": "max(vep_gnomade_af, vep_gnomadg_af) from the vep: record when the store holds no gnomAD record",
-        "PM2": f"met iff af < {th['pm2_max_af']:g} or absent",
+        "PM2": (f"met iff af < {th['pm2_max_af']:g}, or the gnomAD record says the variant was queried and not found; "
+                "a variant with no gnomAD record whose VEP copy lists no frequency is left as the model called it (a gap is not an observation)"),
         "BS1": f"met iff af > {th['bs1_min_af']:g}",
         "BA1": f"met iff af > {th['ba1_min_af']:g}",
         "PP3": ("met at the strength the vep: record's scores support: missense by REVEL "
@@ -283,6 +284,7 @@ def frequency_rules(th: dict[str, float], af_field: str) -> dict[str, str]:
         "BP4": ("met at the strength the vep: record's scores support: missense by REVEL "
                 f"(≤{REVEL_BP4[2][0]} supporting, ≤{REVEL_BP4[1][0]} moderate, ≤{REVEL_BP4[0][0]} strong); "
                 f"otherwise CADD PHRED ≤{CADD_BP4_MAX} supporting; non-coding/synonymous by SpliceAI ≤{SPLICEAI_BP4_MAX} supporting"),
+        "PP3+PVS1": "PP3 is not counted beside a met PVS1 on the same variant (ClinGen SVI)",
         "PP5/BP6": "retired by the ClinGen SVI (Biesecker & Harrison 2018): accepted for the record, marked, never counted",
         "classification": "ClinGen SVI points (Tavtigian 2020) over the met, non-retired criteria: supporting 1, moderate 2, "
                           "strong 4, very strong 8, benign negative; P ≥ 10, LP 6–9, VUS 0–5, LB −1 to −6, B ≤ −7. "
@@ -308,6 +310,9 @@ class _Walk:
     cited: list[str] = field(default_factory=list)
     """Every record id the answer cites anywhere (as first read) — the records an
     identifier in prose may be carried by."""
+    pvs1_met: dict[str, bool] = field(default_factory=dict)
+    """Variant key → whether the model wrote a met PVS1 for it (read before its criteria
+    are cleaned, so PP3 on the same variant can be refused)."""
     _corpus: dict[str, str] = field(default_factory=dict)
     _papers: dict[str, str] | None = None
 
@@ -428,6 +433,11 @@ def _clean_object(data: dict[str, Any], model: type[BaseModel], path: str, w: _W
     fields = model.model_fields
     if "key" in fields and "criteria" in fields and isinstance(data.get("key"), str):
         key = data["key"]
+        # PVS1 is the model's claim; whether it survives the citation rules is decided
+        # below, so a PVS1 on an unknown id would still refuse PP3 — an acceptable
+        # asymmetry: the model asserted a null mechanism either way.
+        w.pvs1_met[key] = any(isinstance(c, dict) and _code_of(c) == "PVS1" and bool(c.get("met"))
+                              for c in data.get("criteria") or [])
     for name, info in fields.items():
         if name in ("evidence_ids", "trial_ids"):
             continue  # judged once, by _drop_reason
@@ -822,6 +832,8 @@ def gnomad_frequency(rec: EvidenceRecord, af_field: str = AF_FIELD) -> tuple[flo
     when that column is empty; ``None`` when the record has no allele number at all.
     The whole result is ``None`` when the payload is not a gnomAD variant object."""
     p = rec.payload
+    if isinstance(p, dict) and p.get("absent"):
+        return None, 0, 0, 0  # asked for and not found: an observed absence
     if not isinstance(p, dict) or not any(isinstance(p.get(b), dict) for b in ("joint", "exome", "genome")):
         return None
     cols = GnomadRetriever(None).extract([rec])  # projection only; no request is made
@@ -862,7 +874,9 @@ def observed_frequency(key: str | None, index: EvidenceIndex, af_field: str = AF
         if freq is not None:
             af, ac, an, nhom = freq
             label = "af" if af_field == "gnomad_af" else af_field
-            detail = "absent from gnomAD (no allele number)" if af is None else f"{label}={af:.3g} (ac={ac}, an={an}, hom={nhom})"
+            detail = ("absent from gnomAD (queried, not found)" if af is None and an == 0 else
+                      "absent from gnomAD (no allele number)" if af is None else
+                      f"{label}={af:.3g} (ac={ac}, an={an}, hom={nhom})")
             return ObservedFrequency(rec, af, detail)
     vrec = index.get(f"vep:{key}")
     if vrec is not None:
@@ -914,6 +928,15 @@ def _recompute_frequency(item: dict[str, Any], path: str, w: _Walk, key: str | N
     recomputed = frequency_criterion_met(code, obs.af, w.th)
     claimed = bool(item.get("met"))
     if recomputed == claimed:
+        return
+    if obs.record.source == "vep" and obs.af is None:
+        # VEP's courtesy copy lists nothing: the variant may be absent from gnomAD, or
+        # gnomAD may simply never have been asked (the stage-2 prefilter skips what the
+        # copy already shows common, and the copy is keyed on dbSNP). A gap is not an
+        # observation, so the model's call stands either way and the gap is noted.
+        w.report.counts["frequency_unverified"] += 1
+        w.report.notes.append(f"{path}: {code} not recomputed — no gnomAD record and VEP's copy lists no frequency for "
+                              f"{key}; the model's '{'met' if claimed else 'not met'}' stands, resting on absence only")
         return
     w.report.counts["frequency_disputed"] += 1
     reason = (f"{code} recomputed from {obs.record.record_id}: {obs.detail}; {w.report.rules[code]} → "
@@ -1009,6 +1032,15 @@ def _float(text: str | None) -> float | None:
 def _recompute_computational(item: dict[str, Any], path: str, w: _Walk, key: str | None) -> None:
     code = _code_of(item)
     if code not in COMPUTATIONAL_CODES:
+        return
+    if code == "PP3" and item.get("met") and w.pvs1_met.get(key or ""):
+        # ClinGen SVI: PP3 is not applied alongside PVS1 for the same variant — the
+        # predicted impact is already the very-strong criterion's premise.
+        w.report.counts["computational_disputed"] += 1
+        reason = "PP3 is not counted beside a met PVS1 on the same variant (ClinGen SVI PVS1/splicing guidance) → not met; the model said met"
+        w.report.disputes.append(Dispute(path, code, None, True, False, None, reason))
+        item["met"] = False
+        item["justification"] = f"{DISPUTED_MARK.format(reason=reason)} {item.get('justification', '')}".rstrip()
         return
     rec = w.index.get(f"vep:{key}") if key else None
     claimed = bool(item.get("met"))

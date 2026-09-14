@@ -101,10 +101,13 @@ phase:
   # (0|1 vs 1|0) are counted (counts.phase.shared_pid_opposite_pgt_pairs) and
   # noted in the manifest. With true, their PGT decides: opposite phased
   # genotypes -> trans (a comphet with phase status "trans"); equal -> cis; PGT
-  # missing or unphased on either -> cis. A documented departure from the
-  # contract's wording; switch it on deliberately.
+  # missing or unphased on either -> cis. Shipped default true since 2026-09-15:
+  # that is what GATK's physical phasing means — PID names the phase group and
+  # PGT the phased genotype, so 0|1 beside 1|0 in one group is trans — and reading
+  # a shared PID as cis regardless would hide a real compound heterozygote. A
+  # documented departure from the contract's wording, taken deliberately.
   # A het whose every partner in the gene is cis is dropped as phase:cis (rule 5)
   # even when it would qualify as het_single on its own; such rows are counted
   # (counts.phase.cis_rows_dropped_het_single_eligible), carry the hit
   # model:het_single_eligible in decisions.tsv.gz, and are noted in the manifest.
-  trust_pgt: false
+  trust_pgt: true

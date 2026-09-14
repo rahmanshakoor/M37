@@ -343,6 +343,9 @@ def _gnomad_line(v: VariantBundle, get: Any, by_source: dict[str, list[str]]) ->
     if not ids:
         af, src = get("af_used"), get("af_source")
         return f"gnomAD: no record in the store (af_used {af} from {src or 'nothing'})"
+    if get("gnomad_af") == "-" and get("gnomad_an") == "-":
+        return ("gnomAD: queried and not found — absent from gnomAD v4 (a cited observation; for an indel in a "
+                "repeat or homopolymer, absence may reflect representation rather than rarity)" + _tag(ids))
     parts = [f"af {_num(get('gnomad_af'))}"]
     if get("gnomad_ac") != "-" and get("gnomad_an") != "-":
         parts[0] += f" (ac {get('gnomad_ac')} / an {get('gnomad_an')})"

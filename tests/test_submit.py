@@ -63,7 +63,7 @@ def test_plan_lead_pair_secondary_and_benign_skip(tmp_path: Path):
     assert p.rows[0].variants == [("7", 117587778, "G", "T"), ("7", 117559590, "ATCT", "A")]  # HIGH allele first
     assert [r.finding_type for r in p.rows] == ["primary", "secondary", "primary"]
     assert p.skipped == [{"candidate_id": "MTHFR:hom", "why": "stage-5 chain classified benign/likely benign"}]
-    assert [r.epcr for r in p.rows] == [0.95, 0.90, 0.85]
+    assert [r.epcr for r in p.rows] == [0.95, 0.10, 0.09]  # the lead is believed; backups are not
     assert "ACMG" not in p.rows[0].notes and "ClinVar Pathogenic" in p.rows[0].notes and "phase unknown" in p.rows[0].notes
 
 
@@ -83,7 +83,7 @@ def test_artefact_families_go_last_and_ranks_order_backups(tmp_path: Path):
 def test_also_pairs_follow_the_lead(tmp_path: Path):
     p = plan(_run_dir(tmp_path), also_pairs=[(CFTR_B, "7:117530975:G:A")])
     assert p.rows[1].candidate_id == "CFTR:comphet:alt" and len(p.rows[1].variants) == 2
-    assert p.rows[1].epcr == 0.90 and p.rows[2].epcr == 0.85
+    assert p.rows[1].epcr == 0.10 and p.rows[2].epcr == 0.09
 
 
 def test_csv_is_in_the_scorers_conventions(tmp_path: Path):

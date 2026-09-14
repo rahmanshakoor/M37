@@ -233,7 +233,7 @@ def test_dry_run_writes_bundles_and_the_exact_prompt_without_a_model(run_dir: Pa
     assert m["params"]["hpo"] == HPO and m["params"]["hpo_source"] == "04_rank/joined.json"
     validator = m["params"]["validator"]
     assert validator["thresholds"] == {"ba1_min_af": 0.05, "bs1_min_af": 0.01, "pm2_max_af": 0.0001} and validator["af_field"] == "gnomad_af"
-    assert validator["rules"]["PM2"] == "met iff af < 0.0001 or absent" and validator["rules"]["BA1"] == "met iff af > 0.05"
+    assert validator["rules"]["PM2"].startswith("met iff af < 0.0001, or the gnomAD record says") and validator["rules"]["BA1"] == "met iff af > 0.05"
     assert set(validator["rules"]) >= {"af_field", "fallback", "PM2", "BS1", "BA1", "unverified", "strength_cap"}
     assert m["params"]["disclosure"].startswith("Anthropic API, model claude-opus-5, effort high;")
     assert m["counts"] == {"candidates_total": 3, "candidates_selected": 2, "candidates_reasoned": 0, "chains_written": 0,

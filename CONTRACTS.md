@@ -65,7 +65,7 @@ quality:
   caveat_min_gq: 20
   caveat_flagged_filters: true  # a non-empty quality_flag is a caveat, never a drop
 phase:
-  trust_pgt: false              # true: a shared PID with opposite PGT (0|1 vs 1|0) is read as trans, not cis
+  trust_pgt: true               # a shared PID with opposite PGT (0|1 vs 1|0) is read as trans (GATK physical phasing); false: any shared PID is cis (true since 2026-09-15)
 ```
 
 Every key above is required (`engine.filter.config.FilterConfig` is strict: no defaults, no

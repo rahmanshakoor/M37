@@ -264,8 +264,7 @@ def candidates_view(run_dir: Path) -> dict[str, Any]:
             "phase": dict(c.get("phase") or {}),
             "rule_hits": list(c.get("rule_hits") or []),
             "caveats": list(c.get("caveats") or []),
-            "clinvar_plp": any(str(v.get("clinvar_pathogenicity") or "") in ("Pathogenic", "Likely_pathogenic")
-                               for v in c.get("variants", [])),
+            "clinvar_plp": any(_clinvar_plp(str(v.get("clinvar_pathogenicity") or "")) for v in c.get("variants", [])),
             "variants": [{**v, "evidence": resolve(list(v.get("evidence_ids") or []), index)} for v in c.get("variants", [])],
             "exomiser": _exomiser_join(j, index),
             "join": _join_kind(j) if rank_present else None,
@@ -290,6 +289,13 @@ def _join_kind(j: dict[str, Any] | None) -> str:
     if j is None:
         return "missing"
     return "ranked" if j.get("exomiser_rank") is not None else "unranked"
+
+
+def _clinvar_plp(term: str) -> bool:
+    """ClinVar's combined terms (``Pathogenic/Likely_pathogenic``, ``Pathogenic,_low_penetrance``)
+    count when every member is P or LP — the filter's own reading of the term."""
+    members = [m.split(",")[0] for m in term.split("/") if m]
+    return bool(members) and all(m in ("Pathogenic", "Likely_pathogenic") for m in members)
 
 
 def _exomiser_join(j: dict[str, Any] | None, index: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
