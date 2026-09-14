@@ -1,0 +1,36 @@
+{
+ "body": {
+  "hitCount": 0,
+  "request": {
+   "cursorMark": "*",
+   "internalQuery": "EXT_ID:99999999 AND SRC:MED",
+   "pageSize": 1,
+   "queryString": "EXT_ID:99999999 AND SRC:MED",
+   "resultType": "CORE",
+   "sort": "",
+   "synonym": false
+  },
+  "resultList": {
+   "result": []
+  },
+  "version": "6.9"
+ },
+ "headers": {
+  "content-type": "application/json;charset=UTF-8"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": {
+   "format": "json",
+   "pageSize": 1,
+   "query": "EXT_ID:99999999 AND SRC:MED",
+   "resultType": "core",
+   "synonym": "false"
+  },
+  "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
+ },
+ "retrieved_at": "2026-09-12T16:40:32+00:00",
+ "status": 200,
+ "text": null
+}

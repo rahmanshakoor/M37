@@ -1,0 +1,17 @@
+{
+ "headers": {
+  "content-type": "application/json"
+ },
+ "request": {
+  "body": {
+   "query": "{ meta { name product apiVersion { x y z suffix } dataVersion { year month iteration } dataPrefix } }",
+   "variables": {}
+  },
+  "method": "POST",
+  "params": null,
+  "url": "https://api.platform.opentargets.org/api/v4/graphql"
+ },
+ "retrieved_at": "2026-09-12T18:54:27+00:00",
+ "status": 200,
+ "text": "{\"data\":{\"meta\":{\"name\":\"Open Targets GraphQL & REST API Beta\",\"product\":\"platform\",\"apiVersion\":{\"x\":\"26\",\"y\":\"6\",\"z\":\"3\",\"suffix\":null},\"dataVersion\":{\"year\":\"26\",\"month\":\"06\",\"iteration\":null},\"dataPrefix\":\"platform2606\"}}}"
+}

@@ -1,0 +1,921 @@
+{
+ "payload": {
+  "allele_string": "A/G",
+  "assembly_name": "GRCh38",
+  "colocated_variants": [
+   {
+    "allele_string": "COSMIC_MUTATION",
+    "end": 117559403,
+    "id": "COSV50055916",
+    "phenotype_or_disease": 1,
+    "seq_region_name": "7",
+    "somatic": 1,
+    "start": 117559403,
+    "strand": 1
+   },
+   {
+    "allele_string": "A/G/T",
+    "clin_sig": [
+     "benign"
+    ],
+    "clin_sig_allele": "G:benign",
+    "clin_sig_ref_allele": "A",
+    "end": 117559403,
+    "frequencies": {
+     "G": {
+      "af": 0.3367,
+      "afr": 0.3192,
+      "amr": 0.3487,
+      "eas": 0.3869,
+      "eur": 0.2038,
+      "gnomade": 0.2281,
+      "gnomade_afr": 0.3028,
+      "gnomade_amr": 0.3846,
+      "gnomade_asj": 0.1651,
+      "gnomade_eas": 0.4017,
+      "gnomade_fin": 0.2988,
+      "gnomade_mid": 0.1861,
+      "gnomade_nfe": 0.1844,
+      "gnomade_remaining": 0.2289,
+      "gnomade_sas": 0.3387,
+      "gnomadg": 0.2582,
+      "gnomadg_afr": 0.3015,
+      "gnomadg_ami": 0.1297,
+      "gnomadg_amr": 0.3086,
+      "gnomadg_asj": 0.1588,
+      "gnomadg_eas": 0.4174,
+      "gnomadg_fin": 0.3027,
+      "gnomadg_mid": 0.1747,
+      "gnomadg_nfe": 0.2008,
+      "gnomadg_remaining": 0.246,
+      "gnomadg_sas": 0.3731,
+      "sas": 0.4366
+     }
+    },
+    "id": "rs34855237",
+    "phenotype_or_disease": 1,
+    "pubmed": [
+     26436105,
+     30992994,
+     33334016
+    ],
+    "seq_region_name": "7",
+    "start": 117559403,
+    "strand": 1,
+    "var_synonyms": {
+     "ClinVar": [
+      "RCV001644895",
+      "RCV001009356",
+      "VCV000818106"
+     ]
+    }
+   }
+  ],
+  "end": 117559403,
+  "id": "7:117559403:A:G",
+  "input": "7 117559403 7:117559403:A:G A G . . .",
+  "most_severe_consequence": "intron_variant",
+  "seq_region_name": "7",
+  "start": 117559403,
+  "strand": 1,
+  "transcript_consequences": [
+   {
+    "biotype": "protein_coding",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "canonical": 1,
+    "consequence_terms": [
+     "intron_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000003084.11:c.1393-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/26",
+    "mane": [
+     "MANE_Select"
+    ],
+    "mane_select": "NM_000492.4",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000003084",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "protein_coding",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant"
+    ],
+    "flags": [
+     "cds_end_NF"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000426809.5:c.1303-61A>G",
+    "impact": "MODIFIER",
+    "intron": "9/25",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000426809",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "lncRNA",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "canonical": 1,
+    "consequence_terms": [
+     "downstream_gene_variant"
+    ],
+    "distance": 1330,
+    "gene_id": "ENSG00000232661",
+    "gene_symbol": "CFTR-AS1",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:40144",
+    "impact": "MODIFIER",
+    "strand": -1,
+    "transcript_id": "ENST00000441019",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "protein_coding_CDS_not_defined",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "upstream_gene_variant"
+    ],
+    "distance": 235,
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "impact": "MODIFIER",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000472848",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "nonsense_mediated_decay",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant",
+     "NMD_transcript_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000647720.2:c.1393-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/26",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000647720",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "nonsense_mediated_decay",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant",
+     "NMD_transcript_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000647978.2:c.*1107-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/26",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000647978",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "protein_coding",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000648260.2:c.1210-61A>G",
+    "impact": "MODIFIER",
+    "intron": "9/16",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000648260",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "protein_coding",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000649406.2:c.1210-61A>G",
+    "impact": "MODIFIER",
+    "intron": "9/20",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000649406",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "protein_coding",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000649781.3:c.1210-61A>G",
+    "impact": "MODIFIER",
+    "intron": "9/25",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000649781",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "nonsense_mediated_decay",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant",
+     "NMD_transcript_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000685018.2:c.1393-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/27",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000685018",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "nonsense_mediated_decay",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant",
+     "NMD_transcript_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000687278.2:c.1393-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/28",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000687278",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "nonsense_mediated_decay",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant",
+     "NMD_transcript_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000699585.1:c.1393-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/26",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000699585",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "protein_coding",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000699596.2:c.1393-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/10",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000699596",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "protein_coding",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000699597.2:c.1388-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/10",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000699597",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "nonsense_mediated_decay",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant",
+     "NMD_transcript_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000699598.1:c.1393-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/28",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000699598",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "nonsense_mediated_decay",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant",
+     "NMD_transcript_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000699599.1:c.1393-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/29",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000699599",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "nonsense_mediated_decay",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant",
+     "NMD_transcript_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000699600.1:c.1393-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/28",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000699600",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "nonsense_mediated_decay",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant",
+     "NMD_transcript_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000699601.1:c.1393-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/26",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000699601",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "protein_coding",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000699602.2:c.1393-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/26",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000699602",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "nonsense_mediated_decay",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant",
+     "NMD_transcript_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000699604.1:c.*1217-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/26",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000699604",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "protein_coding",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000699605.2:c.967-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/26",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000699605",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "protein_coding",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000889206.2:c.1393-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/25",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000889206",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "protein_coding",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000889207.2:c.1210-61A>G",
+    "impact": "MODIFIER",
+    "intron": "9/25",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000889207",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "protein_coding",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000889208.2:c.1393-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/25",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000889208",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "protein_coding",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000889209.2:c.1393-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/25",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000889209",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "protein_coding",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000889210.2:c.1210-61A>G",
+    "impact": "MODIFIER",
+    "intron": "9/24",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000889210",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "protein_coding",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00000950799.2:c.1393-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/22",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00000950799",
+    "variant_allele": "G"
+   },
+   {
+    "biotype": "protein_coding",
+    "cadd_phred": 4.666,
+    "cadd_raw": 0.425034,
+    "consequence_terms": [
+     "intron_variant"
+    ],
+    "gene_id": "ENSG00000001626",
+    "gene_symbol": "CFTR",
+    "gene_symbol_source": "HGNC",
+    "hgnc_id": "HGNC:1884",
+    "hgvsc": "ENST00001140285.1:c.1393-61A>G",
+    "impact": "MODIFIER",
+    "intron": "10/26",
+    "spliceai": {
+     "DP_AG": 7,
+     "DP_AL": -12,
+     "DP_DG": -31,
+     "DP_DL": 1,
+     "DS_AG": 0,
+     "DS_AL": 0,
+     "DS_DG": 0,
+     "DS_DL": 0,
+     "SYMBOL": "CFTR"
+    },
+    "strand": 1,
+    "transcript_id": "ENST00001140285",
+    "variant_allele": "G"
+   }
+  ]
+ },
+ "query": {
+  "method": "POST",
+  "params": {
+   "CADD": 1,
+   "SpliceAI": 1,
+   "canonical": 1,
+   "hgvs": 1,
+   "mane": 1,
+   "numbers": 1
+  },
+  "request_key": "1b516d44f090a32a59350c2c2b3383c269773f88c8b63e489eaceedb43fad7e7",
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region",
+  "variant": "7 117559403 7:117559403:A:G A G . . ."
+ },
+ "record_id": "vep:7:117559403:A:G",
+ "retrieved_at": "2026-09-12T23:45:30+00:00",
+ "source": "vep",
+ "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
+ "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117559403-117559403/G?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+}

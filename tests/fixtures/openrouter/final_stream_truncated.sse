@@ -1,0 +1,8 @@
+: OPENROUTER PROCESSING
+
+data: {"id":"gen-cut","object":"chat.completion.chunk","created":1789000000,"model":"anthropic/claude-opus-5","provider":"Anthropic","choices":[{"index":0,"delta":{"role":"assistant","content":"{\"results\": [5, 30"},"finish_reason":null,"native_finish_reason":null,"logprobs":null}]}
+
+data: {"id":"gen-cut","object":"chat.completion.chunk","created":1789000000,"model":"anthropic/claude-opus-5","provider":"Anthropic","choices":[{"index":0,"delta":{"content":""},"finish_reason":"length","native_finish_reason":"max_tokens","logprobs":null}],"usage":{"prompt_tokens":400,"completion_tokens":2000,"total_tokens":2400,"cost":0.03,"prompt_tokens_details":{"cached_tokens":320,"cache_write_tokens":0},"completion_tokens_details":{"reasoning_tokens":0},"is_byok":false}}
+
+data: [DONE]
+

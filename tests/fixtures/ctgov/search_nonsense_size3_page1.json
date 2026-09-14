@@ -1,0 +1,20 @@
+{
+ "headers": {
+  "content-type": "application/json"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": {
+   "countTotal": "true",
+   "fields": "IdentificationModule,StatusModule,SponsorCollaboratorsModule,ConditionsModule,DesignModule,ArmsInterventionsModule,EligibilityModule,BriefSummary,PrimaryOutcomeMeasure,PrimaryOutcomeDescription,PrimaryOutcomeTimeFrame,ConditionMeshTerm,ConditionMeshId,InterventionMeshTerm,InterventionMeshId,VersionHolder,HasResults",
+   "pageSize": 3,
+   "query.cond": "zzqxnotacondition987654",
+   "sort": "LastUpdatePostDate:desc,StudyFirstPostDate:desc"
+  },
+  "url": "https://clinicaltrials.gov/api/v2/studies"
+ },
+ "retrieved_at": "2026-09-12T20:31:10+00:00",
+ "status": 200,
+ "text": "{\"totalCount\":0,\"studies\":[\n\n]}"
+}

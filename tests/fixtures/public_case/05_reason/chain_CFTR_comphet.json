@@ -1,0 +1,121 @@
+{
+ "candidate_id": "CFTR:comphet",
+ "limits": [
+  "Phase between the two pathogenic alleles is unknown: no shared physical-phasing group, and no parental samples",
+  "No functional study was fetched in this run (no literature search), so PS3 is not claimed for either allele",
+  "Stage 4 (Exomiser) had not run in the recorded run, so no phenotype-rank record is cited",
+  "ClinVar assertions are interpretations of others' evidence, not observations on this proband"
+ ],
+ "literature": [],
+ "mechanism_hypothesis": "Biallelic loss of CFTR function, if the alleles are in trans: p.Gly542Ter is a null allele, a premature stop predicted to trigger nonsense-mediated decay [vep:7:117587778:G:T], and p.Phe508del a folding-defective allele that is retained and degraded before reaching the apical membrane, with reduced channel gating in what does [vep:7:117559590:ATCT:A] [clinvar:VCV000007105]. A minimal-function plus F508del genotype, consistent with classic pancreatic-insufficient cystic fibrosis.",
+ "phase_statement": "p.Phe508del is read-phased (PGT 1|0, PID 117559403_A_G) against two common alleles 76 and 111 bp upstream, so it is in trans to those; p.Gly542Ter, 28.2 kb downstream, carries no PID, so the two pathogenic alleles share no read-level phasing and this data cannot show whether they lie on different chromosomes [vep:7:117559590:ATCT:A] [vep:7:117587778:G:T]. Two ClinVar-pathogenic alleles of one recessive gene in a proband with the phenotype make trans the likelier configuration, but only parental genotypes or long-read phasing can show it.",
+ "variants": [
+  {
+   "classification": "likely_pathogenic",
+   "criteria": [
+    {
+     "code": "PM4",
+     "evidence_ids": [
+      "vep:7:117559590:ATCT:A"
+     ],
+     "justification": "In-frame deletion of one residue (Phe508, protein position 507-508, exon 11/27 of the MANE transcript NM_000492.4) in the NBD1 domain, not a repeat region",
+     "met": true,
+     "strength": "moderate"
+    },
+    {
+     "code": "PM3",
+     "evidence_ids": [
+      "clinvar:VCV000007115",
+      "vep:7:117587778:G:T"
+     ],
+     "justification": "Detected with a second ClinVar-pathogenic CFTR allele, p.Gly542Ter, in the same proband; the two share no physical-phasing group (28.2 kb apart), so phase is unknown rather than shown to be cis",
+     "met": true,
+     "strength": "moderate"
+    },
+    {
+     "code": "PP5",
+     "evidence_ids": [
+      "clinvar:VCV000007105"
+     ],
+     "justification": "ClinVar Pathogenic, practice guideline (4 stars), for cystic fibrosis",
+     "met": true,
+     "strength": "supporting"
+    },
+    {
+     "code": "PP4",
+     "evidence_ids": [],
+     "justification": "The case terms (elevated sweat chloride, exocrine pancreatic insufficiency, recurrent respiratory infections, chronic lung disease, bronchiectasis) are the classic cystic fibrosis picture, a single-gene CFTR disorder",
+     "met": true,
+     "strength": "supporting"
+    },
+    {
+     "code": "PM2",
+     "evidence_ids": [
+      "gnomad:7-117559590-ATCT-A"
+     ],
+     "justification": "gnomAD v4 af 0.0119 (19237 of 1612320 alleles) with 58 homozygotes: not absent; the carrier frequency of the commonest CF allele, not evidence against it",
+     "met": false,
+     "strength": "moderate"
+    }
+   ],
+   "key": "7:117559590:ATCT:A",
+   "summary": "Heterozygous p.Phe508del (0/1, AD 23,19), the commonest cystic fibrosis allele: an in-frame single-residue deletion in NBD1, ClinVar Pathogenic at practice-guideline level [vep:7:117559590:ATCT:A] [clinvar:VCV000007105]; its gnomAD frequency and 58 homozygotes reflect a recessive allele at carrier frequency, not benignity [gnomad:7-117559590-ATCT-A]."
+  },
+  {
+   "classification": "pathogenic",
+   "criteria": [
+    {
+     "code": "PVS1",
+     "evidence_ids": [
+      "vep:7:117587778:G:T"
+     ],
+     "justification": "Nonsense p.Gly542Ter (stop_gained, HIGH) in exon 12/27 of the MANE transcript NM_000492.4, far upstream of the last exon junction, so nonsense-mediated decay is predicted; loss of function is the established mechanism of cystic fibrosis",
+     "met": true,
+     "strength": "very_strong"
+    },
+    {
+     "code": "PM3",
+     "evidence_ids": [
+      "clinvar:VCV000007105",
+      "vep:7:117559590:ATCT:A"
+     ],
+     "justification": "Detected with p.Phe508del, a second ClinVar-pathogenic CFTR allele, in the same proband; no shared physical-phasing group, so phase is unknown rather than shown to be cis",
+     "met": true,
+     "strength": "moderate"
+    },
+    {
+     "code": "PP5",
+     "evidence_ids": [
+      "clinvar:VCV000007115"
+     ],
+     "justification": "ClinVar Pathogenic, practice guideline (4 stars), for cystic fibrosis",
+     "met": true,
+     "strength": "supporting"
+    },
+    {
+     "code": "PP4",
+     "evidence_ids": [],
+     "justification": "The case terms are the classic cystic fibrosis picture, a single-gene CFTR disorder",
+     "met": true,
+     "strength": "supporting"
+    },
+    {
+     "code": "PM2",
+     "evidence_ids": [
+      "gnomad:7-117587778-G-T"
+     ],
+     "justification": "gnomAD v4 af 0.00036 (585 of 1612120 alleles), no homozygotes: rare but above the 0.0001 ceiling, as expected for a recurrent CF allele",
+     "met": false,
+     "strength": "moderate"
+    }
+   ],
+   "key": "7:117587778:G:T",
+   "summary": "Heterozygous p.Gly542Ter (0/1, AD 25,22), a nonsense allele in exon 12 of 27 predicted to trigger nonsense-mediated decay, ClinVar Pathogenic at practice-guideline level [vep:7:117587778:G:T] [clinvar:VCV000007115]; 585 alleles and no homozygotes in gnomAD [gnomad:7-117587778-G-T]."
+  }
+ ],
+ "what_would_change_the_call": [
+  "Parental genotypes or long-read phasing showing the two alleles in cis would remove PM3 from both",
+  "A sweat chloride measurement or a CFTR functional assay on the proband's cells",
+  "A revised ClinVar assertion or a gnomAD release with homozygotes for p.Gly542Ter"
+ ]
+}

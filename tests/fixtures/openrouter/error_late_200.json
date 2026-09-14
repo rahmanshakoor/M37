@@ -1,0 +1,17 @@
+{
+ "body": {
+  "error": {
+   "code": 502,
+   "message": "Provider returned error",
+   "metadata": {
+    "error_type": "provider_unavailable",
+    "provider_name": "Anthropic"
+   }
+  },
+  "id": "gen-late"
+ },
+ "headers": {
+  "content-type": "application/json"
+ },
+ "status": 200
+}

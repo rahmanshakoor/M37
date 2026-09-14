@@ -1,0 +1,108 @@
+{
+ "candidates": [
+  {
+   "candidate_id": "CFTR:hom",
+   "caveats": [],
+   "gene_id": "ENSG00000001626",
+   "gene_symbol": "CFTR",
+   "model": "hom",
+   "phase": {
+    "evidence": "homozygous",
+    "status": "n/a"
+   },
+   "priority": 1,
+   "rule_hits": [
+    "consequence:MODERATE",
+    "rarity:af=0.0074"
+   ],
+   "variants": [
+    {
+     "ad": "0,38",
+     "af_source": "gnomad_af",
+     "af_used": "0.0074",
+     "caveats": [],
+     "clinvar_pathogenicity": "Pathogenic",
+     "clinvar_stars": "4",
+     "clinvar_vcv": "VCV000007105",
+     "consequence": "inframe_deletion",
+     "dp": "38",
+     "evidence_ids": [
+      "vep:7:117559590:ATCT:A",
+      "clinvar:VCV000007105",
+      "gnomad:7-117559590-ATCT-A"
+     ],
+     "gnomad_nhom": "0",
+     "gq": "99",
+     "gt": "1/1",
+     "hgvsc": "ENST00000003084.11:c.1521_1523del",
+     "hgvsp": "ENSP00000003084.6:p.Phe508del",
+     "impact": "MODERATE",
+     "key": "7:117559590:ATCT:A",
+     "mane": "MANE_Select",
+     "polyphen_pred": "",
+     "quality_flag": "",
+     "sift_pred": "",
+     "spliceai_ds_max": "0",
+     "transcript_id": "ENST00000003084"
+    }
+   ]
+  },
+  {
+   "candidate_id": "MTHFR:het_single",
+   "caveats": [],
+   "gene_id": "ENSG00000177000",
+   "gene_symbol": "MTHFR",
+   "model": "het_single",
+   "phase": {
+    "evidence": "single heterozygote",
+    "status": "n/a"
+   },
+   "priority": 2,
+   "rule_hits": [
+    "consequence:MODERATE"
+   ],
+   "variants": [
+    {
+     "ad": "21,19",
+     "af_source": "gnomad_af",
+     "af_used": "0.31",
+     "caveats": [],
+     "clinvar_pathogenicity": "drug_response",
+     "clinvar_stars": "2",
+     "clinvar_vcv": "VCV000003520",
+     "consequence": "missense_variant",
+     "dp": "40",
+     "evidence_ids": [
+      "vep:1:11796321:G:A",
+      "clinvar:VCV000003520"
+     ],
+     "gnomad_nhom": "0",
+     "gq": "99",
+     "gt": "0/1",
+     "hgvsc": "ENST00000376592.10:c.665C>T",
+     "hgvsp": "ENSP00000365778.4:p.Ala222Val",
+     "impact": "MODERATE",
+     "key": "1:11796321:G:A",
+     "mane": "MANE_Select",
+     "polyphen_pred": "",
+     "quality_flag": "",
+     "sift_pred": "",
+     "spliceai_ds_max": "0",
+     "transcript_id": "ENST00000376592"
+    }
+   ]
+  }
+ ],
+ "config": {
+  "rarity": {
+   "dominant_max_af": 0.0001,
+   "recessive_max_af": 0.01
+  }
+ },
+ "counts": {
+  "candidates": 2,
+  "dropped": 0,
+  "kept": 2,
+  "rows_in": 2
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "body": {
+  "version": "6.9"
+ },
+ "headers": {
+  "content-type": "application/json;charset=UTF-8"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": {
+   "format": "json",
+   "pageSize": 1,
+   "query": "TITLE_ABS:\"CFTR\" AND TITLE_ABS:\"F508del\" AND SRC:MED",
+   "resultType": "core",
+   "sort": "CITED"
+  },
+  "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
+ },
+ "retrieved_at": "2026-09-12T16:41:12+00:00",
+ "status": 200,
+ "text": null
+}

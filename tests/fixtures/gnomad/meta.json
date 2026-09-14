@@ -1,0 +1,17 @@
+{
+ "headers": {
+  "content-type": "application/json; charset=utf-8"
+ },
+ "request": {
+  "body": {
+   "query": "{ meta { clinvar_release_date } }",
+   "variables": {}
+  },
+  "method": "POST",
+  "params": null,
+  "url": "https://gnomad.broadinstitute.org/api"
+ },
+ "retrieved_at": "2026-09-12T17:16:09+00:00",
+ "status": 200,
+ "text": "{\"data\":{\"meta\":{\"clinvar_release_date\":\"2026-06-06\"}}}"
+}

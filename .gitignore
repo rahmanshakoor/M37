@@ -1,0 +1,46 @@
+# --- Patient data must never enter this repository ---------------------------
+# Sequencing data and anything derived from it, matched by extension anywhere.
+*.vcf
+*.vcf.gz
+*.vcf.gz.tbi
+*.vcf.gz.csi
+*.bcf
+*.bcf.csi
+*.g.vcf*
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+*.bam
+*.bam.bai
+*.cram
+*.cram.crai
+# Tabular outputs: every stage writes these, all of them carry genotypes.
+*.tsv
+*.tsv.gz
+*.csv
+*.parquet
+# The case file names the proband and lists clinical terms.
+case.yaml
+case.*.yaml
+!case.example.yaml
+# Clinical documents.
+*.docx
+*.pdf
+# Stage outputs, evidence cache, downloaded references and tool bundles.
+work/
+cache/
+ref/
+data/
+
+# --- Ordinary hygiene -------------------------------------------------------
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+.coverage

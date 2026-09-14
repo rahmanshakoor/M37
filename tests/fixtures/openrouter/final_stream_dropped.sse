@@ -1,0 +1,6 @@
+: OPENROUTER PROCESSING
+
+data: {"id":"gen-dropped","object":"chat.completion.chunk","created":1789000000,"model":"anthropic/claude-opus-5","provider":"Anthropic","choices":[{"index":0,"delta":{"role":"assistant","content":"{\"results\": [5, 30, 35], "},"finish_reason":null,"native_finish_reason":null,"logprobs":null}]}
+
+: OPENROUTER PROCESSING
+

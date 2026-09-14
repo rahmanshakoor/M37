@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>engine · live mode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Spectral:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header class="top">
+  <div>
+    <p class="kicker">engine</p>
+    <h1>Live mode</h1>
+  </div>
+  <div class="top-tools">
+    <span id="work" class="mono small muted" title="the work directory"></span>
+    <button id="setup-toggle" class="btn" type="button">Setup</button>
+    <button id="theme" class="btn" type="button">Theme: system</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="side">
+    <section>
+      <h2 class="side-h">Runs</h2>
+      <ul id="run-list" class="run-list"></ul>
+      <p id="run-list-msg" class="small muted"></p>
+    </section>
+    <section>
+      <h2 class="side-h">New run</h2>
+      <form id="new-run" autocomplete="off">
+        <label class="field"><span>Case file</span>
+          <select id="case-pick" name="case_pick" class="mono"></select></label>
+        <p id="case-info" class="small muted case-info"></p>
+        <label class="field" id="case-path-field"><span>Case file path</span>
+          <input type="text" name="case_path" class="mono" placeholder="/path/to/case.yaml"></label>
+        <label class="field"><span>Run name</span>
+          <input type="text" name="name" class="mono" pattern="[A-Za-z0-9][A-Za-z0-9._-]*" placeholder="proband-yyyymmdd-hhmm"></label>
+        <label class="field"><span>Regions BED (optional, stage 1 only)</span>
+          <input type="text" name="regions" class="mono" placeholder="/path/to/regions.bed"></label>
+        <div id="new-run-pipeline" class="pipeline-opts"></div>
+        <div class="launch">
+          <button type="submit" class="btn primary" id="new-run-go" value="pipeline">Create and run</button>
+          <button type="submit" class="btn" id="new-run-only" value="create">Create only</button>
+        </div>
+        <p id="new-run-msg" class="small muted"></p>
+      </form>
+    </section>
+  </aside>
+
+  <main class="main">
+    <section id="setup" class="setup">
+      <div class="setup-head">
+        <div>
+          <p class="kicker">Setup</p>
+          <h2 id="setup-title">What the engine found</h2>
+        </div>
+        <p id="setup-summary" class="small muted"></p>
+      </div>
+      <p id="setup-project" class="small muted mono wide"></p>
+      <ol id="setup-items" class="setup-items"></ol>
+      <div id="setup-job" class="setup-job" hidden>
+        <p id="setup-job-status" class="job-status"></p>
+        <pre id="setup-job-log" class="log short" aria-live="polite"></pre>
+        <button id="setup-job-cancel" class="btn small" type="button" disabled>Cancel</button>
+      </div>
+    </section>
+
+    <section id="empty" class="empty">
+      <p>No run yet. Pick a case file on the left and choose <b>Create and run</b>: the six stages run in order with every path and setting carried from the Setup panel above.</p>
+    </section>
+
+    <section id="run" hidden>
+      <div class="run-head">
+        <p class="kicker">Run</p>
+        <h2 id="run-title"></h2>
+        <dl id="run-facts" class="facts"></dl>
+      </div>
+
+      <div class="pipeline">
+        <div class="pipeline-head">
+          <button id="pipeline-run" class="btn primary" type="button">Run pipeline</button>
+          <span class="small muted">ingest → retrieve → filter → rank → reason → medicine, one job; fresh stages are skipped</span>
+        </div>
+        <div id="run-pipeline-opts" class="pipeline-opts"></div>
+        <p id="pipeline-msg" class="small muted"></p>
+      </div>
+
+      <ol id="stages" class="stages"></ol>
+
+      <section id="job" class="job" hidden>
+        <div class="job-head">
+          <h3 id="job-title">Job</h3>
+          <div>
+            <button id="job-cancel" class="btn small" type="button" disabled>Cancel</button>
+            <button id="job-close" class="btn small" type="button">Close panel</button>
+          </div>
+        </div>
+        <ol id="job-strip" class="job-strip" hidden></ol>
+        <div class="job-body">
+          <form id="job-form" class="job-form" autocomplete="off">
+            <label class="field"><span>Stage</span><select id="job-stage" name="stage"></select></label>
+            <div id="job-args" class="args"></div>
+            <div id="job-mode" class="job-mode" hidden></div>
+            <div class="launch">
+              <button id="job-launch" class="btn primary" type="submit">Launch</button>
+              <span id="job-form-msg" class="small muted"></span>
+            </div>
+          </form>
+          <div class="job-out">
+            <p id="job-status" class="job-status">No job launched yet.</p>
+            <pre id="job-log" class="log" aria-live="polite"></pre>
+            <div id="job-tools-wrap" hidden>
+              <h5>Tool calls</h5>
+              <ol id="job-tools" class="tools"></ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <nav id="tabs" class="tabs" aria-label="Views"></nav>
+      <section id="tab-body" class="tab-body"></section>
+    </section>
+
+    <p class="foot">engine · live mode · bound to 127.0.0.1 only · every figure is quoted as the stage wrote it</p>
+  </main>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

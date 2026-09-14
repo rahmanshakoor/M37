@@ -1,0 +1,217 @@
+{
+ "payload": {
+  "derivedSection": {
+   "conditionBrowseModule": {
+    "meshes": [
+     {
+      "id": "D003550",
+      "term": "Cystic Fibrosis"
+     }
+    ]
+   },
+   "interventionBrowseModule": {
+    "meshes": [
+     {
+      "id": "C569105",
+      "term": "lumacaftor"
+     },
+     {
+      "id": "C545203",
+      "term": "ivacaftor"
+     }
+    ]
+   },
+   "miscInfoModule": {
+    "versionHolder": "2026-09-11"
+   }
+  },
+  "hasResults": true,
+  "protocolSection": {
+   "armsInterventionsModule": {
+    "armGroups": [
+     {
+      "description": "Placebo matched to lumacaftor (LUM, VX-809) and ivacaftor (IVA, VX-770) tablet every 12 hours (q12h), up to Week 24.",
+      "interventionNames": [
+       "Drug: Placebo"
+      ],
+      "label": "Placebo",
+      "type": "PLACEBO_COMPARATOR"
+     },
+     {
+      "description": "LUM 600 milligram (mg) plus IVA 250 mg fixed-dose combination (FDC) tablet in the morning and IVA 250 mg film-coated tablet in the evening, up to Week 24.",
+      "interventionNames": [
+       "Drug: Lumacaftor Plus Ivacaftor Combination",
+       "Drug: Ivacaftor"
+      ],
+      "label": "LUM 600 mg qd/IVA 250 mg q12h",
+      "type": "EXPERIMENTAL"
+     },
+     {
+      "description": "LUM 400 mg plus IVA 250 mg FDC tablet in the morning and in the evening, up to Week 24.",
+      "interventionNames": [
+       "Drug: Lumacaftor Plus Ivacaftor Combination"
+      ],
+      "label": "LUM 400 mg q12h/ IVA 250 mg q12h",
+      "type": "EXPERIMENTAL"
+     }
+    ],
+    "interventions": [
+     {
+      "armGroupLabels": [
+       "LUM 400 mg q12h/ IVA 250 mg q12h",
+       "LUM 600 mg qd/IVA 250 mg q12h"
+      ],
+      "description": "Fixed dose combination tablet",
+      "name": "Lumacaftor Plus Ivacaftor Combination",
+      "otherNames": [
+       "VX-809+VX-770, LUM+IVA"
+      ],
+      "type": "DRUG"
+     },
+     {
+      "armGroupLabels": [
+       "LUM 600 mg qd/IVA 250 mg q12h"
+      ],
+      "description": "Film-coated tablet",
+      "name": "Ivacaftor",
+      "otherNames": [
+       "VX-770, IVA"
+      ],
+      "type": "DRUG"
+     },
+     {
+      "armGroupLabels": [
+       "Placebo"
+      ],
+      "description": "Matching placebo tablet",
+      "name": "Placebo",
+      "type": "DRUG"
+     }
+    ]
+   },
+   "conditionsModule": {
+    "conditions": [
+     "Cystic Fibrosis, Homozygous for the F508del CFTR Mutation"
+    ]
+   },
+   "descriptionModule": {
+    "briefSummary": "The primary objective of the study was to evaluate the efficacy of lumacaftor in combination with ivacaftor at Week 24 in participants aged 12 years and older with cystic fibrosis (CF) who are homozygous for the F508del mutation on the CF transmembrane conductance regulator (CFTR) gene."
+   },
+   "designModule": {
+    "designInfo": {
+     "allocation": "RANDOMIZED",
+     "interventionModel": "PARALLEL",
+     "maskingInfo": {
+      "masking": "DOUBLE",
+      "whoMasked": [
+       "PARTICIPANT",
+       "INVESTIGATOR"
+      ]
+     },
+     "primaryPurpose": "TREATMENT"
+    },
+    "enrollmentInfo": {
+     "count": 559,
+     "type": "ACTUAL"
+    },
+    "phases": [
+     "PHASE3"
+    ],
+    "studyType": "INTERVENTIONAL"
+   },
+   "eligibilityModule": {
+    "eligibilityCriteria": "Inclusion Criteria:\n\n* Confirmed diagnosis of CF\n* Homozygous for the F508del CFTR mutation\n* Forced expiratory volume in 1 second (FEV1) greater than or equal to (\\>=) 40 percent (%) and less than or equal to (=\\<) 90% of predicted normal for age, sex, and height\n* Willing to remain on a stable CF medication regimen through Week 24 or, if applicable, the Safety Follow up Visit\n\nExclusion Criteria:\n\n* An acute upper or lower respiratory infection, pulmonary exacerbation, or changes in therapy (including antibiotics) for pulmonary disease within 4 weeks before first dose of study drug\n* History of solid organ or hematological transplantation\n* History of alcohol or drug abuse in the past year\n* Ongoing or prior participation in an investigational drug study (including studies investigating lumacaftor and/or ivacaftor) within 30 days of screening\n* Use of strong inhibitors, moderate inducers or strong inducers of Cytochrome P450 3A (CYP3A) within 14 days before Day 1 of dosing",
+    "healthyVolunteers": false,
+    "minimumAge": "12 Years",
+    "sex": "ALL",
+    "stdAges": [
+     "CHILD",
+     "ADULT",
+     "OLDER_ADULT"
+    ]
+   },
+   "identificationModule": {
+    "acronym": "TRAFFIC",
+    "briefTitle": "A Study of Lumacaftor in Combination With Ivacaftor in Cystic Fibrosis Subjects Aged 12 Years and Older Who Are Homozygous for the F508del-CFTR Mutation",
+    "nctId": "NCT01807923",
+    "officialTitle": "A Phase 3, Randomized, Double Blind, Placebo Controlled, Parallel Group Study to Evaluate the Efficacy and Safety of Lumacaftor in Combination With Ivacaftor in Subjects Aged 12 Years and Older With Cystic Fibrosis, Homozygous for the F508del CFTR Mutation",
+    "orgStudyIdInfo": {
+     "id": "VX12-809-103"
+    },
+    "organization": {
+     "class": "INDUSTRY",
+     "fullName": "Vertex Pharmaceuticals Incorporated"
+    }
+   },
+   "outcomesModule": {
+    "primaryOutcomes": [
+     {
+      "description": "Absolute change from baseline at Week 24 was assessed as the average treatment effect at Week 16 and at Week 24. FEV1 is the volume of air that can forcibly be blown out in one second, after full inspiration. Hankinson and Wang standards were used to calculate percent predicted FEV1 (for age, gender, race, and height). The Hankinson standard was used for male participants 18 years and older and female participants 16 years and older. The Wang standard was used for male participants aged 12 to 17 years and for female participants aged 12 to 15 years.",
+      "measure": "Absolute Change From Baseline in Percent Predicted Forced Expiratory Volume in 1 Second (FEV1) at Week 24",
+      "timeFrame": "Baseline, Week 16 and 24"
+     }
+    ]
+   },
+   "sponsorCollaboratorsModule": {
+    "leadSponsor": {
+     "class": "INDUSTRY",
+     "name": "Vertex Pharmaceuticals Incorporated"
+    },
+    "responsibleParty": {
+     "type": "SPONSOR"
+    }
+   },
+   "statusModule": {
+    "completionDateStruct": {
+     "date": "2014-04",
+     "type": "ACTUAL"
+    },
+    "dispFirstPostDateStruct": {
+     "date": "2015-06-02",
+     "type": "ESTIMATED"
+    },
+    "dispFirstSubmitDate": "2015-05-08",
+    "dispFirstSubmitQcDate": "2015-05-08",
+    "expandedAccessInfo": {
+     "hasExpandedAccess": false
+    },
+    "lastUpdatePostDateStruct": {
+     "date": "2015-08-31",
+     "type": "ESTIMATED"
+    },
+    "lastUpdateSubmitDate": "2015-08-01",
+    "overallStatus": "COMPLETED",
+    "primaryCompletionDateStruct": {
+     "date": "2014-04",
+     "type": "ACTUAL"
+    },
+    "resultsFirstPostDateStruct": {
+     "date": "2015-08-31",
+     "type": "ESTIMATED"
+    },
+    "resultsFirstSubmitDate": "2015-08-01",
+    "resultsFirstSubmitQcDate": "2015-08-01",
+    "startDateStruct": {
+     "date": "2013-05"
+    },
+    "statusVerifiedDate": "2015-06",
+    "studyFirstPostDateStruct": {
+     "date": "2013-03-08",
+     "type": "ESTIMATED"
+    },
+    "studyFirstSubmitDate": "2013-03-04",
+    "studyFirstSubmitQcDate": "2013-03-06"
+   }
+  }
+ },
+ "query": {
+  "api": "https://clinicaltrials.gov/api/v2/studies/NCT01807923?fields=IdentificationModule%2CStatusModule%2CSponsorCollaboratorsModule%2CConditionsModule%2CDesignModule%2CArmsInterventionsModule%2CEligibilityModule%2CBriefSummary%2CPrimaryOutcomeMeasure%2CPrimaryOutcomeDescription%2CPrimaryOutcomeTimeFrame%2CConditionMeshTerm%2CConditionMeshId%2CInterventionMeshTerm%2CInterventionMeshId%2CVersionHolder%2CHasResults",
+  "fields": "IdentificationModule,StatusModule,SponsorCollaboratorsModule,ConditionsModule,DesignModule,ArmsInterventionsModule,EligibilityModule,BriefSummary,PrimaryOutcomeMeasure,PrimaryOutcomeDescription,PrimaryOutcomeTimeFrame,ConditionMeshTerm,ConditionMeshId,InterventionMeshTerm,InterventionMeshId,VersionHolder,HasResults",
+  "nctId": "NCT01807923"
+ },
+ "record_id": "nct:NCT01807923",
+ "retrieved_at": "2026-09-12T21:40:31+00:00",
+ "source": "nct",
+ "source_version": "ClinicalTrials.gov API 2.0.5 data 2026-09-11",
+ "url": "https://clinicaltrials.gov/study/NCT01807923"
+}

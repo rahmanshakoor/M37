@@ -1,0 +1,10 @@
+# The repository ignores every *.vcf, *.vcf.gz, *.tbi and case.yaml so that patient
+# data can never be committed. This directory holds the one exception: a hand-written
+# VCF of public ClinVar/dbSNP alleles and a case file for a proband that does not
+# exist (README.md). Re-include exactly those four files, nothing else: the leading
+# "/" anchors each pattern to this directory, so a VCF or case file in any
+# subdirectory (a run directory someone pointed here, say) stays ignored.
+!/public.vcf
+!/public.vcf.gz
+!/public.vcf.gz.tbi
+!/case.yaml

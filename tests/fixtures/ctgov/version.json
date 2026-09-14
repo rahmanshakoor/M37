@@ -1,0 +1,14 @@
+{
+ "headers": {
+  "content-type": "application/json"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": null,
+  "url": "https://clinicaltrials.gov/api/v2/version"
+ },
+ "retrieved_at": "2026-09-12T20:31:06+00:00",
+ "status": 200,
+ "text": "{\n  \"apiVersion\" : \"2.0.5\",\n  \"dataTimestamp\" : \"2026-09-11T09:00:04\"\n}"
+}

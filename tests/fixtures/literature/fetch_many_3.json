@@ -1,0 +1,655 @@
+{
+ "body": {
+  "hitCount": 2,
+  "request": {
+   "cursorMark": "*",
+   "pageSize": 3,
+   "queryString": "(EXT_ID:7647779 OR EXT_ID:2570460 OR EXT_ID:99999999) AND SRC:MED",
+   "resultType": "core",
+   "sort": "",
+   "synonym": false
+  },
+  "resultList": {
+   "result": [
+    {
+     "abstractText": "Hyperhomocysteinaemia has been identified as a risk factor for cerebrovascular, peripheral vascular and coronary heart disease. Elevated levels of plasma homocysteine can result from genetic or nutrient-related disturbances in the trans-sulphuration or re-methylation pathways for homocysteine metabolism. 5, 10-Methylenetetrahydrofolate reductase (MTHFR) catalyzes the reduction of 5, 10-methylenetetrahydrofolate to 5-methyltetrahydrofolate, the predominant circulatory form of folate and carbon donor for the re-methylation of homocysteine to methionine. Reduced MTHFR activity with a thermolabile enzyme has been reported in patients with coronary and peripheral artery disease. We have identified a common mutation in MTHFR which alters a highly-conserved amino acid; the substitution occurs at a frequency of approximately 38% of unselected chromosomes. The mutation in the heterozygous or homozygous state correlates with reduced enzyme activity and increased thermolability in lymphocyte extracts; in vitro expression of a mutagenized cDNA containing the mutation confirms its effect on thermolability of MTHFR. Finally, individuals homozygous for the mutation have significantly elevated plasma homocysteine levels. This mutation in MTHFR may represent an important genetic risk factor in vascular disease.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0001-5202-9241"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "firstName": "P",
+        "fullName": "Frosst P",
+        "initials": "P",
+        "lastName": "Frosst"
+       },
+       {
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0001-5202-9241"
+        },
+        "firstName": "H J",
+        "fullName": "Blom HJ",
+        "initials": "HJ",
+        "lastName": "Blom"
+       },
+       {
+        "firstName": "R",
+        "fullName": "Milos R",
+        "initials": "R",
+        "lastName": "Milos"
+       },
+       {
+        "firstName": "P",
+        "fullName": "Goyette P",
+        "initials": "P",
+        "lastName": "Goyette"
+       },
+       {
+        "firstName": "C A",
+        "fullName": "Sheppard CA",
+        "initials": "CA",
+        "lastName": "Sheppard"
+       },
+       {
+        "firstName": "R G",
+        "fullName": "Matthews RG",
+        "initials": "RG",
+        "lastName": "Matthews"
+       },
+       {
+        "firstName": "G J",
+        "fullName": "Boers GJ",
+        "initials": "GJ",
+        "lastName": "Boers"
+       },
+       {
+        "firstName": "M",
+        "fullName": "den Heijer M",
+        "initials": "M",
+        "lastName": "den Heijer"
+       },
+       {
+        "firstName": "L A",
+        "fullName": "Kluijtmans LA",
+        "initials": "LA",
+        "lastName": "Kluijtmans"
+       },
+       {
+        "firstName": "L P",
+        "fullName": "van den Heuvel LP",
+        "initials": "LP",
+        "lastName": "van den Heuvel"
+       }
+      ]
+     },
+     "authorString": "Frosst P, Blom HJ, Milos R, Goyette P, Sheppard CA, Matthews RG, Boers GJ, den Heijer M, Kluijtmans LA, van den Heuvel LP.",
+     "chemicalList": {
+      "chemical": [
+       {
+        "name": "DNA, Complementary",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Methylenetetrahydrofolate Reductase (NADPH2)",
+        "registryNumber": "EC 1.5.1.20"
+       },
+       {
+        "name": "Oxidoreductases Acting on CH-NH Group Donors",
+        "registryNumber": "EC 1.5.-"
+       },
+       {
+        "name": "Homocysteine",
+        "registryNumber": "0LVT1QZ0BA"
+       }
+      ]
+     },
+     "citedByCount": 3899,
+     "dataLinksTagsList": {
+      "dataLinkstag": [
+       "related_data",
+       "wikipedia"
+      ]
+     },
+     "dateOfCompletion": "1995-09-25",
+     "dateOfCreation": "1995-05-01",
+     "dateOfRevision": "2024-12-19",
+     "dbCrossReferenceList": {
+      "dbName": [
+       "EMBL",
+       "OMIM",
+       "UNIPROT"
+      ]
+     },
+     "doi": "10.1038/ng0595-111",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2008-01-29",
+     "firstPublicationDate": "1995-05-01",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1038/ng0595-111"
+       }
+      ]
+     },
+     "grantsList": {
+      "grant": [
+       {
+        "acronym": "GM",
+        "agency": "NIGMS NIH HHS",
+        "grantId": "R37 GM24908",
+        "orderIn": 0
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "Y",
+     "hasDbCrossReferences": "Y",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "Y",
+     "hasPDF": "N",
+     "hasReferences": "Y",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "Y",
+     "id": "7647779",
+     "inEPMC": "N",
+     "inPMC": "N",
+     "isOpenAccess": "N",
+     "journalInfo": {
+      "dateOfPublication": "1995 May",
+      "issue": "1",
+      "journal": {
+       "essn": "1546-1718",
+       "isoabbreviation": "Nat Genet",
+       "issn": "1061-4036",
+       "medlineAbbreviation": "Nat Genet",
+       "nlmid": "9216904",
+       "title": "Nature genetics"
+      },
+      "journalIssueId": 888535,
+      "monthOfPublication": 5,
+      "printPublicationDate": "1995-05-01",
+      "volume": "10",
+      "yearOfPublication": 1995
+     },
+     "language": "eng",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Liver",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Kidney",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Lymphocytes",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Humans",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Escherichia coli",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Vascular Diseases",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "Y",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "EP",
+           "majorTopic_YN": "N",
+           "qualifierName": "epidemiology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Methylenetetrahydrofolate Reductase (NADPH2)",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Homocysteine",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "DNA, Complementary",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Risk Factors",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Mutagenesis, Site-Directed",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Enzyme Stability",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Temperature",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Base Sequence",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Mutation",
+        "majorTopic_YN": "Y"
+       },
+       {
+        "descriptorName": "Molecular Sequence Data",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Adult",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Middle Aged",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Quebec",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Oxidoreductases Acting on CH-NH Group Donors",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "DF",
+           "majorTopic_YN": "Y",
+           "qualifierName": "deficiency"
+          },
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "Y",
+           "qualifierName": "genetics"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Female",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Male",
+        "majorTopic_YN": "N"
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "111-113",
+     "pmid": "7647779",
+     "pubModel": "Print",
+     "pubTypeList": {
+      "pubType": [
+       "Letter",
+       "Research Support, U.S. Gov't, P.H.S.",
+       "Research Support, Non-U.S. Gov't"
+      ]
+     },
+     "pubYear": "1995",
+     "publicationStatus": "ppublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "A candidate genetic risk factor for vascular disease: a common mutation in methylenetetrahydrofolate reductase."
+    },
+    {
+     "abstractText": "Approximately 70 percent of the mutations in cystic fibrosis patients correspond to a specific deletion of three base pairs, which results in the loss of a phenylalanine residue at amino acid position 508 of the putative product of the cystic fibrosis gene. Extended haplotype data based on DNA markers closely linked to the putative disease gene locus suggest that the remainder of the cystic fibrosis mutant gene pool consists of multiple, different mutations. A small set of these latter mutant alleles (about 8 percent) may confer residual pancreatic exocrine function in a subgroup of patients who are pancreatic sufficient. The ability to detect mutations in the cystic fibrosis gene at the DNA level has important implications for genetic diagnosis.",
+     "affiliation": "Department of Genetics, Hospital for Sick Children, Toronto, Ontario, Canada.",
+     "authMan": "N",
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Genetics, Hospital for Sick Children, Toronto, Ontario, Canada."
+          }
+         ]
+        },
+        "firstName": "B",
+        "fullName": "Kerem B",
+        "initials": "B",
+        "lastName": "Kerem"
+       },
+       {
+        "firstName": "J M",
+        "fullName": "Rommens JM",
+        "initials": "JM",
+        "lastName": "Rommens"
+       },
+       {
+        "firstName": "J A",
+        "fullName": "Buchanan JA",
+        "initials": "JA",
+        "lastName": "Buchanan"
+       },
+       {
+        "firstName": "D",
+        "fullName": "Markiewicz D",
+        "initials": "D",
+        "lastName": "Markiewicz"
+       },
+       {
+        "firstName": "T K",
+        "fullName": "Cox TK",
+        "initials": "TK",
+        "lastName": "Cox"
+       },
+       {
+        "firstName": "A",
+        "fullName": "Chakravarti A",
+        "initials": "A",
+        "lastName": "Chakravarti"
+       },
+       {
+        "firstName": "M",
+        "fullName": "Buchwald M",
+        "initials": "M",
+        "lastName": "Buchwald"
+       },
+       {
+        "firstName": "L C",
+        "fullName": "Tsui LC",
+        "initials": "LC",
+        "lastName": "Tsui"
+       }
+      ]
+     },
+     "authorString": "Kerem B, Rommens JM, Buchanan JA, Markiewicz D, Cox TK, Chakravarti A, Buchwald M, Tsui LC.",
+     "chemicalList": {
+      "chemical": [
+       {
+        "name": "Genetic Markers",
+        "registryNumber": "0"
+       }
+      ]
+     },
+     "citedByCount": 2651,
+     "dataLinksTagsList": {
+      "dataLinkstag": [
+       "related_data",
+       "wikipedia"
+      ]
+     },
+     "dateOfCompletion": "1989-10-03",
+     "dateOfCreation": "1989-09-08",
+     "dateOfRevision": "2024-01-04",
+     "dbCrossReferenceList": {
+      "dbName": [
+       "OMIM"
+      ]
+     },
+     "doi": "10.1126/science.2570460",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2008-01-29",
+     "firstPublicationDate": "1989-09-01",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1126/science.2570460"
+       }
+      ]
+     },
+     "grantsList": {
+      "grant": [
+       {
+        "acronym": "DK",
+        "agency": "NIDDK NIH HHS",
+        "grantId": "DK34944",
+        "orderIn": 0
+       },
+       {
+        "acronym": "GM",
+        "agency": "NIGMS NIH HHS",
+        "grantId": "GM33771",
+        "orderIn": 0
+       },
+       {
+        "acronym": "HD",
+        "agency": "NICHD NIH HHS",
+        "grantId": "HD00774",
+        "orderIn": 0
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "Y",
+     "hasDbCrossReferences": "Y",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "Y",
+     "hasPDF": "N",
+     "hasReferences": "Y",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "Y",
+     "id": "2570460",
+     "inEPMC": "N",
+     "inPMC": "N",
+     "isOpenAccess": "N",
+     "journalInfo": {
+      "dateOfPublication": "1989 Sep",
+      "issue": "4922",
+      "journal": {
+       "essn": "1095-9203",
+       "isoabbreviation": "Science",
+       "issn": "0036-8075",
+       "medlineAbbreviation": "Science",
+       "nlmid": "0404511",
+       "title": "Science (New York, N.Y.)"
+      },
+      "journalIssueId": 686681,
+      "monthOfPublication": 9,
+      "printPublicationDate": "1989-09-01",
+      "volume": "245",
+      "yearOfPublication": 1989
+     },
+     "language": "eng",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Pancreas",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "EN",
+           "majorTopic_YN": "N",
+           "qualifierName": "enzymology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Humans",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Cystic Fibrosis",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "DI",
+           "majorTopic_YN": "N",
+           "qualifierName": "diagnosis"
+          },
+          {
+           "abbreviation": "EN",
+           "majorTopic_YN": "N",
+           "qualifierName": "enzymology"
+          },
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "Y",
+           "qualifierName": "genetics"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Chromosome Deletion",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Genetic Markers",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "DNA Mutational Analysis",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Haplotypes",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Genes, Recessive",
+        "majorTopic_YN": "Y"
+       },
+       {
+        "descriptorName": "Polymorphism, Restriction Fragment Length",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Alleles",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Genetic Linkage",
+        "majorTopic_YN": "N"
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "1073-1080",
+     "pmid": "2570460",
+     "pubModel": "Print",
+     "pubTypeList": {
+      "pubType": [
+       "Research Support, U.S. Gov't, P.H.S.",
+       "Research Support, Non-U.S. Gov't",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "1989",
+     "publicationStatus": "ppublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Identification of the cystic fibrosis gene: genetic analysis."
+    }
+   ]
+  },
+  "version": "6.9"
+ },
+ "headers": {
+  "content-type": "application/json;charset=UTF-8"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": {
+   "format": "json",
+   "pageSize": 3,
+   "query": "(EXT_ID:7647779 OR EXT_ID:2570460 OR EXT_ID:99999999) AND SRC:MED",
+   "resultType": "core",
+   "synonym": "false"
+  },
+  "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
+ },
+ "retrieved_at": "2026-09-12T16:40:32+00:00",
+ "status": 200,
+ "text": null
+}

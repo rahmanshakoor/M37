@@ -1,0 +1,98 @@
+{
+ "clinvar:VCV000003520": {
+  "path": "clinvar/clinvar_VCV000003520.591b6938d8.json",
+  "retrieved_at": "2026-09-12T19:05:00+00:00",
+  "sha256": "ab3f7cb1dd37d8f92644eca1d76eeb9f36c0242e47e2ea5ade2263b086698cf1",
+  "source": "clinvar",
+  "source_version": "clinvar_20260905.vcf.gz (fileDate 2026-09-05)",
+  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/3520/"
+ },
+ "clinvar:VCV000007105": {
+  "path": "clinvar/clinvar_VCV000007105.3f907e9153.json",
+  "retrieved_at": "2026-09-12T19:05:00+00:00",
+  "sha256": "bfe00bbd36a0e30aaebd2c8f8e1b2df62403ce6be1c5e2c9d711dc3f4c2ae0f7",
+  "source": "clinvar",
+  "source_version": "clinvar_20260905.vcf.gz (fileDate 2026-09-05)",
+  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/7105/"
+ },
+ "clinvar:VCV000012374": {
+  "path": "clinvar/clinvar_VCV000012374.45d84564de.json",
+  "retrieved_at": "2026-09-12T19:05:00+00:00",
+  "sha256": "30ad14f219f9dc50c3cf050df4daaea74e4cc57ff7fb9f38cb1a18142c895628",
+  "source": "clinvar",
+  "source_version": "clinvar_20260905.vcf.gz (fileDate 2026-09-05)",
+  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/12374/"
+ },
+ "gnomad:1-11796321-G-A": {
+  "path": "gnomad/gnomad_1-11796321-G-A.9110e8f1f4.json",
+  "retrieved_at": "2026-09-12T17:16:03+00:00",
+  "sha256": "714bb26fefd95441dee9cf59ccff0372c14b77c8cb2ae24dc61397552a97ab5a",
+  "source": "gnomad",
+  "source_version": "gnomad_r4 clinvar_release_date=2026-06-06",
+  "url": "https://gnomad.broadinstitute.org/variant/1-11796321-G-A?dataset=gnomad_r4"
+ },
+ "gnomad:17-7675088-C-T": {
+  "path": "gnomad/gnomad_17-7675088-C-T.7f90f89034.json",
+  "retrieved_at": "2026-09-12T17:16:03+00:00",
+  "sha256": "819d7ed92f831429111b84573cff3d9842cb2f9c9bfb8a9b924ee00d4801acf3",
+  "source": "gnomad",
+  "source_version": "gnomad_r4 clinvar_release_date=2026-06-06",
+  "url": "https://gnomad.broadinstitute.org/variant/17-7675088-C-T?dataset=gnomad_r4"
+ },
+ "gnomad:7-117559590-ATCT-A": {
+  "path": "gnomad/gnomad_7-117559590-ATCT-A.4d1e44900e.json",
+  "retrieved_at": "2026-09-12T17:16:03+00:00",
+  "sha256": "f91a83ac4789cd50943d395187bf6c81009e6630ec2297bf83af14ac92a0e506",
+  "source": "gnomad",
+  "source_version": "gnomad_r4 clinvar_release_date=2026-06-06",
+  "url": "https://gnomad.broadinstitute.org/variant/7-117559590-ATCT-A?dataset=gnomad_r4"
+ },
+ "nct:NCT01807923": {
+  "path": "nct/nct_NCT01807923.239b376876.json",
+  "retrieved_at": "2026-09-12T21:40:31+00:00",
+  "sha256": "95b8f6d5a1d4d2621220472021548c31c0dfa2b492cfeb8c86f2fce634f93883",
+  "source": "nct",
+  "source_version": "ClinicalTrials.gov API 2.0.5 data 2026-09-11",
+  "url": "https://clinicaltrials.gov/study/NCT01807923"
+ },
+ "pmid:21976485": {
+  "path": "pmid/pmid_21976485.fdb566b565.json",
+  "retrieved_at": "2026-09-13T01:39:12+00:00",
+  "sha256": "ccd4648fe9fd81416c5062e80418cb1e7e5e44badb187fe1059f5dbca13ea38a",
+  "source": "pmid",
+  "source_version": "Europe PMC REST 6.9",
+  "url": "https://europepmc.org/article/MED/21976485"
+ },
+ "pmid:7647779": {
+  "path": "pmid/pmid_7647779.c64286a4b9.json",
+  "retrieved_at": "2026-09-12T16:40:31+00:00",
+  "sha256": "9790927e97be23a93367be016d86cafa11027b7fb76ba3d47e68b0a42b6685aa",
+  "source": "pmid",
+  "source_version": "Europe PMC REST 6.9",
+  "url": "https://europepmc.org/article/MED/7647779"
+ },
+ "vep:17:7675088:C:T": {
+  "path": "vep/vep_17_7675088_C_T.48c25bda3f.json",
+  "retrieved_at": "2026-09-12T16:40:57+00:00",
+  "sha256": "3d2fd0d51aa665195e6b04af7316254958506078efa76c4ee4d6e1aa29aefe1c",
+  "source": "vep",
+  "source_version": "Ensembl VEP REST (recorded fixture region_post_public3)",
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/17:7675088-7675088/T?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+ },
+ "vep:1:11796321:G:A": {
+  "path": "vep/vep_1_11796321_G_A.a676787a96.json",
+  "retrieved_at": "2026-09-12T16:40:57+00:00",
+  "sha256": "3a144c3d61dfcd4dad7dd8550f0f06904efc4dcf95cce4aac8f8da7a1c1fb76b",
+  "source": "vep",
+  "source_version": "Ensembl VEP REST (recorded fixture region_post_public3)",
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/1:11796321-11796321/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+ },
+ "vep:7:117559590:ATCT:A": {
+  "path": "vep/vep_7_117559590_ATCT_A.ece85625f7.json",
+  "retrieved_at": "2026-09-12T16:40:57+00:00",
+  "sha256": "e083d09aae2a23dc103c7e506718673de8013e9e2e1194e74f23ad92d6c056b1",
+  "source": "vep",
+  "source_version": "Ensembl VEP REST (recorded fixture region_post_public3)",
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117559590-117559593/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+ }
+}

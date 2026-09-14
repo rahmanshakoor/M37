@@ -1,0 +1,36 @@
+{
+ "body": {
+  "header": {
+   "type": "esummary",
+   "version": "0.3"
+  },
+  "result": {
+   "99999999": {
+    "error": "cannot get document summary",
+    "uid": "99999999"
+   },
+   "uids": [
+    "99999999"
+   ]
+  }
+ },
+ "headers": {
+  "content-type": "application/json; charset=UTF-8",
+  "x-ratelimit-limit": "3",
+  "x-ratelimit-remaining": "1"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": {
+   "db": "pubmed",
+   "id": "99999999",
+   "retmode": "json",
+   "tool": "engine"
+  },
+  "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
+ },
+ "retrieved_at": "2026-09-12T16:40:34+00:00",
+ "status": 200,
+ "text": null
+}

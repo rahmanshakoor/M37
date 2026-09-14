@@ -1,0 +1,160 @@
+# Exomiser pin — image, data release, analysis template. Every value observed live on
+# 2026-09-12 (Docker Hub registry API + `docker manifest inspect`, HEAD on the Monarch
+# bundle URLs, the exomiser/Exomiser sources at tag 14.0.0). The engine runs exactly
+# this image by digest, verifies the bundles against these sizes and hashes, and echoes
+# every analysis parameter below into the stage manifest.
+#
+# Version pairing: the 14.0.0 release notes state "REQUIRES DATABASE VERSION 2406", and
+# Docker Hub has no 14.0.1/14.0.2/14.1.0 tags (those exist only as GitHub zips). The
+# 15.x images need the 2512 data, Java 21, an `analyse` subcommand and re-score every
+# gene with a retrained model — a different tool, not an upgrade of this pin.
+
+image:
+  repository: docker.io/exomiser/exomiser-cli
+  tag: "14.0.0"
+  # manifest-list digest (what `docker run repo@digest` resolves on any platform). The
+  # engine runs `repository@digest`; verified 2026-09-12 that a daemon which pulled the
+  # tag answers to the digest without a second pull, and that `--help` and the v14.0.0
+  # banner come from exactly this image.
+  digest: sha256:45e83af2376205e1f22b3eee5adde56fe857c8274db57f8c53003385d18a5269
+  platform_digests:
+    linux/arm64: sha256:69a53784915081e056eb20bd66491166a4e7481b954efb2aa6354e286615fc04
+    linux/amd64: sha256:b8b069babeb0c7921e3636064c627a4bed9b9e3503bc6772ce9b3fc08fc83d9b
+  version: "14.0.0"          # what the banner prints; re-read from the log at run time
+  pushed: "2024-03-18"
+
+data:
+  version: "2406"
+  base_url: https://data.monarchinitiative.org/exomiser/latest/
+  last_modified: "Tue, 29 Oct 2024 01:21:09 GMT"
+  citation: >-
+    Exomiser data release 2406 (hg38: gnomAD r4.1, Ensembl 111/MANE, dbNSFP 4.5a,
+    ClinVar 2024-06-11; phenotype: OMIM 2024-06-12, Orphanet 2023-12-04, HPO 2024-04-26,
+    IMPC 21.0)
+  # Monarch publishes no checksum sidecar for the 2406 zips (every *.sha256/*.md5/
+  # SHA256SUMS probe returns 404; the last sidecars are for 2109). The server itself
+  # publishes the MD5 of each object in its ETag and `x-goog-hash: md5=` headers;
+  # `bytes` and `md5` below are those values (re-checked live 2026-09-12 by HEAD:
+  # identical). `sha256` is the digest `engine exomiser-download` computed on the
+  # verified transfers of 2026-09-12 (from `<file>.verified.json`; md5 matched the pin
+  # and the server ETag), so the zips are now pinned by size + MD5 + sha256.
+  # The hg38 bundle also ships a checksum list for its extracted members
+  # (`2406_hg38/2406_hg38.sha256`, sha256sum format); `member_sha256` pins those six
+  # values and the extractor verifies every member against both the pin and the list
+  # as it writes it (2026-09-12: `shasum -a 256 -c` on the extracted files: all six OK).
+  # The phenotype bundle ships no such list.
+  bundles:
+    hg38:
+      filename: 2406_hg38.zip
+      bytes: 23507791558
+      md5: 546729a3eb01c3a83e3431c7b76a5292
+      crc32c: 08wwMw==
+      sha256: f772186491f825b00881878e96ffa5c91412d0a99a3345f351f429c842deb84b
+      extracted_dir: 2406_hg38
+      required_files:
+        - 2406_hg38_transcripts_ensembl.ser
+        - 2406_hg38_genome.mv.db
+        - 2406_hg38_variants.mv.db
+        - 2406_hg38_clinvar.mv.db
+      checksum_list: 2406_hg38.sha256
+      member_sha256:
+        2406_hg38_clinvar.mv.db: dda9d18df9dd5e8a21da166183136130155043b4dc0d1920748087cbd3321709
+        2406_hg38_genome.mv.db: 2b8bac0f17ce0c9d02b628c7a990621aa5ae1da61f9ad06f182def96c14b5805
+        2406_hg38_transcripts_ensembl.ser: 1b1edae2dc22822032c392af0ad8164548fc4dba10b36696fef23498c0b1d164
+        2406_hg38_transcripts_refseq.ser: af0bd3e576a595d221108622ca92ce8301a8047001b1237d13484655370182e2
+        2406_hg38_transcripts_ucsc.ser: 56a81da9a4f6ffd4d2e653667050e9971f2138f94310378054954893670e3c5b
+        2406_hg38_variants.mv.db: 191585391252f5b9f86a6fefa2b891feda8058bb0f273a661de9e101c8104c1a
+    phenotype:
+      filename: 2406_phenotype.zip
+      bytes: 6236618638
+      md5: cfa476704db9a67c0f94d99eb67d0fd2
+      crc32c: ZzXpPg==
+      sha256: ce471ab12a608732b36ee106b042e5cbb16452dcd334d745b65f1b0eed76d47b
+      extracted_dir: 2406_phenotype
+      # What the extracted bundle holds (verified 2026-09-12): the phenotype H2 store
+      # (9.29 GB), the random-walk matrix, hp.obo and a phenix/ directory. An empty or
+      # half-copied 2406_phenotype/ must not pass as complete.
+      required_files:
+        - 2406_phenotype.mv.db
+        - rw_string_10.mv
+        - hp.obo
+      # The phenotype bundle ships no checksum list, so these are the sha256s
+      # `engine exomiser-download` computed while extracting the verified zip on
+      # 2026-09-12 (from `2406_phenotype.zip.verified.json`): the phenotype store that
+      # drives the ranking is pinned by content, not only by the (since deleted) zip.
+      member_sha256:
+        2406_phenotype.mv.db: 7a3fdcb7c141cd47bd9e1fbfc02061844f332c5c6846e3b2b2746831c13a7868
+        rw_string_10.mv: 42238bba318edba6be417db239062bde0201df671a520488dea5b257647a5288
+        hp.obo: 8ec42f97e5b663869356680e91afa2446f30b17f155b34a33bcda617a1580182
+
+docker:
+  # Container mount points (the image declares these three as volumes).
+  data_mount: /exomiser-data
+  config_mount: /exomiser
+  results_mount: /results
+  vcf_mount: /vcf
+  # JVM heap. "auto" = the daemon's total memory minus heap_reserve_mib, floored at
+  # heap_min_mib and rounded down to 256 MiB — a heap above the daemon limit starts
+  # fine and is OOM-killed mid-run. Override per run with `--heap`.
+  heap: auto
+  heap_reserve_mib: 1024
+  heap_min_mib: 1024
+  heap_fallback: 2g          # when `docker info` cannot be read
+  output_filename: exomiser  # → exomiser.genes.tsv / exomiser.variants.tsv / exomiser.json
+
+# Analysis template (test-analysis-genome.yml at tag 14.0.0, adapted). `hpoIds` and
+# `vcf` are filled per run; nothing else is. No gene list, no seed genes. Every key here
+# is echoed into 04_rank/manifest.json (params.analysis).
+analysis:
+  genomeAssembly: hg38
+  # Per-sub-MOI maximum minor allele frequency, in PERCENT. {} would disable the cut-offs.
+  # These are Exomiser's own defaults for a genome and are deliberately tighter than
+  # stage 3's recessive_max_af (1%): a homozygous 1% carrier allele passes here only
+  # when it is on the ClinVar whitelist (use-clinvar-whitelist is on by default; CFTR
+  # p.Phe508del at ~1.1% NFE is the textbook case) — so a stage-3 recessive candidate
+  # that Exomiser leaves unranked is a disagreement to look at, not an error.
+  inheritanceModes:
+    AUTOSOMAL_DOMINANT: 0.1
+    AUTOSOMAL_RECESSIVE_HOM_ALT: 0.1
+    AUTOSOMAL_RECESSIVE_COMP_HET: 2.0
+    X_DOMINANT: 0.1
+    X_RECESSIVE_HOM_ALT: 0.1
+    X_RECESSIVE_COMP_HET: 2.0
+    MITOCHONDRIAL: 0.2
+  analysisMode: PASS_ONLY      # FULL keeps every variant in memory; PASS_ONLY is what the docs advise for genomes
+  # gnomAD only (the 2406 hg38 store carries r4.1). Note that the 14.0.0 TSV_VARIANT
+  # crash (issue #565) is source-independent: FrequencyData.maxFrequency() indexes -1
+  # for any variant whose stored frequencies are all 0.0, whatever the source — the
+  # engine's JSON fallback in run.py is what covers it, not this list.
+  frequencySources:
+    - GNOMAD_E_AFR
+    - GNOMAD_E_AMR
+    - GNOMAD_E_EAS
+    - GNOMAD_E_NFE
+    - GNOMAD_E_SAS
+    - GNOMAD_G_AFR
+    - GNOMAD_G_AMR
+    - GNOMAD_G_EAS
+    - GNOMAD_G_NFE
+    - GNOMAD_G_SAS
+  pathogenicitySources:        # all bundled in 2406 (dbNSFP 4.5a); REMM/CADD would need extra ~17 GB tabix files
+    - REVEL
+    - MVP
+    - ALPHA_MISSENSE
+  steps:
+    - hiPhivePrioritiser: {}
+    - priorityScoreFilter: {priorityType: HIPHIVE_PRIORITY, minPriorityScore: 0.501}
+    - failedVariantFilter: {}
+    - regulatoryFeatureFilter: {}
+    - frequencyFilter: {maxFrequency: 2.0}      # percent MAF
+    - pathogenicityFilter: {keepNonPathogenic: true}
+    - inheritanceFilter: {}
+    - omimPrioritiser: {}
+
+outputOptions:
+  outputContributingVariantsOnly: false
+  numGenes: 0                  # 0 = every gene
+  outputFormats: [TSV_GENE, TSV_VARIANT, JSON]
+
+join:
+  top_n_not_in_shortlist: 20   # Exomiser genes outside the stage-3 shortlist kept in joined.json

@@ -1,0 +1,1852 @@
+{
+ "body": {
+  "hitCount": 1310,
+  "nextCursorMark": "AoIIQLbv3Cg1NTE3NTA5MQ==",
+  "nextPageUrl": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=(TITLE_ABS:\"CFTR\" AND TITLE_ABS:\"F508del\") AND SRC:MED&cursorMark=AoIIQLbv3Cg1NTE3NTA5MQ==&resultType=core&pageSize=5&format=json",
+  "request": {
+   "cursorMark": "*",
+   "pageSize": 5,
+   "queryString": "(TITLE_ABS:\"CFTR\" AND TITLE_ABS:\"F508del\") AND SRC:MED",
+   "resultType": "core",
+   "sort": "",
+   "synonym": false
+  },
+  "resultList": {
+   "result": [
+    {
+     "abstractText": "Alyftrek® (vanzacaftor/tezacaftor/deutivacaftor, VTD) is a triple CFTR modulator therapy for patients with cystic fibrosis (CF). In this study, we characterized the pharmacological properties of vanzacaftor and deutivacaftor using functional and biochemical assays in patients derived primary bronchial epithelial (HBE) cells (F508del/F508del, F508del/R1162X, F508del/W1282X) and in CFBE41o⁻ cells expressing F508del-CFTR. Cells were treated with Alyftrek® components across a range of concentrations. The S- and R-enantiomers of vanzacaftor were evaluated separately, and the activity of deutivacaftor was compared with that of ivacaftor. CFTR function was assessed by short-circuit current measurements and whole-cell patch-clamp recordings, while CFTR protein maturation was analyzed by Western blotting. Treatment with S-vanzacaftor alone restored F508del-CFTR-dependent chloride currents with an EC₅₀ of 130 nM, which decreased markedly to 8 nM when combined with tezacaftor. Substitution of ivacaftor with deutivacaftor in triple combinations (VTI vs. VTD) yielded comparable functional responses. Both VTD and VTI promoted the concentration-dependent appearance of the mature, fully glycosylated CFTR C-band with an EC₅₀ of 11 nM. The R-enantiomer of vanzacaftor was markedly less potent in rescuing F508del-CFTR and antagonized the effect of the S-enantiomer. Concentration-reduction experiments further showed that 10% to 50% of the initial VTI/VTD concentrations were sufficient to achieve substantial F508del-CFTR rescue. Collectively, these findings demonstrate the high potency of S-vanzacaftor at nanomolar concentrations, both alone and in combination with tezacaftor. The potentiator deutivacaftor exhibited efficacy comparable to that of ivacaftor.",
+     "affiliation": "Laboratoire de physiopathologie et régulation des transports ioniques, Pôle Biologie Santé, Université de Poitiers, 86073 Poitiers, France.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0002-0798-8969"
+       },
+       {
+        "type": "ORCID",
+        "value": "0000-0002-9401-0546"
+       },
+       {
+        "type": "ORCID",
+        "value": "0000-0003-3915-0973"
+       },
+       {
+        "type": "ORCID",
+        "value": "0009-0005-3083-0325"
+       },
+       {
+        "type": "ORCID",
+        "value": "0009-0009-3369-3943"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Laboratoire de physiopathologie et régulation des transports ioniques, Pôle Biologie Santé, Université de Poitiers, 86073 Poitiers, France."
+          }
+         ]
+        },
+        "firstName": "Sandra",
+        "fullName": "Mirval S",
+        "initials": "S",
+        "lastName": "Mirval"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Laboratoire de physiopathologie et régulation des transports ioniques, Pôle Biologie Santé, Université de Poitiers, 86073 Poitiers, France."
+          }
+         ]
+        },
+        "firstName": "Louise",
+        "fullName": "Damy L",
+        "initials": "L",
+        "lastName": "Damy"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Laboratoire de physiopathologie et régulation des transports ioniques, Pôle Biologie Santé, Université de Poitiers, 86073 Poitiers, France."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0009-0009-3369-3943"
+        },
+        "firstName": "Auguste",
+        "fullName": "Sauvage de Gérando A",
+        "initials": "A",
+        "lastName": "Sauvage de Gérando"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Laboratoire de physiopathologie et régulation des transports ioniques, Pôle Biologie Santé, Université de Poitiers, 86073 Poitiers, France."
+          }
+         ]
+        },
+        "firstName": "Christine",
+        "fullName": "Barrault C",
+        "initials": "C",
+        "lastName": "Barrault"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Laboratoire de physiopathologie et régulation des transports ioniques, Pôle Biologie Santé, Université de Poitiers, 86073 Poitiers, France."
+          }
+         ]
+        },
+        "firstName": "Isabelle",
+        "fullName": "Fixe I",
+        "initials": "I",
+        "lastName": "Fixe"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "INRAE UMR 0892, Université Versailles-Saint-Quentin-en-Yvelines, Versailles, France."
+          },
+          {
+           "affiliation": "Service de Chirurgie Thoracique et Transplantation Pulmonaire, Hôpital Foch, Suresnes, France."
+          }
+         ]
+        },
+        "firstName": "Edouard",
+        "fullName": "Sage E",
+        "initials": "E",
+        "lastName": "Sage"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Université de Reims-Champagne Ardenne, INSERM UMR-S 1250, P3Cell, Reims, France."
+          }
+         ]
+        },
+        "firstName": "Christelle",
+        "fullName": "Coraux C",
+        "initials": "C",
+        "lastName": "Coraux"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Université Paris Est Créteil, INSERM, IMRB, F-94010, Créteil, France."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0009-0005-3083-0325"
+        },
+        "firstName": "Benjamin",
+        "fullName": "Simonneau B",
+        "initials": "B",
+        "lastName": "Simonneau"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Université Paris Est Créteil, INSERM, IMRB, F-94010, Créteil, France."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-0798-8969"
+        },
+        "firstName": "Benedicte",
+        "fullName": "Duriez B",
+        "initials": "B",
+        "lastName": "Duriez"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Université Paris Est Créteil, INSERM, IMRB, F-94010, Créteil, France."
+          }
+         ]
+        },
+        "firstName": "Pascale",
+        "fullName": "Fanen P",
+        "initials": "P",
+        "lastName": "Fanen"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "UAR Bios, Plateforme IMAGE-UP, Université de Poitiers, 86073 Poitiers, France."
+          }
+         ]
+        },
+        "firstName": "Anne",
+        "fullName": "Cantereau A",
+        "initials": "A",
+        "lastName": "Cantereau"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Laboratoire de physiopathologie et régulation des transports ioniques, Pôle Biologie Santé, Université de Poitiers, 86073 Poitiers, France."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-9401-0546"
+        },
+        "firstName": "Clarisse",
+        "fullName": "Vandebrouck C",
+        "initials": "C",
+        "lastName": "Vandebrouck"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Laboratoire de physiopathologie et régulation des transports ioniques, Pôle Biologie Santé, Université de Poitiers, 86073 Poitiers, France."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0003-3915-0973"
+        },
+        "firstName": "Frederic",
+        "fullName": "Becq F",
+        "initials": "F",
+        "lastName": "Becq"
+       }
+      ]
+     },
+     "authorString": "Mirval S, Damy L, Sauvage de Gérando A, Barrault C, Fixe I, Sage E, Coraux C, Simonneau B, Duriez B, Fanen P, Cantereau A, Vandebrouck C, Becq F.",
+     "citedByCount": 0,
+     "dateOfCreation": "2026-08-19",
+     "dateOfRevision": "2026-08-19",
+     "doi": "10.1152/ajplung.00103.2026",
+     "electronicPublicationDate": "2026-08-19",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-08-22",
+     "firstPublicationDate": "2026-08-19",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1152/ajplung.00103.2026"
+       }
+      ]
+     },
+     "grantsList": {
+      "grant": [
+       {
+        "agency": "Association Vaincre la Mucoviscidose (French CF Association)",
+        "grantId": "RF20221203263",
+        "orderIn": 0
+       },
+       {
+        "agency": "Association Vaincre la Mucoviscidose (French CF Association)",
+        "grantId": "RF20250503706",
+        "orderIn": 0
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "N",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "N",
+     "hasReferences": "N",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "Y",
+     "id": "42616613",
+     "inEPMC": "N",
+     "inPMC": "N",
+     "isOpenAccess": "N",
+     "journalInfo": {
+      "dateOfPublication": "2026 Aug",
+      "journal": {
+       "essn": "1522-1504",
+       "isoabbreviation": "Am J Physiol Lung Cell Mol Physiol",
+       "issn": "1040-0605",
+       "medlineAbbreviation": "Am J Physiol Lung Cell Mol Physiol",
+       "nlmid": "100901229",
+       "title": "American journal of physiology. Lung cellular and molecular physiology"
+      },
+      "journalIssueId": 4236367,
+      "monthOfPublication": 8,
+      "printPublicationDate": "2026-08-01",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Cystic Fibrosis",
+       "F508del-cftr",
+       "Alyftrek",
+       "Deutivacaftor",
+       "Vanzacaftor"
+      ]
+     },
+     "language": "eng",
+     "nihAuthMan": "N",
+     "pmid": "42616613",
+     "pubModel": "Print-Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "aheadofprint",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Functional and biochemical characterization of Alyftrek® components reveals high-potency rescue of F508del-CFTR."
+    },
+    {
+     "abstractText": "Cystic fibrosis (CF) is a lethal genetic disease caused by mutations in the gene encoding the cystic fibrosis transmembrane conductance regulator (CFTR). The most prevalent disease-causing mutation, F508del, results in the production of misfolded CFTR proteins, which are prematurely degraded. Given the complex pathology of CF, a multimodal therapeutic strategy is essential. This underscores the urgent need to develop adjunctive modulators that synergize with existing therapies. Here, we show that protein kinase C (PKC) activators ingenol-3,20-dibenzoate and 12-deoxyphorbol 13-phenylacetate 20-acetate enhance F508del-CFTR channel function through a mechanism distinct from that of currently FDA-approved CFTR correctors. These agents enhance F508del-CFTR function as monotherapies; in combination with CFTR correctors, they largely restore the channel function in both immortalized human airway epithelial cells and Cftr<sup>F508del/F508del</sup> mouse lungs. Notably, they also attenuate Cftr<sup>F508del/F508del</sup> mouse pulmonary inflammation induced by infection. Furthermore, PKC activators enhance the function of CFTR harboring rare missense mutations that are refractory to existing therapies. Mechanistically, PKCε-mediated phosphorylation of nascent CFTR stabilizes the translating CFTR transcripts, thereby promoting channel synthesis. These findings reveal a previously unappreciated role of PKCε signaling in CFTR biogenesis and suggest a potential combinatorial treatment strategy to achieve a more complete functional rescue of mutant CFTR.",
+     "affiliation": "University of Shanghai for Science and Technology (USST), Oriental Pan-Vascular Devices Innovation College, Shanghai 200093, China; Institute of Neuroscience, CAS Center for Excellence in Brain Science and Intelligence Technology, Chinese Academy of Sciences, Shanghai 200031, China.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0002-0724-0723"
+       },
+       {
+        "type": "ORCID",
+        "value": "0000-0002-6226-1797"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "University of Shanghai for Science and Technology (USST), Oriental Pan-Vascular Devices Innovation College, Shanghai 200093, China; Institute of Neuroscience, CAS Center for Excellence in Brain Science and Intelligence Technology, Chinese Academy of Sciences, Shanghai 200031, China."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-6226-1797"
+        },
+        "firstName": "Shi-Wei",
+        "fullName": "Ye SW",
+        "initials": "SW",
+        "lastName": "Ye"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Institute of Neuroscience, CAS Center for Excellence in Brain Science and Intelligence Technology, Chinese Academy of Sciences, Shanghai 200031, China; Department of Clinical Laboratory, Songjiang Research Institute, Shanghai Key Laboratory of Emotions and Affective Disorders, Songjiang Hospital Affiliated to Shanghai Jiao Tong University School of Medicine, Shanghai 201600, China."
+          }
+         ]
+        },
+        "firstName": "Xi-Juan",
+        "fullName": "Liu XJ",
+        "initials": "XJ",
+        "lastName": "Liu"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Institute of Neuroscience, CAS Center for Excellence in Brain Science and Intelligence Technology, Chinese Academy of Sciences, Shanghai 200031, China."
+          }
+         ]
+        },
+        "firstName": "Xin-Lei",
+        "fullName": "Kang XL",
+        "initials": "XL",
+        "lastName": "Kang"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "University of Shanghai for Science and Technology (USST), Oriental Pan-Vascular Devices Innovation College, Shanghai 200093, China; Department of Cardiology, Zhongshan Hospital, Fudan University, Shanghai Institute of Cardiovascular Diseases, Shanghai 200032, China; National Clinical Research Center for Interventional Medicine, Shanghai 200032, China; State Key Laboratory of Cardiovascular Diseases, Zhongshan Hospital, Fudan University, Shanghai 200032, China; NHC Key Laboratory of Ischemic Heart Diseases, Shanghai 200032, China. Electronic address: shen.li1@zs-hospital.sh.cn."
+          }
+         ]
+        },
+        "firstName": "Li",
+        "fullName": "Shen L",
+        "initials": "L",
+        "lastName": "Shen"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Institute of Neuroscience, CAS Center for Excellence in Brain Science and Intelligence Technology, Chinese Academy of Sciences, Shanghai 200031, China; Department of Clinical Laboratory, Songjiang Research Institute, Shanghai Key Laboratory of Emotions and Affective Disorders, Songjiang Hospital Affiliated to Shanghai Jiao Tong University School of Medicine, Shanghai 201600, China; Department of Anesthesiology, Renji Hospital Affiliated to Shanghai Jiao Tong University School of Medicine, Key Laboratory of Anesthesiology, Ministry of Education, Shanghai Jiao Tong University, Shanghai 200127, China. Electronic address: sqcai@shsmu.edu.cn."
+          }
+         ]
+        },
+        "firstName": "Shi-Qing",
+        "fullName": "Cai SQ",
+        "initials": "SQ",
+        "lastName": "Cai"
+       }
+      ]
+     },
+     "authorString": "Ye SW, Liu XJ, Kang XL, Shen L, Cai SQ.",
+     "chemicalList": {
+      "chemical": [
+       {
+        "name": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "registryNumber": "126880-72-6"
+       },
+       {
+        "name": "Protein Kinase C",
+        "registryNumber": "EC 2.7.11.13"
+       }
+      ]
+     },
+     "citedByCount": 0,
+     "dateOfCompletion": "2026-07-01",
+     "dateOfCreation": "2026-04-02",
+     "dateOfRevision": "2026-07-26",
+     "doi": "10.1016/j.ymthe.2026.03.033",
+     "electronicPublicationDate": "2026-04-01",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-04-03",
+     "firstPublicationDate": "2026-04-01",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1016/j.ymthe.2026.03.033"
+       }
+      ]
+     },
+     "grantsList": {
+      "grant": [
+       {
+        "agency": "China Postdoctoral Science Foundation",
+        "grantId": "GZC20251019",
+        "orderIn": 0
+       },
+       {
+        "agency": "National Key Research and Development Program of China",
+        "grantId": "2023YFC3603300",
+        "orderIn": 0
+       },
+       {
+        "agency": "National Natural Science Foundation of China",
+        "grantId": "82330047",
+        "orderIn": 0
+       },
+       {
+        "agency": "Fudan University",
+        "grantId": "X24AI003",
+        "orderIn": 0
+       },
+       {
+        "agency": "National Key Research and Development Program of China",
+        "grantId": "2023YFC3603400",
+        "orderIn": 0
+       },
+       {
+        "agency": "Fudan University",
+        "grantId": "yg2023-01",
+        "orderIn": 0
+       },
+       {
+        "agency": "National Natural Science Foundation of China",
+        "grantId": "82170342",
+        "orderIn": 0
+       },
+       {
+        "agency": "National Natural Science Foundation of China",
+        "grantId": "T2288101",
+        "orderIn": 0
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "N",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "N",
+     "hasReferences": "Y",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "Y",
+     "id": "41925277",
+     "inEPMC": "N",
+     "inPMC": "N",
+     "isOpenAccess": "N",
+     "journalInfo": {
+      "dateOfPublication": "2026 Jul",
+      "issue": "7",
+      "journal": {
+       "essn": "1525-0024",
+       "isoabbreviation": "Mol Ther",
+       "issn": "1525-0016",
+       "medlineAbbreviation": "Mol Ther",
+       "nlmid": "100890581",
+       "title": "Molecular therapy : the journal of the American Society of Gene Therapy"
+      },
+      "journalIssueId": 4224955,
+      "monthOfPublication": 7,
+      "printPublicationDate": "2026-07-01",
+      "volume": "34",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Biogenesis",
+       "Phosphorylation",
+       "mRNA stability",
+       "Cystic Fibrosis",
+       "Cftr",
+       "Pkc Activator"
+      ]
+     },
+     "language": "eng",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Cell Line",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Epithelial Cells",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "DE",
+           "majorTopic_YN": "N",
+           "qualifierName": "drug effects"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Animals",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Humans",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Mice",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Cystic Fibrosis",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "DT",
+           "majorTopic_YN": "N",
+           "qualifierName": "drug therapy"
+          },
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Disease Models, Animal",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Protein Kinase C",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Mutation",
+        "majorTopic_YN": "N"
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "4212-4225",
+     "pmid": "41925277",
+     "pubModel": "Print-Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "ppublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "PKC activators improve the function of biogenesis-deficient CFTR channels."
+    },
+    {
+     "abstractText": "<h4>Impact statement</h4>This commentary discusses Presti et al.'s multicenter prospective study evaluating lumacaftor/ivacaftor therapy in preschool children with cystic fibrosis homozygous for F508del. The findings provide important real-world evidence that early CFTR modulation improves biomarkers of CFTR function, pulmonary outcomes, and early lung physiology while maintaining an acceptable safety profile. These data support the broader concept that intervention during early childhood may offer an opportunity to modify disease progression before irreversible organ damage develops.",
+     "affiliation": "Division of Pediatric Surgery, Department of Surgery, The Johns Hopkins University School of Medicine, Baltimore, MD, USA.",
+     "authMan": "N",
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Division of Pediatric Surgery, Department of Surgery, The Johns Hopkins University School of Medicine, Baltimore, MD, USA."
+          }
+         ]
+        },
+        "firstName": "Leonard",
+        "fullName": "Lawandos L",
+        "initials": "L",
+        "lastName": "Lawandos"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Division of Pediatric Surgery, Department of Surgery, The Johns Hopkins University School of Medicine, Baltimore, MD, USA. csodhi@jhmi.edu."
+          }
+         ]
+        },
+        "firstName": "Chhinder P",
+        "fullName": "Sodhi CP",
+        "initials": "CP",
+        "lastName": "Sodhi"
+       }
+      ]
+     },
+     "authorString": "Lawandos L, Sodhi CP.",
+     "citedByCount": 0,
+     "dateOfCreation": "2026-09-02",
+     "dateOfRevision": "2026-09-02",
+     "doi": "10.1038/s41390-026-05441-2",
+     "electronicPublicationDate": "2026-09-01",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-09-02",
+     "firstPublicationDate": "2026-09-01",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1038/s41390-026-05441-2"
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "N",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "N",
+     "hasReferences": "Y",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "N",
+     "id": "42680797",
+     "inEPMC": "N",
+     "inPMC": "N",
+     "isOpenAccess": "N",
+     "journalInfo": {
+      "dateOfPublication": "2026 Sep",
+      "journal": {
+       "essn": "1530-0447",
+       "isoabbreviation": "Pediatr Res",
+       "issn": "0031-3998",
+       "medlineAbbreviation": "Pediatr Res",
+       "nlmid": "0100714",
+       "title": "Pediatric research"
+      },
+      "journalIssueId": 4252589,
+      "monthOfPublication": 9,
+      "printPublicationDate": "2026-09-01",
+      "yearOfPublication": 2026
+     },
+     "language": "eng",
+     "nihAuthMan": "N",
+     "pmid": "42680797",
+     "pubModel": "Print-Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "aheadofprint",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Early CFTR modulation and clinical outcomes in preschool cystic fibrosis."
+    },
+    {
+     "abstractText": "Elexacaftor-tezacaftor-ivacaftor has transformed the treatment of people with cystic fibrosis (CF) and the predominant cystic fibrosis transmembrane conductance regulator (<i>CFTR</i>) variant F508del by delivering the faulty channel to the plasma membrane and potentiating its activity. However, the action of elexacaftor-tezacaftor-ivacaftor on the molecular behavior of F508del-CFTR is unknown. Here, we investigated the impact of elexacaftor-tezacaftor-ivacaftor on individual human F508del-CFTR Cl<sup>-</sup> channels using the patch-clamp technique and cells heterologously expressing F508del-CFTR. Chronic treatment of F508del-CFTR-expressing cells with elexacaftor-tezacaftor-ivacaftor, but not pairs of CFTR modulators, stabilized F508del-CFTR, preventing channel deactivation in cell-free membrane patches and conferring upon it the current amplitude of wild-type CFTR with channel activity sustained at a level one-third that of wild-type CFTR. By incubating cells with different drug concentrations, we demonstrated that elexacaftor stabilizes the open-channel conformation of elexacaftor-tezacaftor-ivacaftor-rescued F508del-CFTR, while acute treatment of wild-type CFTR with elexacaftor increased current flow through the channel and potentiated channel gating. Of note, acute treatment of elexacaftor-tezacaftor-ivacaftor-rescued F508del-CFTR Cl<sup>-</sup> channels with elexacaftor and ivacaftor restored wild-type levels of channel activity to the <i>CFTR</i> variant, albeit its gating pattern was distinct from that of wild-type CFTR and characterized by infrequent prolonged bursts of channel openings. In conclusion, chronic treatment with elexacaftor-tezacaftor-ivacaftor plus acute treatment with elexacaftor and ivacaftor robustly corrects the processing, stability, and gating defects of F508del-CFTR. Our results reveal that elexacaftor is a triple-acting CFTR modulator with corrector, potentiator, and conduction activities, making it a valuable therapeutic to rescue <i>CFTR</i> variants with distinct molecular mechanisms of CFTR dysfunction.",
+     "affiliation": "School of Physiology, Pharmacology and Neuroscience, University of Bristol, Bristol BS8 1TD, United Kingdom.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0001-5533-9130"
+       },
+       {
+        "type": "ORCID",
+        "value": "0000-0001-9798-7769"
+       },
+       {
+        "type": "ORCID",
+        "value": "0000-0003-2062-8682"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "School of Physiology, Pharmacology and Neuroscience, University of Bristol, Bristol BS8 1TD, United Kingdom."
+          },
+          {
+           "affiliation": "Center for Advanced Therapeutics, Institute of Molecular Biosciences, Mahidol University, Nakhon Pathom 73170, Thailand."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0003-2062-8682"
+        },
+        "firstName": "Mayuree",
+        "fullName": "Rodrat M",
+        "initials": "M",
+        "lastName": "Rodrat"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "School of Physiology, Pharmacology and Neuroscience, University of Bristol, Bristol BS8 1TD, United Kingdom."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0001-9798-7769"
+        },
+        "firstName": "James N",
+        "fullName": "Charlick JN",
+        "initials": "JN",
+        "lastName": "Charlick"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "School of Physiology, Pharmacology and Neuroscience, University of Bristol, Bristol BS8 1TD, United Kingdom."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0001-5533-9130"
+        },
+        "firstName": "David N",
+        "fullName": "Sheppard DN",
+        "initials": "DN",
+        "lastName": "Sheppard"
+       }
+      ]
+     },
+     "authorString": "Rodrat M, Charlick JN, Sheppard DN.",
+     "chemicalList": {
+      "chemical": [
+       {
+        "name": "Pyridines",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Indoles",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Quinolines",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Drug Combinations",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Pyrazoles",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Pyrrolidines",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Aminophenols",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Quinolones",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "registryNumber": "126880-72-6"
+       },
+       {
+        "name": "CFTR protein, human",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Benzodioxoles",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Chloride Channel Agonists",
+        "registryNumber": "0"
+       },
+       {
+        "name": "ivacaftor",
+        "registryNumber": "1Y740ILL1Z"
+       },
+       {
+        "name": "elexacaftor",
+        "registryNumber": "RRN67GMB0V"
+       },
+       {
+        "name": "tezacaftor, ivacaftor drug combination",
+        "registryNumber": "0"
+       },
+       {
+        "name": "elexacaftor, ivacaftor, tezacaftor drug combination",
+        "registryNumber": "0"
+       },
+       {
+        "name": "tezacaftor",
+        "registryNumber": "8RW88Y506K"
+       }
+      ]
+     },
+     "citedByCount": 4,
+     "dataLinksTagsList": {
+      "dataLinkstag": [
+       "altmetrics"
+      ]
+     },
+     "dateOfCompletion": "2026-06-30",
+     "dateOfCreation": "2026-01-23",
+     "dateOfRevision": "2026-08-13",
+     "doi": "10.1073/pnas.2523950123",
+     "electronicPublicationDate": "2026-01-23",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-01-24",
+     "firstPublicationDate": "2026-01-23",
+     "fullTextIdList": {
+      "fullTextId": [
+       "PMC12867690"
+      ]
+     },
+     "fullTextReceivedDate": "2026-09-03",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1073/pnas.2523950123"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "html",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC12867690"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "pdf",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC12867690?pdf=render"
+       }
+      ]
+     },
+     "grantsList": {
+      "grant": [
+       {
+        "agency": "Cystic Fibrosis Trust",
+        "grantId": "SRC 021",
+        "orderIn": 0
+       },
+       {
+        "agency": "Cystic Fibrosis Trust (CF)",
+        "grantId": "SRC 021",
+        "orderIn": 0
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "Y",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "Y",
+     "hasPDF": "Y",
+     "hasReferences": "Y",
+     "hasSuppl": "Y",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "Y",
+     "id": "41576103",
+     "inEPMC": "Y",
+     "inPMC": "Y",
+     "isOpenAccess": "Y",
+     "journalInfo": {
+      "dateOfPublication": "2026 Feb",
+      "issue": "5",
+      "journal": {
+       "essn": "1091-6490",
+       "isoabbreviation": "Proc Natl Acad Sci U S A",
+       "issn": "0027-8424",
+       "medlineAbbreviation": "Proc Natl Acad Sci U S A",
+       "nlmid": "7505876",
+       "title": "Proceedings of the National Academy of Sciences of the United States of America"
+      },
+      "journalIssueId": 4096056,
+      "monthOfPublication": 2,
+      "printPublicationDate": "2026-02-01",
+      "volume": "123",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Cystic Fibrosis",
+       "F508del-cftr",
+       "Cftr Chloride Ion Channel",
+       "Elexacaftor-tezacaftor-ivacaftor"
+      ]
+     },
+     "language": "eng",
+     "license": "cc by-nc-nd",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Humans",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Cystic Fibrosis",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "DT",
+           "majorTopic_YN": "N",
+           "qualifierName": "drug therapy"
+          },
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Aminophenols",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "PD",
+           "majorTopic_YN": "N",
+           "qualifierName": "pharmacology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Pyrazoles",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "PD",
+           "majorTopic_YN": "N",
+           "qualifierName": "pharmacology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Pyridines",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "PD",
+           "majorTopic_YN": "N",
+           "qualifierName": "pharmacology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Pyrrolidines",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Indoles",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "PD",
+           "majorTopic_YN": "N",
+           "qualifierName": "pharmacology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Quinolines",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Quinolones",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "PD",
+           "majorTopic_YN": "N",
+           "qualifierName": "pharmacology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Drug Combinations",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Patch-Clamp Techniques",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Mutation",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Benzodioxoles",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "PD",
+           "majorTopic_YN": "N",
+           "qualifierName": "pharmacology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Chloride Channel Agonists",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "PD",
+           "majorTopic_YN": "N",
+           "qualifierName": "pharmacology"
+          }
+         ]
+        }
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "e2523950123",
+     "pmcid": "PMC12867690",
+     "pmid": "41576103",
+     "pubModel": "Print-Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "research-article",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "ppublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Chronic and acute modulator treatment restore wild-type-like activity and stability to the primary cystic fibrosis-causing &lt;i&gt;CFTR&lt;/i&gt; variant."
+    },
+    {
+     "abstractText": "Mutations in the cystic fibrosis transmembrane conductance regulator (CFTR) gene, which encodes a cAMP-activated chloride channel, cause cystic fibrosis (CF), the most common life-threatening inherited disorder among White individuals. Current CFTR correctors and potentiators, such as elexacaftor-tezacaftor-ivacaftor (ETI), only partially restore the function of the most prevalent mutant, F508del-CFTR, resulting in residual disease in people with CF. Here, we demonstrate that a mimetic peptide targeting the A-kinase-anchoring protein (AKAP) function of PI3Kγ (PI3Kγ MP), and driving localized cAMP elevation, enhances F508del-CFTR membrane localization, maximizing ETI efficacy in restoring chloride secretion. Mechanistically, PI3Kγ MP activates an AKAP-Lbc-anchored pool of PKD1, a known regulator of membrane trafficking. Consistently, PKD1 inhibition prevents PI3Kγ MP from enhancing the membrane expression of ETI-corrected F508del-CFTR. Overall, our findings reveal a regulatory pathway controlling CFTR membrane abundance via the AKAP function of PI3Kγ, which can be targeted to overcome the limitations of current CFTR modulator therapies.",
+     "affiliation": "Department of Molecular Biotechnology and Health Sciences, Molecular Biotechnology Center \"Guido Tarone\", University of Torino, Torino, Italy.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0003-4523-5666"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Molecular Biotechnology and Health Sciences, Molecular Biotechnology Center \"Guido Tarone\", University of Torino, Torino, Italy."
+          }
+         ]
+        },
+        "firstName": "Alessandra",
+        "fullName": "Murabito A",
+        "initials": "A",
+        "lastName": "Murabito"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Molecular Biotechnology and Health Sciences, Molecular Biotechnology Center \"Guido Tarone\", University of Torino, Torino, Italy."
+          }
+         ]
+        },
+        "firstName": "Marco",
+        "fullName": "Mergiotti M",
+        "initials": "M",
+        "lastName": "Mergiotti"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "UOC Genetica Medica, IRCCS Istituto Giannina Gaslini, Genova, Italy."
+          }
+         ]
+        },
+        "firstName": "Valeria",
+        "fullName": "Capurro V",
+        "initials": "V",
+        "lastName": "Capurro"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Experimental Imaging Center, IRCCS Ospedale San Raffaele, Milan, Italy."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0003-4523-5666"
+        },
+        "firstName": "Alessia",
+        "fullName": "Loffreda A",
+        "initials": "A",
+        "lastName": "Loffreda"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Molecular Biotechnology and Health Sciences, Molecular Biotechnology Center \"Guido Tarone\", University of Torino, Torino, Italy."
+          }
+         ]
+        },
+        "firstName": "Mingchuan",
+        "fullName": "Li M",
+        "initials": "M",
+        "lastName": "Li"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Molecular Biotechnology and Health Sciences, Molecular Biotechnology Center \"Guido Tarone\", University of Torino, Torino, Italy."
+          }
+         ]
+        },
+        "firstName": "Paola",
+        "fullName": "Peretto P",
+        "initials": "P",
+        "lastName": "Peretto"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Molecular Biotechnology and Health Sciences, Molecular Biotechnology Center \"Guido Tarone\", University of Torino, Torino, Italy."
+          }
+         ]
+        },
+        "firstName": "Kai",
+        "fullName": "Ren K",
+        "initials": "K",
+        "lastName": "Ren"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Experimental Imaging Center, IRCCS Ospedale San Raffaele, Milan, Italy."
+          }
+         ]
+        },
+        "firstName": "Andrea",
+        "fullName": "Raimondi A",
+        "initials": "A",
+        "lastName": "Raimondi"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Experimental Imaging Center, IRCCS Ospedale San Raffaele, Milan, Italy."
+          },
+          {
+           "affiliation": "Università Vita-Salute San Raffaele, Milan, Italy."
+          }
+         ]
+        },
+        "firstName": "Carlo",
+        "fullName": "Tacchetti C",
+        "initials": "C",
+        "lastName": "Tacchetti"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Biomedical Sciences, Faculty of Biology and Medicine, University of Lausanne; Lausanne, Switzerland."
+          }
+         ]
+        },
+        "firstName": "Dario",
+        "fullName": "Diviani D",
+        "initials": "D",
+        "lastName": "Diviani"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "UOC Genetica Medica, IRCCS Istituto Giannina Gaslini, Genova, Italy."
+          }
+         ]
+        },
+        "firstName": "Nicoletta",
+        "fullName": "Pedemonte N",
+        "initials": "N",
+        "lastName": "Pedemonte"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Molecular Biotechnology and Health Sciences, Molecular Biotechnology Center \"Guido Tarone\", University of Torino, Torino, Italy."
+          },
+          {
+           "affiliation": "Kither Biotech, Torino, Italy."
+          }
+         ]
+        },
+        "firstName": "Emilio",
+        "fullName": "Hirsch E",
+        "initials": "E",
+        "lastName": "Hirsch"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Molecular Biotechnology and Health Sciences, Molecular Biotechnology Center \"Guido Tarone\", University of Torino, Torino, Italy."
+          },
+          {
+           "affiliation": "Kither Biotech, Torino, Italy."
+          }
+         ]
+        },
+        "firstName": "Alessandra",
+        "fullName": "Ghigo A",
+        "initials": "A",
+        "lastName": "Ghigo"
+       }
+      ]
+     },
+     "authorString": "Murabito A, Mergiotti M, Capurro V, Loffreda A, Li M, Peretto P, Ren K, Raimondi A, Tacchetti C, Diviani D, Pedemonte N, Hirsch E, Ghigo A.",
+     "chemicalList": {
+      "chemical": [
+       {
+        "name": "Pyridines",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Indoles",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Quinolines",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Drug Combinations",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Pyrazoles",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Pyrrolidines",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Aminophenols",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Quinolones",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "registryNumber": "126880-72-6"
+       },
+       {
+        "name": "CFTR protein, human",
+        "registryNumber": "0"
+       },
+       {
+        "name": "TRPP Cation Channels",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Benzodioxoles",
+        "registryNumber": "0"
+       },
+       {
+        "name": "A Kinase Anchor Proteins",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Class Ib Phosphatidylinositol 3-Kinase",
+        "registryNumber": "EC 2.7.1.137"
+       },
+       {
+        "name": "PIK3CG protein, human",
+        "registryNumber": "EC 2.7.1.137"
+       },
+       {
+        "name": "Cyclic AMP",
+        "registryNumber": "E0399OZS9N"
+       },
+       {
+        "name": "elexacaftor, ivacaftor, tezacaftor drug combination",
+        "registryNumber": "0"
+       }
+      ]
+     },
+     "citedByCount": 1,
+     "dataLinksTagsList": {
+      "dataLinkstag": [
+       "altmetrics",
+       "supporting_data"
+      ]
+     },
+     "dateOfCompletion": "2026-07-13",
+     "dateOfCreation": "2026-03-23",
+     "dateOfRevision": "2026-09-07",
+     "doi": "10.1172/jci.insight.198846",
+     "electronicPublicationDate": "2026-03-23",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-03-23",
+     "firstPublicationDate": "2026-03-23",
+     "fullTextIdList": {
+      "fullTextId": [
+       "PMC13043088"
+      ]
+     },
+     "fullTextReceivedDate": "2026-04-02",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1172/jci.insight.198846"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "html",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13043088"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "pdf",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13043088?pdf=render"
+       }
+      ]
+     },
+     "grantsList": {
+      "grant": [
+       {
+        "agency": "Italian Cystic Fibrosis Research Foundation",
+        "grantId": "FFC#03.22",
+        "orderIn": 0
+       },
+       {
+        "agency": "PRIN",
+        "grantId": "2022WHSCL3",
+        "orderIn": 0
+       },
+       {
+        "agency": "Telethon",
+        "grantId": "GGP20079",
+        "orderIn": 0
+       },
+       {
+        "agency": "European Cystic Fibrosis Foundation and Cystic Fibrosis Europe",
+        "grantId": "none",
+        "orderIn": 0
+       },
+       {
+        "agency": "Telethon Foundation",
+        "grantId": "GGP20079",
+        "orderIn": 0
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "Y",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "Y",
+     "hasPDF": "Y",
+     "hasReferences": "Y",
+     "hasSuppl": "Y",
+     "hasTMAccessionNumbers": "Y",
+     "hasTextMinedTerms": "Y",
+     "id": "41869727",
+     "inEPMC": "Y",
+     "inPMC": "Y",
+     "isOpenAccess": "Y",
+     "journalInfo": {
+      "dateOfPublication": "2026 Mar",
+      "issue": "6",
+      "journal": {
+       "essn": "2379-3708",
+       "isoabbreviation": "JCI Insight",
+       "issn": "2379-3708",
+       "medlineAbbreviation": "JCI Insight",
+       "nlmid": "101676073",
+       "title": "JCI insight"
+      },
+      "journalIssueId": 4158050,
+      "monthOfPublication": 3,
+      "printPublicationDate": "2026-03-01",
+      "volume": "11",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Cell biology",
+       "Peptides",
+       "Therapeutics",
+       "Genetic diseases",
+       "Pulmonology"
+      ]
+     },
+     "language": "eng",
+     "license": "cc by",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Cell Membrane",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Animals",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Humans",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Cystic Fibrosis",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "DT",
+           "majorTopic_YN": "N",
+           "qualifierName": "drug therapy"
+          },
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Aminophenols",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "PD",
+           "majorTopic_YN": "N",
+           "qualifierName": "pharmacology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Pyrazoles",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Pyridines",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Pyrrolidines",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "PD",
+           "majorTopic_YN": "N",
+           "qualifierName": "pharmacology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Indoles",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "PD",
+           "majorTopic_YN": "N",
+           "qualifierName": "pharmacology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Quinolines",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Quinolones",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "PD",
+           "majorTopic_YN": "N",
+           "qualifierName": "pharmacology"
+          },
+          {
+           "abbreviation": "TU",
+           "majorTopic_YN": "N",
+           "qualifierName": "therapeutic use"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Cyclic AMP",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Drug Combinations",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Mutation",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "TRPP Cation Channels",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Benzodioxoles",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "A Kinase Anchor Proteins",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "HEK293 Cells",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Class Ib Phosphatidylinositol 3-Kinase",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "e198846",
+     "pmcid": "PMC13043088",
+     "pmid": "41869727",
+     "pubModel": "Electronic-eCollection",
+     "pubTypeList": {
+      "pubType": [
+       "Research Support, Non-U.S. Gov't",
+       "research-article",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "epublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Targeting PI3Kγ anchoring enhances CFTR membrane localization and modulator efficacy via PKD1.",
+     "tmAccessionTypeList": {
+      "accessionType": [
+       "gen"
+      ]
+     }
+    }
+   ]
+  },
+  "version": "6.9"
+ },
+ "headers": {
+  "content-type": "application/json;charset=UTF-8"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": {
+   "format": "json",
+   "pageSize": 5,
+   "query": "(TITLE_ABS:\"CFTR\" AND TITLE_ABS:\"F508del\") AND SRC:MED",
+   "resultType": "core",
+   "synonym": "false"
+  },
+  "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
+ },
+ "retrieved_at": "2026-09-12T16:40:30+00:00",
+ "status": 200,
+ "text": null
+}

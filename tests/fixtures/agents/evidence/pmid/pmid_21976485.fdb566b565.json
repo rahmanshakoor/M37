@@ -1,0 +1,427 @@
+{
+ "payload": {
+  "abstractText": "Cystic fibrosis (CF) is caused by mutations in the CF transmembrane conductance regulator (CFTR) gene that impair the function of CFTR, an epithelial chloride channel required for proper function of the lung, pancreas, and other organs. Most patients with CF carry the F508del CFTR mutation, which causes defective CFTR protein folding and processing in the endoplasmic reticulum, resulting in minimal amounts of CFTR at the cell surface. One strategy to treat these patients is to correct the processing of F508del-CFTR with small molecules. Here we describe the in vitro pharmacology of VX-809, a CFTR corrector that was advanced into clinical development for the treatment of CF. In cultured human bronchial epithelial cells isolated from patients with CF homozygous for F508del, VX-809 improved F508del-CFTR processing in the endoplasmic reticulum and enhanced chloride secretion to approximately 14% of non-CF human bronchial epithelial cells (EC(50), 81 ± 19 nM), a level associated with mild CF in patients with less disruptive CFTR mutations. F508del-CFTR corrected by VX-809 exhibited biochemical and functional characteristics similar to normal CFTR, including biochemical susceptibility to proteolysis, residence time in the plasma membrane, and single-channel open probability. VX-809 was more efficacious and selective for CFTR than previously reported CFTR correctors. VX-809 represents a class of CFTR corrector that specifically addresses the underlying processing defect in F508del-CFTR.",
+  "affiliation": "Vertex Pharmaceuticals, San Diego, CA 92121, USA.",
+  "authMan": "N",
+  "authorList": {
+   "author": [
+    {
+     "authorAffiliationDetailsList": {
+      "authorAffiliation": [
+       {
+        "affiliation": "Vertex Pharmaceuticals, San Diego, CA 92121, USA."
+       }
+      ]
+     },
+     "firstName": "Fredrick",
+     "fullName": "Van Goor F",
+     "initials": "F",
+     "lastName": "Van Goor"
+    },
+    {
+     "firstName": "Sabine",
+     "fullName": "Hadida S",
+     "initials": "S",
+     "lastName": "Hadida"
+    },
+    {
+     "firstName": "Peter D J",
+     "fullName": "Grootenhuis PD",
+     "initials": "PD",
+     "lastName": "Grootenhuis"
+    },
+    {
+     "firstName": "Bill",
+     "fullName": "Burton B",
+     "initials": "B",
+     "lastName": "Burton"
+    },
+    {
+     "firstName": "Jeffrey H",
+     "fullName": "Stack JH",
+     "initials": "JH",
+     "lastName": "Stack"
+    },
+    {
+     "firstName": "Kimberly S",
+     "fullName": "Straley KS",
+     "initials": "KS",
+     "lastName": "Straley"
+    },
+    {
+     "firstName": "Caroline J",
+     "fullName": "Decker CJ",
+     "initials": "CJ",
+     "lastName": "Decker"
+    },
+    {
+     "firstName": "Mark",
+     "fullName": "Miller M",
+     "initials": "M",
+     "lastName": "Miller"
+    },
+    {
+     "firstName": "Jason",
+     "fullName": "McCartney J",
+     "initials": "J",
+     "lastName": "McCartney"
+    },
+    {
+     "firstName": "Eric R",
+     "fullName": "Olson ER",
+     "initials": "ER",
+     "lastName": "Olson"
+    },
+    {
+     "firstName": "Jeffrey J",
+     "fullName": "Wine JJ",
+     "initials": "JJ",
+     "lastName": "Wine"
+    },
+    {
+     "firstName": "Ray A",
+     "fullName": "Frizzell RA",
+     "initials": "RA",
+     "lastName": "Frizzell"
+    },
+    {
+     "firstName": "Melissa",
+     "fullName": "Ashlock M",
+     "initials": "M",
+     "lastName": "Ashlock"
+    },
+    {
+     "firstName": "Paul A",
+     "fullName": "Negulescu PA",
+     "initials": "PA",
+     "lastName": "Negulescu"
+    }
+   ]
+  },
+  "authorString": "Van Goor F, Hadida S, Grootenhuis PD, Burton B, Stack JH, Straley KS, Decker CJ, Miller M, McCartney J, Olson ER, Wine JJ, Frizzell RA, Ashlock M, Negulescu PA.",
+  "chemicalList": {
+   "chemical": [
+    {
+     "name": "Chlorides",
+     "registryNumber": "0"
+    },
+    {
+     "name": "Aminopyridines",
+     "registryNumber": "0"
+    },
+    {
+     "name": "Cystic Fibrosis Transmembrane Conductance Regulator",
+     "registryNumber": "126880-72-6"
+    },
+    {
+     "name": "cystic fibrosis transmembrane conductance regulator delta F508",
+     "registryNumber": "0"
+    },
+    {
+     "name": "CFTR protein, human",
+     "registryNumber": "0"
+    },
+    {
+     "name": "Benzodioxoles",
+     "registryNumber": "0"
+    },
+    {
+     "name": "lumacaftor",
+     "registryNumber": "EGP8L81APK"
+    }
+   ]
+  },
+  "citedByCount": 862,
+  "dataLinksTagsList": {
+   "dataLinkstag": [
+    "altmetrics",
+    "supporting_data",
+    "recommended_reviews"
+   ]
+  },
+  "dateOfCompletion": "2012-01-26",
+  "dateOfCreation": "2011-10-07",
+  "dateOfRevision": "2024-12-19",
+  "doi": "10.1073/pnas.1105787108",
+  "electronicPublicationDate": "2011-10-05",
+  "epmcAuthMan": "N",
+  "firstIndexDate": "2011-10-08",
+  "firstPublicationDate": "2011-10-05",
+  "fullTextIdList": {
+   "fullTextId": [
+    "PMC3219147"
+   ]
+  },
+  "fullTextReceivedDate": "2025-02-02",
+  "fullTextUrlList": {
+   "fullTextUrl": [
+    {
+     "availability": "Free",
+     "availabilityCode": "F",
+     "documentStyle": "html",
+     "site": "Unpaywall",
+     "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/3219147"
+    },
+    {
+     "availability": "Subscription required",
+     "availabilityCode": "S",
+     "documentStyle": "doi",
+     "site": "DOI",
+     "url": "https://doi.org/10.1073/pnas.1105787108"
+    },
+    {
+     "availability": "Free",
+     "availabilityCode": "F",
+     "documentStyle": "html",
+     "site": "Europe_PMC",
+     "url": "https://europepmc.org/articles/PMC3219147"
+    },
+    {
+     "availability": "Free",
+     "availabilityCode": "F",
+     "documentStyle": "pdf",
+     "site": "Europe_PMC",
+     "url": "https://europepmc.org/articles/PMC3219147?pdf=render"
+    },
+    {
+     "availability": "Free",
+     "availabilityCode": "F",
+     "documentStyle": "doi",
+     "site": "DOI",
+     "url": "https://doi.org/10.1073/pnas.1105787108"
+    }
+   ]
+  },
+  "hasBook": "N",
+  "hasData": "Y",
+  "hasDbCrossReferences": "N",
+  "hasEvaluations": "N",
+  "hasLabsLinks": "Y",
+  "hasPDF": "Y",
+  "hasReferences": "Y",
+  "hasSuppl": "Y",
+  "hasTMAccessionNumbers": "Y",
+  "hasTextMinedTerms": "Y",
+  "id": "21976485",
+  "inEPMC": "Y",
+  "inPMC": "Y",
+  "isOpenAccess": "N",
+  "journalInfo": {
+   "dateOfPublication": "2011 Nov",
+   "issue": "46",
+   "journal": {
+    "essn": "1091-6490",
+    "isoabbreviation": "Proc Natl Acad Sci U S A",
+    "issn": "0027-8424",
+    "medlineAbbreviation": "Proc Natl Acad Sci U S A",
+    "nlmid": "7505876",
+    "title": "Proceedings of the National Academy of Sciences of the United States of America"
+   },
+   "journalIssueId": 1882034,
+   "monthOfPublication": 11,
+   "printPublicationDate": "2011-11-01",
+   "volume": "108",
+   "yearOfPublication": 2011
+  },
+  "language": "eng",
+  "meshHeadingList": {
+   "meshHeading": [
+    {
+     "descriptorName": "Lung",
+     "majorTopic_YN": "N",
+     "meshQualifierList": {
+      "meshQualifier": [
+       {
+        "abbreviation": "PA",
+        "majorTopic_YN": "N",
+        "qualifierName": "pathology"
+       }
+      ]
+     }
+    },
+    {
+     "descriptorName": "Bronchi",
+     "majorTopic_YN": "N",
+     "meshQualifierList": {
+      "meshQualifier": [
+       {
+        "abbreviation": "CY",
+        "majorTopic_YN": "N",
+        "qualifierName": "cytology"
+       }
+      ]
+     }
+    },
+    {
+     "descriptorName": "Cells, Cultured",
+     "majorTopic_YN": "N"
+    },
+    {
+     "descriptorName": "Cell Line",
+     "majorTopic_YN": "N"
+    },
+    {
+     "descriptorName": "Epithelial Cells",
+     "majorTopic_YN": "N",
+     "meshQualifierList": {
+      "meshQualifier": [
+       {
+        "abbreviation": "CY",
+        "majorTopic_YN": "N",
+        "qualifierName": "cytology"
+       }
+      ]
+     }
+    },
+    {
+     "descriptorName": "Humans",
+     "majorTopic_YN": "N"
+    },
+    {
+     "descriptorName": "Cystic Fibrosis",
+     "majorTopic_YN": "N",
+     "meshQualifierList": {
+      "meshQualifier": [
+       {
+        "abbreviation": "DT",
+        "majorTopic_YN": "Y",
+        "qualifierName": "drug therapy"
+       },
+       {
+        "abbreviation": "GE",
+        "majorTopic_YN": "N",
+        "qualifierName": "genetics"
+       }
+      ]
+     }
+    },
+    {
+     "descriptorName": "Chlorides",
+     "majorTopic_YN": "N",
+     "meshQualifierList": {
+      "meshQualifier": [
+       {
+        "abbreviation": "CH",
+        "majorTopic_YN": "N",
+        "qualifierName": "chemistry"
+       }
+      ]
+     }
+    },
+    {
+     "descriptorName": "Aminopyridines",
+     "majorTopic_YN": "N",
+     "meshQualifierList": {
+      "meshQualifier": [
+       {
+        "abbreviation": "TU",
+        "majorTopic_YN": "Y",
+        "qualifierName": "therapeutic use"
+       }
+      ]
+     }
+    },
+    {
+     "descriptorName": "Cystic Fibrosis Transmembrane Conductance Regulator",
+     "majorTopic_YN": "N",
+     "meshQualifierList": {
+      "meshQualifier": [
+       {
+        "abbreviation": "GE",
+        "majorTopic_YN": "Y",
+        "qualifierName": "genetics"
+       }
+      ]
+     }
+    },
+    {
+     "descriptorName": "Drug Evaluation, Preclinical",
+     "majorTopic_YN": "N"
+    },
+    {
+     "descriptorName": "Drug Design",
+     "majorTopic_YN": "N"
+    },
+    {
+     "descriptorName": "Homozygote",
+     "majorTopic_YN": "N"
+    },
+    {
+     "descriptorName": "Mutation",
+     "majorTopic_YN": "Y"
+    },
+    {
+     "descriptorName": "Chemistry, Pharmaceutical",
+     "majorTopic_YN": "N",
+     "meshQualifierList": {
+      "meshQualifier": [
+       {
+        "abbreviation": "MT",
+        "majorTopic_YN": "N",
+        "qualifierName": "methods"
+       }
+      ]
+     }
+    },
+    {
+     "descriptorName": "Models, Genetic",
+     "majorTopic_YN": "N"
+    },
+    {
+     "descriptorName": "Benzodioxoles",
+     "majorTopic_YN": "N",
+     "meshQualifierList": {
+      "meshQualifier": [
+       {
+        "abbreviation": "TU",
+        "majorTopic_YN": "Y",
+        "qualifierName": "therapeutic use"
+       }
+      ]
+     }
+    },
+    {
+     "descriptorName": "In Vitro Techniques",
+     "majorTopic_YN": "N"
+    }
+   ]
+  },
+  "nihAuthMan": "N",
+  "pageInfo": "18843-18848",
+  "pmcid": "PMC3219147",
+  "pmid": "21976485",
+  "pubModel": "Print-Electronic",
+  "pubTypeList": {
+   "pubType": [
+    "Research Support, Non-U.S. Gov't",
+    "research-article",
+    "Journal Article"
+   ]
+  },
+  "pubYear": "2011",
+  "publicationStatus": "ppublish",
+  "source": "MED",
+  "subsetList": {
+   "subset": [
+    {
+     "code": "IM",
+     "name": "Index Medicus"
+    }
+   ]
+  },
+  "title": "Correction of the F508del-CFTR protein processing defect in vitro by the investigational drug VX-809.",
+  "tmAccessionTypeList": {
+   "accessionType": [
+    "igsr"
+   ]
+  }
+ },
+ "query": {
+  "pmid": "21976485"
+ },
+ "record_id": "pmid:21976485",
+ "retrieved_at": "2026-09-13T01:39:12+00:00",
+ "source": "pmid",
+ "source_version": "Europe PMC REST 6.9",
+ "url": "https://europepmc.org/article/MED/21976485"
+}

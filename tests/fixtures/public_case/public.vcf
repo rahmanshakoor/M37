@@ -1,0 +1,35 @@
+##fileformat=VCFv4.2
+##FILTER=<ID=PASS,Description="All filters passed">
+##FILTER=<ID=LowQual,Description="Low quality">
+##INFO=<ID=AC,Number=A,Type=Integer,Description="Allele count in genotypes, for each ALT allele, in the same order as listed">
+##INFO=<ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth; some reads may have been filtered">
+##INFO=<ID=QD,Number=1,Type=Float,Description="Variant Confidence/Quality by Depth">
+##INFO=<ID=MQ,Number=1,Type=Float,Description="RMS Mapping Quality">
+##INFO=<ID=FS,Number=1,Type=Float,Description="Phred-scaled p-value using Fisher's exact test to detect strand bias">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">
+##FORMAT=<ID=PGT,Number=1,Type=String,Description="Physical phasing haplotype information, describing how the alternate alleles are phased in relation to one another; will always be heterozygous and is not intended to describe called alleles">
+##FORMAT=<ID=PID,Number=1,Type=String,Description="Physical phasing ID information, where each unique ID within a given sample (but not across samples) connects records within a phasing group">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="Normalized, Phred-scaled likelihoods for genotypes as defined in the VCF specification">
+##contig=<ID=1,length=248956422>
+##contig=<ID=7,length=159345973>
+##contig=<ID=15,length=101991189>
+##contig=<ID=17,length=83257441>
+##reference=GRCh38
+##source=hand-written public demo case; every variant is a public ClinVar/dbSNP allele (see README.md); genotype fields are invented and belong to no person
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	PUBLIC01
+1	11794419	rs1801131	T	G	612.64	PASS	AC=1;AN=2;DP=34;QD=18.02;MQ=60.00;FS=1.246	GT:AD:DP:GQ:PL	0/1:18,16:34:99:620,0,701
+1	11796321	rs1801133	G	A	785.77	PASS	AC=1;AN=2;DP=41;QD=19.16;MQ=60.00;FS=0.000	GT:AD:DP:GQ:PL	0/1:20,21:41:99:793,0,744
+7	117559403	rs34855237	A	G	701.06	PASS	AC=1;AN=2;DP=38;QD=18.45;MQ=60.00;FS=2.117	GT:AD:DP:GQ:PGT:PID:PL	0/1:19,19:38:99:0|1:117559403_A_G:709,0,712
+7	117559479	rs213950	G	A	733.64	PASS	AC=1;AN=2;DP=40;QD=18.34;MQ=60.00;FS=0.000	GT:AD:DP:GQ:PGT:PID:PL	0/1:21,19:40:99:0|1:117559403_A_G:741,0,802
+7	117559590	rs113993960	ATCT	A	812.73	PASS	AC=1;AN=2;DP=42;QD=19.35;MQ=60.00;FS=1.803	GT:AD:DP:GQ:PGT:PID:PL	0/1:23,19:42:99:1|0:117559403_A_G:820,0,905
+7	117578521	rs213953	G	A	1102.06	PASS	AC=2;AN=2;DP=36;QD=30.61;MQ=60.00;FS=0.000	GT:AD:DP:GQ:PL	1/1:0,36:36:99:1116,108,0
+7	117587778	rs113993959	G	T	874.77	PASS	AC=1;AN=2;DP=47;QD=18.61;MQ=60.00;FS=0.000	GT:AD:DP:GQ:PL	0/1:25,22:47:99:882,0,953
+7	117589483	rs213965	T	A	571.64	PASS	AC=1;AN=2;DP=32;QD=17.86;MQ=59.71;FS=3.412	GT:AD:DP:GQ:PL	0/1:17,15:32:99:579,0,644
+7	117595001	rs1042077	T	G	748.77	PASS	AC=1;AN=2;DP=40;QD=18.72;MQ=60.00;FS=0.000	GT:AD:DP:GQ:PL	0/1:21,19:40:99:756,0,780
+15	40185630	rs1801376	G	A	896.06	PASS	AC=2;AN=2;DP=29;QD=30.90;MQ=60.00;FS=0.000	GT:AD:DP:GQ:PL	1/1:0,29:29:87:910,87,0
+17	7675088	rs28934578	C	T	921.77	PASS	AC=1;AN=2;DP=50;QD=18.44;MQ=60.00;FS=0.902	GT:AD:DP:GQ:PL	0/1:26,24:50:99:929,0,977
+17	7676154	rs1042522	G	C	794.77	PASS	AC=1;AN=2;DP=41;QD=19.38;MQ=60.00;FS=0.000	GT:AD:DP:GQ:PL	0/1:19,22:41:99:802,0,688

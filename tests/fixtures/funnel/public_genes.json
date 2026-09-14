@@ -1,0 +1,28 @@
+{
+ "what": "Every line of the pinned Ensembl GTF whose gene_id is one of the genes below, header lines included. Public annotation only (no patient data): the genes of the three public textbook variants, the two mitochondrial genes that carry the commonest pathogenic mtDNA variants, and the gene_names_always allow-list. Recorded so the parser is exercised on the real line shape offline and the textbook variants resolve to the same intervals the full-genome build gives.",
+ "source": {
+  "url": "https://ftp.ensembl.org/pub/release-116/gtf/homo_sapiens/Homo_sapiens.GRCh38.116.chr.gtf.gz",
+  "checksum_bsd": "31909 137737",
+  "sha256": "f101fe4b1a350deaf26ab04bb565ba3e638e467fdc14c5c20b989b03edc87e05",
+  "bytes": 141042687,
+  "extracted_on": "2026-09-12"
+ },
+ "command": "gzip -dc Homo_sapiens.GRCh38.116.chr.gtf.gz | grep -E '^(#!|.*gene_id \"(ENSG00000177000|ENSG00000001626|ENSG00000141510|ENSG00000209082|ENSG00000211459|ENSG00000264229|ENSG00000277027|ENSG00000270141|ENSG00000276027|ENSG00000202538|ENSG00000238923|ENSG00000200463)\";)' > public_genes.gtf && gzip -n -9 public_genes.gtf",
+ "genes": {
+  "ENSG00000177000": "MTHFR",
+  "ENSG00000001626": "CFTR",
+  "ENSG00000141510": "TP53",
+  "ENSG00000209082": "MT-TL1",
+  "ENSG00000211459": "MT-RNR1",
+  "ENSG00000264229": "RNU4ATAC",
+  "ENSG00000277027": "RMRP",
+  "ENSG00000270141": "TERC",
+  "ENSG00000276027": "RNU12",
+  "ENSG00000202538": "RNU4-2",
+  "ENSG00000238923": "RNU7-1",
+  "ENSG00000200463": "SNORD118"
+ },
+ "lines": 3193,
+ "bytes_uncompressed": 1333582,
+ "sha256_uncompressed": "35003243d9e7add6215c071f71b7ff1a63ae6dd2e88988353b4d36ce76634ddc"
+}

@@ -1,0 +1,20 @@
+# Public demo case (CONTRACTS.md, "Public demo case"). Nothing here derives from a
+# person: the VCF is hand-written from public ClinVar/dbSNP alleles and the HPO
+# terms are textbook cystic-fibrosis features, each verified to exist at
+# https://ontology.jax.org/api/hp/terms/<id> on 2026-09-13.
+
+proband_id: PUBLIC01
+
+# Relative to this file. bgzipped + tabix-indexed; GRCh38, contigs spelled 1..22/X/Y.
+vcf: public.vcf.gz
+
+reference_fasta: null
+
+hpo:
+  - HP:0012236   # Elevated sweat chloride
+  - HP:0001738   # Exocrine pancreatic insufficiency
+  - HP:0002205   # Recurrent respiratory infections
+  - HP:0006528   # Chronic lung disease
+  - HP:0002110   # Bronchiectasis
+
+regions: null

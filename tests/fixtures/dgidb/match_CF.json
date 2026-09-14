@@ -1,0 +1,21 @@
+{
+ "headers": {
+  "content-type": "application/json; charset=utf-8"
+ },
+ "request": {
+  "body": {
+   "query": "query Match($terms: [String!]!) { geneMatches(searchTerms: $terms) { directMatches { searchTerm matchType matches { name conceptId } } ambiguousMatches { searchTerm matchType matches { name conceptId } } noMatches { searchTerm } } }",
+   "variables": {
+    "terms": [
+     "CF"
+    ]
+   }
+  },
+  "method": "POST",
+  "params": null,
+  "url": "https://dgidb.org/api/graphql"
+ },
+ "retrieved_at": "2026-09-12T18:57:08+00:00",
+ "status": 200,
+ "text": "{\"data\":{\"geneMatches\":{\"directMatches\":[{\"searchTerm\":\"CF\",\"matchType\":\"DIRECT\",\"matches\":[{\"name\":\"CFTR\",\"conceptId\":\"hgnc:1884\"}]}],\"ambiguousMatches\":[],\"noMatches\":[]}}}"
+}

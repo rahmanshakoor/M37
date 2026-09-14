@@ -1,0 +1,94 @@
+{
+ "body": {
+  "choices": [
+   {
+    "finish_reason": "tool_calls",
+    "index": 0,
+    "logprobs": null,
+    "message": {
+     "content": null,
+     "reasoning": "Two sums are asked for; call add twice.",
+     "reasoning_details": [
+      {
+       "format": "anthropic-claude-v1",
+       "id": null,
+       "index": 0,
+       "signature": "sig-round1",
+       "text": "Two sums are asked for; call add twice.",
+       "type": "reasoning.text"
+      }
+     ],
+     "role": "assistant",
+     "tool_calls": [
+      {
+       "function": {
+        "arguments": "{\"a\": 2, \"b\": 3}",
+        "name": "add"
+       },
+       "id": "toolu_01",
+       "type": "function"
+      },
+      {
+       "function": {
+        "arguments": "{\"a\": 10, \"b\": 20}",
+        "name": "add"
+       },
+       "id": "toolu_02",
+       "type": "function"
+      }
+     ]
+    },
+    "native_finish_reason": "tool_use"
+   }
+  ],
+  "created": 1789000000,
+  "id": "gen-round1",
+  "model": "anthropic/claude-opus-5",
+  "object": "chat.completion",
+  "openrouter_metadata": {
+   "attempt": 1,
+   "attempts": [
+    {
+     "model": "anthropic/claude-opus-5",
+     "provider": "Anthropic",
+     "status": 200
+    }
+   ],
+   "endpoints": {
+    "available": [
+     {
+      "model": "anthropic/claude-opus-5",
+      "provider": "Anthropic",
+      "selected": true
+     }
+    ],
+    "total": 11
+   },
+   "generation_time": 1200,
+   "requested": "anthropic/claude-opus-5",
+   "strategy": "direct"
+  },
+  "provider": "Anthropic",
+  "usage": {
+   "completion_tokens": 60,
+   "completion_tokens_details": {
+    "reasoning_tokens": 20
+   },
+   "cost": 0.0024,
+   "cost_details": {
+    "upstream_inference_cost": null
+   },
+   "is_byok": false,
+   "prompt_tokens": 180,
+   "prompt_tokens_details": {
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "total_tokens": 240
+  }
+ },
+ "headers": {
+  "content-type": "application/json"
+ },
+ "status": 200
+}

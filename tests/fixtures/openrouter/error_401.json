@@ -1,0 +1,12 @@
+{
+ "body": {
+  "error": {
+   "code": 401,
+   "message": "User not found."
+  }
+ },
+ "headers": {
+  "content-type": "application/json"
+ },
+ "status": 401
+}

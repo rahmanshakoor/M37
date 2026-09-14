@@ -1,0 +1,17 @@
+{
+ "body": {
+  "error": {
+   "code": 429,
+   "message": "Rate limit exceeded",
+   "metadata": {
+    "error_type": "rate_limit_exceeded",
+    "provider_code": "rate_limited"
+   }
+  }
+ },
+ "headers": {
+  "content-type": "application/json",
+  "retry-after": "30"
+ },
+ "status": 429
+}

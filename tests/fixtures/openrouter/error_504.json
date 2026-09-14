@@ -1,0 +1,15 @@
+{
+ "status": 504,
+ "headers": {
+  "content-type": "application/json"
+ },
+ "body": {
+  "error": {
+   "code": 504,
+   "message": "Gateway Timeout",
+   "metadata": {
+    "provider_name": "Anthropic"
+   }
+  }
+ }
+}

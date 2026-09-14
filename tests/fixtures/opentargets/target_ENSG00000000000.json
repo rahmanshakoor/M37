@@ -1,0 +1,19 @@
+{
+ "headers": {
+  "content-type": "application/json"
+ },
+ "request": {
+  "body": {
+   "query": "query Target($id: String!) { target(ensemblId: $id) { id approvedSymbol approvedName biotype genomicLocation { chromosome start end strand } tractability { modality label value } pathways { pathwayId pathway topLevelTerm } drugAndClinicalCandidates { count } associatedDiseases(page: { index: 0, size: 0 }, enableIndirect: false) { count } } }",
+   "variables": {
+    "id": "ENSG00000000000"
+   }
+  },
+  "method": "POST",
+  "params": null,
+  "url": "https://api.platform.opentargets.org/api/v4/graphql"
+ },
+ "retrieved_at": "2026-09-12T18:54:28+00:00",
+ "status": 200,
+ "text": "{\"data\":{\"target\":null}}"
+}

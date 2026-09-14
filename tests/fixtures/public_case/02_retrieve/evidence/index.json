@@ -1,0 +1,218 @@
+{
+ "clinvar:VCV000003520": {
+  "path": "clinvar/clinvar_VCV000003520.591b6938d8.json",
+  "retrieved_at": "2026-09-06T16:25:09+00:00",
+  "sha256": "701c6d858536c56d559364760cb02028c3c2dab26f19983fc061cdea739ee98f",
+  "source": "clinvar",
+  "source_version": "ClinVar 2026-09-05 GRCh38 VCF",
+  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/3520/"
+ },
+ "clinvar:VCV000003521": {
+  "path": "clinvar/clinvar_VCV000003521.105156df3b.json",
+  "retrieved_at": "2026-09-06T16:25:09+00:00",
+  "sha256": "bcbaaeb7097162bd7d46b5da96e5ed1f76b86ddeb5f465ace55e32dbfbc82845",
+  "source": "clinvar",
+  "source_version": "ClinVar 2026-09-05 GRCh38 VCF",
+  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/3521/"
+ },
+ "clinvar:VCV000007105": {
+  "path": "clinvar/clinvar_VCV000007105.3f907e9153.json",
+  "retrieved_at": "2026-09-06T16:25:09+00:00",
+  "sha256": "3a58008201b70e0cda03cba6949474153a91b3f086d87a46503b69f76cf6e24e",
+  "source": "clinvar",
+  "source_version": "ClinVar 2026-09-05 GRCh38 VCF",
+  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/7105/"
+ },
+ "clinvar:VCV000007115": {
+  "path": "clinvar/clinvar_VCV000007115.379d45c848.json",
+  "retrieved_at": "2026-09-06T16:25:09+00:00",
+  "sha256": "581862e301ab8a12492bb3bb92a741d6b357de5a4e2fb21e1c59acf99daa76ee",
+  "source": "clinvar",
+  "source_version": "ClinVar 2026-09-05 GRCh38 VCF",
+  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/7115/"
+ },
+ "clinvar:VCV000007130": {
+  "path": "clinvar/clinvar_VCV000007130.8cd94c09cd.json",
+  "retrieved_at": "2026-09-06T16:25:09+00:00",
+  "sha256": "fdc86ae25300d42f1fe96c6e66b07a8543b6f2f41252fcee59f86775750bd8e4",
+  "source": "clinvar",
+  "source_version": "ClinVar 2026-09-05 GRCh38 VCF",
+  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/7130/"
+ },
+ "clinvar:VCV000012351": {
+  "path": "clinvar/clinvar_VCV000012351.4c8e7f90b9.json",
+  "retrieved_at": "2026-09-06T16:25:09+00:00",
+  "sha256": "4cf3a60b7e04167dec61ebe5083d8aba64b89e37fd4cf426d01fe4e7eb68715f",
+  "source": "clinvar",
+  "source_version": "ClinVar 2026-09-05 GRCh38 VCF",
+  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/12351/"
+ },
+ "clinvar:VCV000012374": {
+  "path": "clinvar/clinvar_VCV000012374.45d84564de.json",
+  "retrieved_at": "2026-09-06T16:25:09+00:00",
+  "sha256": "452d20b071a20eeaa7ff56847a9234a9691c9a9cf2cc5dcb390014bcd9b8ba66",
+  "source": "clinvar",
+  "source_version": "ClinVar 2026-09-05 GRCh38 VCF",
+  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/12374/"
+ },
+ "clinvar:VCV000043577": {
+  "path": "clinvar/clinvar_VCV000043577.16c19cfed6.json",
+  "retrieved_at": "2026-09-06T16:25:09+00:00",
+  "sha256": "cdbcfec6b2c2f389b7e2266cc1c59fcccf76db6ab56301dc3c0481f2ce6a8163",
+  "source": "clinvar",
+  "source_version": "ClinVar 2026-09-05 GRCh38 VCF",
+  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/43577/"
+ },
+ "clinvar:VCV000053332": {
+  "path": "clinvar/clinvar_VCV000053332.054f1a64c8.json",
+  "retrieved_at": "2026-09-06T16:25:09+00:00",
+  "sha256": "ee8fd521bb9ee494a19a01e0970be9bf9dba7b6daa311bdf2615c36220c7056f",
+  "source": "clinvar",
+  "source_version": "ClinVar 2026-09-05 GRCh38 VCF",
+  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/53332/"
+ },
+ "clinvar:VCV000133780": {
+  "path": "clinvar/clinvar_VCV000133780.81876dd4be.json",
+  "retrieved_at": "2026-09-06T16:25:09+00:00",
+  "sha256": "f3b4f12fcd0d3ab02dd4b925070bbd516ce9d89bb629e1cada5abf89146c71a9",
+  "source": "clinvar",
+  "source_version": "ClinVar 2026-09-05 GRCh38 VCF",
+  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/133780/"
+ },
+ "clinvar:VCV000818106": {
+  "path": "clinvar/clinvar_VCV000818106.c7e5403d0d.json",
+  "retrieved_at": "2026-09-06T16:25:09+00:00",
+  "sha256": "27db9e2b1fd94298b8f5a9e496e93f0c5f036e121c46fd02f3a5dca9608c2695",
+  "source": "clinvar",
+  "source_version": "ClinVar 2026-09-05 GRCh38 VCF",
+  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/818106/"
+ },
+ "clinvar:VCV001704415": {
+  "path": "clinvar/clinvar_VCV001704415.c06986850e.json",
+  "retrieved_at": "2026-09-06T16:25:09+00:00",
+  "sha256": "a07b8dda002500d159b95d5934aa2425d8b6e5e1e8ad30a57efeb6742aa7658d",
+  "source": "clinvar",
+  "source_version": "ClinVar 2026-09-05 GRCh38 VCF",
+  "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1704415/"
+ },
+ "gnomad:17-7675088-C-T": {
+  "path": "gnomad/gnomad_17-7675088-C-T.7f90f89034.json",
+  "retrieved_at": "2026-09-12T23:45:31+00:00",
+  "sha256": "3f5de1327315ae30ca6b3e6cc310a63dc425c0d7bfa395a6656fbe90b6f31003",
+  "source": "gnomad",
+  "source_version": "gnomad_r4 clinvar_release_date=2026-06-06",
+  "url": "https://gnomad.broadinstitute.org/variant/17-7675088-C-T?dataset=gnomad_r4"
+ },
+ "gnomad:7-117559590-ATCT-A": {
+  "path": "gnomad/gnomad_7-117559590-ATCT-A.4d1e44900e.json",
+  "retrieved_at": "2026-09-12T23:45:31+00:00",
+  "sha256": "68c53203f137e3e19b110748ad308aac3008f62ee78085d894b39dd3146fba5f",
+  "source": "gnomad",
+  "source_version": "gnomad_r4 clinvar_release_date=2026-06-06",
+  "url": "https://gnomad.broadinstitute.org/variant/7-117559590-ATCT-A?dataset=gnomad_r4"
+ },
+ "gnomad:7-117587778-G-T": {
+  "path": "gnomad/gnomad_7-117587778-G-T.4730bd64b5.json",
+  "retrieved_at": "2026-09-12T23:45:31+00:00",
+  "sha256": "f62dc5772a682c5182b0afac06ca14764b5df046650dd3f2613d5de8caf51561",
+  "source": "gnomad",
+  "source_version": "gnomad_r4 clinvar_release_date=2026-06-06",
+  "url": "https://gnomad.broadinstitute.org/variant/7-117587778-G-T?dataset=gnomad_r4"
+ },
+ "vep:15:40185630:G:A": {
+  "path": "vep/vep_15_40185630_G_A.72b380763c.json",
+  "retrieved_at": "2026-09-12T23:45:30+00:00",
+  "sha256": "52c32dd0bfebeee128f1a315e998435ab218ecbb6ebc9bac1246fd40d5706d02",
+  "source": "vep",
+  "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/15:40185630-40185630/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+ },
+ "vep:17:7675088:C:T": {
+  "path": "vep/vep_17_7675088_C_T.48c25bda3f.json",
+  "retrieved_at": "2026-09-12T23:45:30+00:00",
+  "sha256": "66b4d61036bf074023728f96c0d4cf22f34fab3c142310bc36b474b43a016be7",
+  "source": "vep",
+  "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/17:7675088-7675088/T?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+ },
+ "vep:17:7676154:G:C": {
+  "path": "vep/vep_17_7676154_G_C.4f6aa44348.json",
+  "retrieved_at": "2026-09-12T23:45:30+00:00",
+  "sha256": "dbada2a640c802e75100412d3f939605cce1f64a9ac549f0393f4bdcbff0da4f",
+  "source": "vep",
+  "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/17:7676154-7676154/C?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+ },
+ "vep:1:11794419:T:G": {
+  "path": "vep/vep_1_11794419_T_G.4702ada09e.json",
+  "retrieved_at": "2026-09-12T23:45:30+00:00",
+  "sha256": "aa5e38e506cde60646c41764e1a82661a7fcfdae76024fbcfa76c20b16f6bcf7",
+  "source": "vep",
+  "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/1:11794419-11794419/G?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+ },
+ "vep:1:11796321:G:A": {
+  "path": "vep/vep_1_11796321_G_A.a676787a96.json",
+  "retrieved_at": "2026-09-12T23:45:30+00:00",
+  "sha256": "c730d4a67e66f9743286ef7ea08747ec0154a9ef8c1ebcbdbec8c484b19cf31b",
+  "source": "vep",
+  "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/1:11796321-11796321/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+ },
+ "vep:7:117559403:A:G": {
+  "path": "vep/vep_7_117559403_A_G.03e288a93d.json",
+  "retrieved_at": "2026-09-12T23:45:30+00:00",
+  "sha256": "ca0d95ad378554f21dd19e8c7618b76b32eff277de6d9aafa46a8a1c9580fb8b",
+  "source": "vep",
+  "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117559403-117559403/G?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+ },
+ "vep:7:117559479:G:A": {
+  "path": "vep/vep_7_117559479_G_A.a865109d99.json",
+  "retrieved_at": "2026-09-12T23:45:30+00:00",
+  "sha256": "58e25fb0d9bc3147a0dae4461b6259d5c6999008895dfd26a2cab223683bc0a9",
+  "source": "vep",
+  "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117559479-117559479/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+ },
+ "vep:7:117559590:ATCT:A": {
+  "path": "vep/vep_7_117559590_ATCT_A.ece85625f7.json",
+  "retrieved_at": "2026-09-12T23:45:30+00:00",
+  "sha256": "0d1b7d52491bbd7c04389782b69ce40ea1a1c9d87b49c6c51ef31cf0229d9fff",
+  "source": "vep",
+  "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117559590-117559593/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+ },
+ "vep:7:117578521:G:A": {
+  "path": "vep/vep_7_117578521_G_A.d31cce3739.json",
+  "retrieved_at": "2026-09-12T23:45:30+00:00",
+  "sha256": "bf04c28b11387796507b6d9138096750a78be1d64c95b9382fa5ea85269d014e",
+  "source": "vep",
+  "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117578521-117578521/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+ },
+ "vep:7:117587778:G:T": {
+  "path": "vep/vep_7_117587778_G_T.5b71dfc81f.json",
+  "retrieved_at": "2026-09-12T23:45:30+00:00",
+  "sha256": "4727569f91f79f3895e124ff10e5386a534e9a3b4247055e7885334a446cf634",
+  "source": "vep",
+  "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117587778-117587778/T?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+ },
+ "vep:7:117589483:T:A": {
+  "path": "vep/vep_7_117589483_T_A.914124d2f7.json",
+  "retrieved_at": "2026-09-12T23:45:30+00:00",
+  "sha256": "8c463d58f38b1e9c8f9f23b4bba6fad54973d1e794db85ef36c5947f785db560",
+  "source": "vep",
+  "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117589483-117589483/A?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+ },
+ "vep:7:117595001:T:G": {
+  "path": "vep/vep_7_117595001_T_G.2304eb56c9.json",
+  "retrieved_at": "2026-09-12T23:45:30+00:00",
+  "sha256": "6460cdb990a1d6e0e27d74de9913d512bc5cc316651df65ca83e46cfe13a8c47",
+  "source": "vep",
+  "source_version": "Ensembl VEP 116 (rest.ensembl.org, assembly GRCh38)",
+  "url": "https://rest.ensembl.org/vep/homo_sapiens/region/7:117595001-117595001/G?content-type=application%2Fjson&canonical=1&mane=1&hgvs=1&numbers=1&SpliceAI=1&CADD=1"
+ }
+}

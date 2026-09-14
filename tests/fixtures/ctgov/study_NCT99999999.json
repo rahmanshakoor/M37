@@ -1,0 +1,16 @@
+{
+ "headers": {
+  "content-type": "text/plain; charset=UTF-8"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": {
+   "fields": "IdentificationModule,StatusModule,SponsorCollaboratorsModule,ConditionsModule,DesignModule,ArmsInterventionsModule,EligibilityModule,BriefSummary,PrimaryOutcomeMeasure,PrimaryOutcomeDescription,PrimaryOutcomeTimeFrame,ConditionMeshTerm,ConditionMeshId,InterventionMeshTerm,InterventionMeshId,VersionHolder,HasResults"
+  },
+  "url": "https://clinicaltrials.gov/api/v2/studies/NCT99999999"
+ },
+ "retrieved_at": "2026-09-12T20:31:15+00:00",
+ "status": 404,
+ "text": "NCT number NCT99999999 not found"
+}

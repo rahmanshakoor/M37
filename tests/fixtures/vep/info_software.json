@@ -1,0 +1,19 @@
+{
+ "headers": {
+  "content-type": "application/json",
+  "x-ratelimit-limit": "55000",
+  "x-ratelimit-remaining": "54999",
+  "x-ratelimit-reset": "1155"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": null,
+  "url": "https://rest.ensembl.org/info/software"
+ },
+ "response": {
+  "release": 116
+ },
+ "retrieved_at": "2026-09-12T16:40:45+00:00",
+ "status": 200
+}

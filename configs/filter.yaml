@@ -1,0 +1,98 @@
+# Stage 3 filter: every threshold the rules apply, echoed verbatim into
+# 03_filter/manifest.json (params) and 03_filter/candidates.json (config).
+#
+# The rules are pure and run in the order CONTRACTS.md lists; the first rule that
+# drops a row is the one recorded for it. Nothing here needs the network.
+
+# --- rarity ------------------------------------------------------------------------
+rarity:
+  # Per-allele AF ceiling for a candidate in a biallelic model (hom, comphet, hemi,
+  # mito). CF carrier alleles run up to ~1% in Europeans, so 1% keeps every
+  # recessive allele that could plausibly be pathogenic.
+  recessive_max_af: 0.01
+  # A single heterozygous HIGH-impact or ClinVar-P/LP variant is kept as a
+  # low-priority dominant candidate only below this (1 in 10,000 alleles).
+  dominant_max_af: 0.0001
+  # gnomAD homozygotes tolerated for a recessive candidate allele: a few can be
+  # sequencing noise or a hypomorph; dozens mean the allele is not fully penetrant.
+  homozygote_max_nhom: 5
+  # A ClinVar P/LP allele (clinvar.always_keep, with at least
+  # clinvar.rescue_min_stars) is rescued from recessive_max_af and from
+  # homozygote_max_nhom only at or under this AF. CFTR p.Phe508del (gnomAD v4 AF
+  # 0.0119, 58 homozygotes, 4 stars) must pass; a 0-star "Pathogenic" at 30% must
+  # not. Every rescue is a recorded hit; a refused rescue is recorded too.
+  rescue_max_af: 0.05
+  # Columns read for the AF, in order of preference. The first column is the
+  # citable joint (exome+genome) record from the gnomAD API; the vep_* columns are
+  # VEP's courtesy copy of gnomAD on the colocated dbSNP entry, present for common
+  # variants the stage-2 retriever deliberately did not query. Absent everywhere
+  # counts as 0.
+  af_source_order: [gnomad_af, vep_gnomade_af, vep_gnomadg_af]
+  # How the columns after the first are read when the first is empty:
+  #   first - the first non-empty column wins (CONTRACTS.md rule 3, as written).
+  #           Stage 2 skips the gnomAD API when the *larger* VEP copy is already
+  #           common, so a row whose picked copy is rare while a later copy is
+  #           above recessive_max_af can come back as rare here; such rows are
+  #           counted (counts.rarity.af_fallback_first_masked_rows) and noted.
+  #   max   - the largest present value wins (ties: earlier column) — the reading
+  #           under which that cannot happen. A documented departure from the
+  #           contract's wording; switch it on deliberately.
+  af_fallback_pick: first
+
+# --- consequence -------------------------------------------------------------------
+consequence:
+  # impact_any_coding values that keep a row on consequence alone. The column is
+  # the highest VEP impact over every protein-coding transcript, so an alternative
+  # transcript's stop_gained counts even when the MANE transcript is intronic.
+  keep_impacts: [HIGH, MODERATE]
+  # Any impact is kept when the maximum SpliceAI delta score reaches this.
+  # 0.2 is SpliceAI's published high-recall cutoff; 0.5 is high precision.
+  keep_splice_min_ds: 0.2
+  # Consequence terms that veto a kept impact when the reported transcript is the
+  # one that earned it (its own impact is at least impact_any_coding), unless
+  # SpliceAI or ClinVar rescues the row. A term on the reported transcript never
+  # vetoes an impact another coding transcript earned (rule 1 keeps that row).
+  # With keep_impacts [HIGH, MODERATE] a synonymous reported transcript can only
+  # veto when impact_any_coding is also LOW — already dropped — so this list
+  # bites once keep_impacts includes LOW.
+  drop_terms: [synonymous_variant]
+
+# --- clinvar -----------------------------------------------------------------------
+clinvar:
+  # ClinVar germline classifications kept regardless of consequence (rule 1) and,
+  # under rarity.rescue_max_af, regardless of AF and homozygote count. A combined
+  # term (Pathogenic/Likely_pathogenic) matches when every member does.
+  always_keep: [Pathogenic, Likely_pathogenic]
+  # Benign / Likely_benign with at least this many review stars is dropped; 2 stars
+  # means multiple submitters with criteria and no conflicts.
+  drop_if_benign_min_stars: 2
+  # Review stars a P/LP entry needs before it can rescue a row from the frequency
+  # ceilings (rarity.recessive_max_af, rarity.homozygote_max_nhom). 1 star = at
+  # least one submitter with assertion criteria; 0 (or unknown) stars never rescue.
+  # Rule 1 (consequence) and the het_single model apply always_keep without a
+  # star bound, as CONTRACTS.md states.
+  rescue_min_stars: 1
+
+# --- quality -----------------------------------------------------------------------
+# Caveats are attached to a row, never a reason to drop it: a real variant in
+# difficult sequence should surface with its weakness stated.
+quality:
+  caveat_min_dp: 10        # sample depth below this -> caveat "dp<10"
+  caveat_min_gq: 20        # genotype quality below this -> caveat "gq<20"
+  caveat_flagged_filters: true   # a non-empty quality_flag -> caveat "flagged:<filter>"
+
+# --- phase -------------------------------------------------------------------------
+phase:
+  # Two heterozygous rows of one gene that share a non-empty PID are in the
+  # caller's physical-phasing group. With trust_pgt false (CONTRACTS.md rule 5, as
+  # written) a shared PID is always read as cis; pairs whose PGT says otherwise
+  # (0|1 vs 1|0) are counted (counts.phase.shared_pid_opposite_pgt_pairs) and
+  # noted in the manifest. With true, their PGT decides: opposite phased
+  # genotypes -> trans (a comphet with phase status "trans"); equal -> cis; PGT
+  # missing or unphased on either -> cis. A documented departure from the
+  # contract's wording; switch it on deliberately.
+  # A het whose every partner in the gene is cis is dropped as phase:cis (rule 5)
+  # even when it would qualify as het_single on its own; such rows are counted
+  # (counts.phase.cis_rows_dropped_het_single_eligible), carry the hit
+  # model:het_single_eligible in decisions.tsv.gz, and are noted in the manifest.
+  trust_pgt: false

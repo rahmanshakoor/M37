@@ -1,0 +1,17 @@
+# ClinVar GRCh38 VCF release pin — every value observed live on 2026-09-12 from the
+# NCBI directory listing, HEAD and the .md5 sidecar. The engine downloads exactly this
+# file, verifies the md5, and cites the release date in every ClinVar evidence record.
+#
+# Re-pinning: `ClinvarRelease.latest_filename(http)` names the newest dated file in the
+# listing; copy its date into `date` and `url`, then `bytes` from a HEAD and `md5` from
+# the `.vcf.gz.md5` sidecar (hash only — the path in that file is NCBI-internal).
+date: "20260905"
+url: https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar_20260905.vcf.gz
+md5: ece04fe2ee72db1dd988d8b188df34b9
+bytes: 193476678
+tbi_bytes: 610243
+# The top-level dated file rotates weekly. When it has moved, the same bytes (same md5)
+# are kept under these sibling directories of the url; `{year}` is taken from `date`.
+fallback_dirs:
+  - weekly/
+  - archive_2.0/{year}/

@@ -1,0 +1,17 @@
+{
+ "headers": {
+  "content-type": "application/json; charset=utf-8"
+ },
+ "request": {
+  "body": {
+   "query": "{ genes(names: [\"CFTR\"]) { nodes { name bogusField } } }",
+   "variables": {}
+  },
+  "method": "POST",
+  "params": null,
+  "url": "https://dgidb.org/api/graphql"
+ },
+ "retrieved_at": "2026-09-12T18:57:12+00:00",
+ "status": 200,
+ "text": "{\"errors\":[{\"message\":\"Field 'bogusField' doesn't exist on type 'Gene'\",\"locations\":[{\"line\":1,\"column\":41}],\"path\":[\"query\",\"genes\",\"nodes\",\"bogusField\"],\"extensions\":{\"code\":\"undefinedField\",\"typeName\":\"Gene\",\"fieldName\":\"bogusField\"}}]}"
+}

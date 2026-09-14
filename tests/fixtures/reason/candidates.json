@@ -1,0 +1,164 @@
+{
+ "candidates": [
+  {
+   "candidate_id": "CFTR:hom",
+   "caveats": [],
+   "gene_id": "ENSG00000001626",
+   "gene_symbol": "CFTR",
+   "model": "hom",
+   "phase": {
+    "evidence": "homozygous",
+    "status": "n/a"
+   },
+   "priority": 1,
+   "rule_hits": [
+    "consequence:MODERATE",
+    "clinvar:Pathogenic",
+    "rarity:af=0.01193"
+   ],
+   "variants": [
+    {
+     "ad": "0,41",
+     "af_source": "gnomad_af",
+     "af_used": "0.01193",
+     "caveats": [],
+     "clinvar_pathogenicity": "Pathogenic",
+     "clinvar_stars": "4",
+     "clinvar_vcv": "VCV000007105",
+     "consequence": "inframe_deletion",
+     "dp": "41",
+     "evidence_ids": [
+      "vep:7:117559590:ATCT:A",
+      "clinvar:VCV000007105",
+      "gnomad:7-117559590-ATCT-A"
+     ],
+     "gnomad_nhom": "58",
+     "gq": "99",
+     "gt": "1/1",
+     "hgvsc": "ENST00000003084.11:c.1521_1523del",
+     "hgvsp": "ENSP00000003084.6:p.Phe508del",
+     "impact": "MODERATE",
+     "key": "7:117559590:ATCT:A",
+     "mane": "NM_000492.4",
+     "polyphen_pred": "",
+     "quality_flag": "",
+     "sift_pred": "",
+     "spliceai_ds_max": "0",
+     "transcript_id": "ENST00000003084"
+    }
+   ]
+  },
+  {
+   "candidate_id": "TP53:het_single",
+   "caveats": [
+    "dp<20"
+   ],
+   "gene_id": "ENSG00000141510",
+   "gene_symbol": "TP53",
+   "model": "het_single",
+   "phase": {
+    "evidence": "single heterozygous variant",
+    "status": "n/a"
+   },
+   "priority": 2,
+   "rule_hits": [
+    "consequence:MODERATE",
+    "clinvar:Pathogenic",
+    "rarity:af=4.337e-06"
+   ],
+   "variants": [
+    {
+     "ad": "9,7",
+     "af_source": "gnomad_af",
+     "af_used": "4.337e-06",
+     "caveats": [
+      "dp<20"
+     ],
+     "clinvar_pathogenicity": "Pathogenic",
+     "clinvar_stars": "3",
+     "clinvar_vcv": "VCV000012374",
+     "consequence": "missense_variant",
+     "dp": "16",
+     "evidence_ids": [
+      "vep:17:7675088:C:T",
+      "clinvar:VCV000012374",
+      "gnomad:17-7675088-C-T"
+     ],
+     "gnomad_nhom": "0",
+     "gq": "48",
+     "gt": "0/1",
+     "hgvsc": "ENST00000269305.9:c.524G>A",
+     "hgvsp": "ENSP00000269305.4:p.Arg175His",
+     "impact": "MODERATE",
+     "key": "17:7675088:C:T",
+     "mane": "NM_000546.6",
+     "polyphen_pred": "",
+     "quality_flag": "",
+     "sift_pred": "tolerated",
+     "spliceai_ds_max": "0.01",
+     "transcript_id": "ENST00000269305"
+    }
+   ]
+  },
+  {
+   "candidate_id": "MTHFR:hom",
+   "caveats": [
+    "decoy: common variant kept only to exercise BA1"
+   ],
+   "gene_id": "ENSG00000177000",
+   "gene_symbol": "MTHFR",
+   "model": "hom",
+   "phase": {
+    "evidence": "homozygous",
+    "status": "n/a"
+   },
+   "priority": 3,
+   "rule_hits": [
+    "consequence:MODERATE"
+   ],
+   "variants": [
+    {
+     "ad": "0,33",
+     "af_source": "gnomad_af",
+     "af_used": "0.3182",
+     "caveats": [],
+     "clinvar_pathogenicity": "",
+     "clinvar_stars": "3",
+     "clinvar_vcv": "VCV000003520",
+     "consequence": "missense_variant",
+     "dp": "33",
+     "evidence_ids": [
+      "vep:1:11796321:G:A",
+      "clinvar:VCV000003520",
+      "gnomad:1-11796321-G-A"
+     ],
+     "gnomad_nhom": "87723",
+     "gq": "99",
+     "gt": "1/1",
+     "hgvsc": "ENST00000376590.9:c.665C>T",
+     "hgvsp": "ENSP00000365775.3:p.Ala222Val",
+     "impact": "MODERATE",
+     "key": "1:11796321:G:A",
+     "mane": "NM_005957.5",
+     "polyphen_pred": "probably_damaging",
+     "quality_flag": "",
+     "sift_pred": "deleterious",
+     "spliceai_ds_max": "0",
+     "transcript_id": "ENST00000376590"
+    }
+   ]
+  }
+ ],
+ "config": {
+  "note": "synthetic stage-3 output for tests; thresholds are not the real configs/filter.yaml"
+ },
+ "counts": {
+  "candidates": 3,
+  "candidates_by_model": {
+   "het_single": 1,
+   "hom": 2
+  },
+  "kept": 3,
+  "rows_in": 3
+ }
+}

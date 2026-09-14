@@ -1,0 +1,161 @@
+{
+ "body": {
+  "header": {
+   "type": "esummary",
+   "version": "0.3"
+  },
+  "result": {
+   "7647779": {
+    "articleids": [
+     {
+      "idtype": "pubmed",
+      "idtypen": 1,
+      "value": "7647779"
+     },
+     {
+      "idtype": "doi",
+      "idtypen": 3,
+      "value": "10.1038/ng0595-111"
+     }
+    ],
+    "attributes": [
+     "Has Abstract",
+     "Author List Incomplete"
+    ],
+    "authors": [
+     {
+      "authtype": "Author",
+      "clusterid": "",
+      "name": "Frosst P"
+     },
+     {
+      "authtype": "Author",
+      "clusterid": "",
+      "name": "Blom HJ"
+     },
+     {
+      "authtype": "Author",
+      "clusterid": "",
+      "name": "Milos R"
+     },
+     {
+      "authtype": "Author",
+      "clusterid": "",
+      "name": "Goyette P"
+     },
+     {
+      "authtype": "Author",
+      "clusterid": "",
+      "name": "Sheppard CA"
+     },
+     {
+      "authtype": "Author",
+      "clusterid": "",
+      "name": "Matthews RG"
+     },
+     {
+      "authtype": "Author",
+      "clusterid": "",
+      "name": "Boers GJ"
+     },
+     {
+      "authtype": "Author",
+      "clusterid": "",
+      "name": "den Heijer M"
+     },
+     {
+      "authtype": "Author",
+      "clusterid": "",
+      "name": "Kluijtmans LA"
+     },
+     {
+      "authtype": "Author",
+      "clusterid": "",
+      "name": "van den Heuvel LP"
+     }
+    ],
+    "availablefromurl": "",
+    "bookname": "",
+    "booktitle": "",
+    "chapter": "",
+    "doccontriblist": [],
+    "docdate": "",
+    "doctype": "citation",
+    "edition": "",
+    "elocationid": "",
+    "epubdate": "",
+    "essn": "",
+    "fulljournalname": "Nature genetics",
+    "history": [
+     {
+      "date": "1995/05/01 00:00",
+      "pubstatus": "pubmed"
+     },
+     {
+      "date": "1995/05/01 00:01",
+      "pubstatus": "medline"
+     },
+     {
+      "date": "1995/05/01 00:00",
+      "pubstatus": "entrez"
+     }
+    ],
+    "issn": "1061-4036",
+    "issue": "1",
+    "lang": [
+     "eng"
+    ],
+    "lastauthor": "van den Heuvel LP",
+    "locationlabel": "",
+    "medium": "",
+    "nlmuniqueid": "9216904",
+    "pages": "111-3",
+    "pmcrefcount": "",
+    "pubdate": "1995 May",
+    "publisherlocation": "",
+    "publishername": "",
+    "pubstatus": "4",
+    "pubtype": [
+     "Letter",
+     "Research Support, Non-U.S. Gov't",
+     "Research Support, U.S. Gov't, P.H.S."
+    ],
+    "recordstatus": "PubMed - indexed for MEDLINE",
+    "references": [],
+    "reportnumber": "",
+    "sortfirstauthor": "Frosst P",
+    "sortpubdate": "1995/05/01 00:00",
+    "sorttitle": "candidate genetic risk factor for vascular disease a common mutation in methylenetetrahydrofolate reductase",
+    "source": "Nat Genet",
+    "srccontriblist": [],
+    "srcdate": "",
+    "title": "A candidate genetic risk factor for vascular disease: a common mutation in methylenetetrahydrofolate reductase.",
+    "uid": "7647779",
+    "vernaculartitle": "",
+    "volume": "10"
+   },
+   "uids": [
+    "7647779"
+   ]
+  }
+ },
+ "headers": {
+  "content-type": "application/json; charset=UTF-8",
+  "x-ratelimit-limit": "3",
+  "x-ratelimit-remaining": "2"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": {
+   "db": "pubmed",
+   "id": "7647779",
+   "retmode": "json",
+   "tool": "engine"
+  },
+  "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
+ },
+ "retrieved_at": "2026-09-12T16:40:33+00:00",
+ "status": 200,
+ "text": null
+}

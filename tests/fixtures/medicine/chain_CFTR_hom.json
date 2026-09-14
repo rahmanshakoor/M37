@@ -1,0 +1,80 @@
+{
+ "candidate_id": "CFTR:hom",
+ "limits": [
+  "No parental samples: a large deletion on one allele cannot be excluded",
+  "No functional assay on this proband's cells",
+  "ClinVar and Exomiser are interpretations, not observations"
+ ],
+ "literature": [
+  "pmid:42616613"
+ ],
+ "mechanism_hypothesis": "Loss of function by misfolding: F508del-CFTR fails NBD1 folding, is retained in the endoplasmic reticulum and degraded, so little channel reaches the apical membrane, and the residual protein that does has reduced open probability [vep:7:117559590:ATCT:A] [pmid:42616613]. A hypomorphic, folding-defective allele rather than a null.",
+ "phase_statement": "Homozygous genotype (1/1, AD 0,41): both alleles carry the deletion, so phase is not in question [vep:7:117559590:ATCT:A]; a deletion of the other allele masquerading as homozygosity cannot be excluded without parental samples or coverage analysis.",
+ "variants": [
+  {
+   "classification": "likely_pathogenic",
+   "criteria": [
+    {
+     "code": "PS3",
+     "evidence_ids": [
+      "pmid:42616613"
+     ],
+     "justification": "Functional and biochemical characterisation shows F508del-CFTR is a folding and gating defect rescued by corrector/potentiator combinations [pmid:42616613]",
+     "met": true,
+     "strength": "strong"
+    },
+    {
+     "code": "PM2",
+     "evidence_ids": [
+      "gnomad:7-117559590-ATCT-A"
+     ],
+     "justification": "af 0.0119 with 58 homozygotes: not absent; consistent with a common recessive allele",
+     "met": false,
+     "strength": "moderate"
+    },
+    {
+     "code": "PM4",
+     "evidence_ids": [
+      "vep:7:117559590:ATCT:A"
+     ],
+     "justification": "In-frame deletion of one residue (Phe508) in the NBD1 domain, a non-repeat region",
+     "met": true,
+     "strength": "moderate"
+    },
+    {
+     "code": "PP5",
+     "evidence_ids": [
+      "clinvar:VCV000007105"
+     ],
+     "justification": "ClinVar Pathogenic, practice guideline (4 stars)",
+     "met": true,
+     "strength": "supporting"
+    },
+    {
+     "code": "PP4",
+     "evidence_ids": [
+      "exomiser:CFTR"
+     ],
+     "justification": "CF phenotype terms (HP:0002205, HP:0006528, HP:0012236); Exomiser rank 1 under AR",
+     "met": true,
+     "strength": "supporting"
+    },
+    {
+     "code": "PP3",
+     "evidence_ids": [
+      "vep:7:117559590:ATCT:A"
+     ],
+     "justification": "In-frame deletion in a conserved domain; SpliceAI 0",
+     "met": true,
+     "strength": "supporting"
+    }
+   ],
+   "key": "7:117559590:ATCT:A",
+   "summary": "Homozygous p.Phe508del, the commonest CF allele [vep:7:117559590:ATCT:A] [clinvar:VCV000007105]; 58 homozygotes in gnomAD reflect the carrier frequency of a recessive disease, not benignity [gnomad:7-117559590-ATCT-A]."
+  }
+ ],
+ "what_would_change_the_call": [
+  "Sweat chloride measurement",
+  "Parental genotypes or a coverage-based deletion call over CFTR"
+ ]
+}

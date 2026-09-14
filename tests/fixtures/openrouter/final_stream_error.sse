@@ -1,0 +1,10 @@
+: OPENROUTER PROCESSING
+
+data: {"id":"gen-final-err","object":"chat.completion.chunk","created":1789000000,"model":"anthropic/claude-opus-5","provider":"Anthropic","choices":[{"index":0,"delta":{"role":"assistant","content":"{\"results\": [5"},"finish_reason":null,"native_finish_reason":null,"logprobs":null}]}
+
+: OPENROUTER PROCESSING
+
+data: {"id":"gen-final-err","object":"chat.completion.chunk","created":1789000000,"model":"anthropic/claude-opus-5","provider":"Anthropic","choices":[{"index":0,"delta":{"content":""},"finish_reason":"error","native_finish_reason":"error","logprobs":null}],"error":{"code":502,"message":"Provider disconnected mid-stream","metadata":{"provider_name":"Anthropic","raw":"upstream connection reset while streaming"}}}
+
+data: [DONE]
+

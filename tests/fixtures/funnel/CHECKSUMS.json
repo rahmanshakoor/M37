@@ -1,0 +1,12 @@
+{
+ "headers": {
+  "content-length": "224",
+  "etag": "\"e0-658790f412ff9\"",
+  "last-modified": "Fri, 07 Aug 2026 18:20:30 GMT"
+ },
+ "method": "GET",
+ "retrieved_at": "2026-09-12T16:38:03+00:00",
+ "status": 200,
+ "text": "20333 3243 Homo_sapiens.GRCh38.116.abinitio.gtf.gz\n31909 137737 Homo_sapiens.GRCh38.116.chr.gtf.gz\n35479 142363 Homo_sapiens.GRCh38.116.chr_patch_hapl_scaff.gtf.gz\n49151 137815 Homo_sapiens.GRCh38.116.gtf.gz\n56461 11 README\n",
+ "url": "https://ftp.ensembl.org/pub/release-116/gtf/homo_sapiens/CHECKSUMS"
+}

@@ -1,0 +1,18 @@
+# Copy to case.yaml (git-ignored) and fill in. The engine reads nothing about the
+# proband from anywhere else.
+
+proband_id: PROBAND01
+
+# Bgzipped, tabix-indexed VCF. Relative paths resolve from this file's directory.
+vcf: ../data/proband.vcf.gz
+
+# Optional. Reference FASTA whose contig names match the VCF. When set, indels are
+# left-aligned and REF alleles checked; when null, the manifest records that
+# normalization ran without a reference.
+reference_fasta: null
+
+# Coded phenotype terms (HPO ids). Used by the blind phenotype ranker only.
+hpo: []
+
+# Optional. Restrict ingest to these regions (BED). Omit for whole genome.
+regions: null

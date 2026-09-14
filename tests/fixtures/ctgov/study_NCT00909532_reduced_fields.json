@@ -1,0 +1,16 @@
+{
+ "headers": {
+  "content-type": "application/json"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": {
+   "fields": "NCTId,BriefTitle,OverallStatus,VersionHolder"
+  },
+  "url": "https://clinicaltrials.gov/api/v2/studies/NCT00909532"
+ },
+ "retrieved_at": "2026-09-13T01:48:45+00:00",
+ "status": 200,
+ "text": "{\"protocolSection\":{\"identificationModule\":{\"nctId\":\"NCT00909532\",\"briefTitle\":\"Study of Ivacaftor in Cystic Fibrosis Subjects Aged 12 Years and Older With the G551D Mutation\"},\"statusModule\":{\"overallStatus\":\"COMPLETED\"}},\"derivedSection\":{\"miscInfoModule\":{\"versionHolder\":\"2026-09-11\"}}}"
+}

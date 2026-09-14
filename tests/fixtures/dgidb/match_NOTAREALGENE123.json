@@ -1,0 +1,21 @@
+{
+ "headers": {
+  "content-type": "application/json; charset=utf-8"
+ },
+ "request": {
+  "body": {
+   "query": "query Match($terms: [String!]!) { geneMatches(searchTerms: $terms) { directMatches { searchTerm matchType matches { name conceptId } } ambiguousMatches { searchTerm matchType matches { name conceptId } } noMatches { searchTerm } } }",
+   "variables": {
+    "terms": [
+     "NOTAREALGENE123"
+    ]
+   }
+  },
+  "method": "POST",
+  "params": null,
+  "url": "https://dgidb.org/api/graphql"
+ },
+ "retrieved_at": "2026-09-12T18:57:06+00:00",
+ "status": 200,
+ "text": "{\"data\":{\"geneMatches\":{\"directMatches\":[],\"ambiguousMatches\":[],\"noMatches\":[{\"searchTerm\":\"NOTAREALGENE123\"}]}}}"
+}

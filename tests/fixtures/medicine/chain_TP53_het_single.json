@@ -1,0 +1,48 @@
+{
+ "candidate_id": "TP53:het_single",
+ "limits": [
+  "Depth 16"
+ ],
+ "literature": [],
+ "mechanism_hypothesis": "Dominant negative [vep:17:7675088:C:T].",
+ "phase_statement": "Single heterozygous variant; phase does not arise.",
+ "variants": [
+  {
+   "classification": "vus",
+   "criteria": [
+    {
+     "code": "PM2",
+     "evidence_ids": [
+      "gnomad:17-7675088-C-T"
+     ],
+     "justification": "7 alleles in 1.6 M, no homozygotes",
+     "met": true,
+     "strength": "moderate"
+    },
+    {
+     "code": "PP3",
+     "evidence_ids": [
+      "vep:17:7675088:C:T"
+     ],
+     "justification": "CADD 25.9",
+     "met": true,
+     "strength": "supporting"
+    },
+    {
+     "code": "PP5",
+     "evidence_ids": [
+      "clinvar:VCV000012374"
+     ],
+     "justification": "ClinVar Pathogenic, expert panel",
+     "met": true,
+     "strength": "supporting"
+    }
+   ],
+   "key": "17:7675088:C:T",
+   "summary": "Heterozygous p.Arg175His at low depth."
+  }
+ ],
+ "what_would_change_the_call": [
+  "Orthogonal confirmation of the genotype"
+ ]
+}

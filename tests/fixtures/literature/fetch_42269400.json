@@ -1,0 +1,485 @@
+{
+ "body": {
+  "hitCount": 1,
+  "request": {
+   "cursorMark": "*",
+   "internalQuery": "EXT_ID:42269400 AND SRC:MED",
+   "pageSize": 1,
+   "queryString": "EXT_ID:42269400 AND SRC:MED",
+   "resultType": "CORE",
+   "sort": "",
+   "synonym": false
+  },
+  "resultList": {
+   "result": [
+    {
+     "abstractText": "<h4>Background</h4>& Aims: Folate metabolism can be regulated by diet and genetic variation, particularly Methylenetetrahydrofolate reductase (MTHFR) rs1801133 polymorphism. We explored the effect of plant-based green-Mediterranean (green-MED) diet on serum folate and whether this effect varies by genetic variation in folate metabolism over 18-months METHODS: In the DIRECT-PLUS trial, 294 participants were randomized to healthy dietary guidelines (HDG), MED, or plant-based green-MED diets. Both isocaloric MED groups consumed walnuts (28g/day), while green-MED group also avoided red/processed meat, consumed Wolffia-globosa Mankai green shake (500 ml/day), and green-tea (3-4 cups/day). MRI assessed visceral adipose tissue (VAT). MTHFR rs1801133 single-nucleotide-polymorphism (SNP), and folate-pathway mRNA expression were evaluated.<h4>Results</h4>Participants (age = 50.1years; 90.6% men; body-mass-index = 31.4 kg/m<sup>2</sup>; serum folate = 7.6 ng/mL; rs1801133 frequencies: CC = 38.5%; CT = 49.8%; TT = 11.7%) had 89% 18-month retention rate. Folate deficiency at baseline was rare (∼3%, n = 8), indicating effects within the normal range. After 18-months of intervention, the green-MED diet significantly increased serum folate (+1.2 ng/mL) compared to MED (+0.41 ng/mL) and HDG diets (+0.1 ng/mL), p < 0.05 between groups, with higher Mankai intake strongly associated with folate elevation (p = 0.003). rs1801133 TT-genotype carriers had lower folate at baseline (p = 0.037) and post-intervention (p = 0.04; recessive mode-of-inheritance), while CC/CT-genotype carriers showed the highest folate increase following the green-MED intervention (p = 0.03). TT-genotype carriers showed lower baseline MTHFD2 mRNA expression (p = 0.005), but an enriched transcription, compared to CC/CT-carriers post-intervention (p = 0.001). Mankai intake interacted with rs1801133 genotype on VAT (p = 0.028) and Framingham risk score (p = 0.024), with CC/CT-carriers showing dose-response benefits.<h4>Conclusions</h4>The green-MED diet, enriched with Mankai, significantly increased serum folate compared with the MED and HDG diets. The response differed by MTHFR rs1801133-genotype, with CC/CT carriers showing greater increases in folate. These findings support a gene-diet interaction with potential implications for visceral adiposity and cardiometabolic risk.",
+     "affiliation": "The Health & Nutrition Innovative International Research Center, Department of Epidemiology, Biostatistics and Community Health Sciences, Faculty of Health Sciences, School of Public Health, Ben-Gurion University of the Negev, Beer-Sheva, 8410501, Israel.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0003-3258-3397"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "The Health & Nutrition Innovative International Research Center, Department of Epidemiology, Biostatistics and Community Health Sciences, Faculty of Health Sciences, School of Public Health, Ben-Gurion University of the Negev, Beer-Sheva, 8410501, Israel."
+          }
+         ]
+        },
+        "firstName": "Hila",
+        "fullName": "Zelicha H",
+        "initials": "H",
+        "lastName": "Zelicha"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Medical Department III - Endocrinology, Nephrology, Rheumatology, University of Leipzig Medical Center, 04103 Leipzig, Germany; Helmholtz Institute for Metabolic, Obesity and Vascular Research (HI-MAG) of the Helmholtz Zentrum München at the University of Leipzig and University Hospital Leipzig, Leipzig, Germany."
+          }
+         ]
+        },
+        "firstName": "Maria",
+        "fullName": "Keller M",
+        "initials": "M",
+        "lastName": "Keller"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "The Health & Nutrition Innovative International Research Center, Department of Epidemiology, Biostatistics and Community Health Sciences, Faculty of Health Sciences, School of Public Health, Ben-Gurion University of the Negev, Beer-Sheva, 8410501, Israel."
+          }
+         ]
+        },
+        "firstName": "Anat Yaskolka",
+        "fullName": "Meir AY",
+        "initials": "AY",
+        "lastName": "Meir"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "The Health & Nutrition Innovative International Research Center, Department of Epidemiology, Biostatistics and Community Health Sciences, Faculty of Health Sciences, School of Public Health, Ben-Gurion University of the Negev, Beer-Sheva, 8410501, Israel."
+          }
+         ]
+        },
+        "firstName": "Ehud",
+        "fullName": "Rinott E",
+        "initials": "E",
+        "lastName": "Rinott"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "The Health & Nutrition Innovative International Research Center, Department of Epidemiology, Biostatistics and Community Health Sciences, Faculty of Health Sciences, School of Public Health, Ben-Gurion University of the Negev, Beer-Sheva, 8410501, Israel."
+          }
+         ]
+        },
+        "firstName": "Gal",
+        "fullName": "Tsaban G",
+        "initials": "G",
+        "lastName": "Tsaban"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "The Health & Nutrition Innovative International Research Center, Department of Epidemiology, Biostatistics and Community Health Sciences, Faculty of Health Sciences, School of Public Health, Ben-Gurion University of the Negev, Beer-Sheva, 8410501, Israel."
+          }
+         ]
+        },
+        "firstName": "Alon",
+        "fullName": "Kaplan A",
+        "initials": "A",
+        "lastName": "Kaplan"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Helmholtz Institute for Metabolic, Obesity and Vascular Research (HI-MAG) of the Helmholtz Zentrum München at the University of Leipzig and University Hospital Leipzig, Leipzig, Germany."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0003-3258-3397"
+        },
+        "firstName": "Anne",
+        "fullName": "Hoffmann A",
+        "initials": "A",
+        "lastName": "Hoffmann"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Medical Department III - Endocrinology, Nephrology, Rheumatology, University of Leipzig Medical Center, 04103 Leipzig, Germany; Helmholtz Institute for Metabolic, Obesity and Vascular Research (HI-MAG) of the Helmholtz Zentrum München at the University of Leipzig and University Hospital Leipzig, Leipzig, Germany."
+          }
+         ]
+        },
+        "firstName": "Matthias",
+        "fullName": "Blüher M",
+        "initials": "M",
+        "lastName": "Blüher"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "University of Leipzig Medical Center, Institute of Laboratory Medicine, Leipzig, Germany."
+          }
+         ]
+        },
+        "firstName": "Uta",
+        "fullName": "Ceglarek U",
+        "initials": "U",
+        "lastName": "Ceglarek"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "University of Leipzig Medical Center, Institute of Laboratory Medicine, Leipzig, Germany."
+          }
+         ]
+        },
+        "firstName": "Berend",
+        "fullName": "Isermann B",
+        "initials": "B",
+        "lastName": "Isermann"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Medical Department III - Endocrinology, Nephrology, Rheumatology, University of Leipzig Medical Center, 04103 Leipzig, Germany."
+          }
+         ]
+        },
+        "firstName": "Michael",
+        "fullName": "Stumvoll M",
+        "initials": "M",
+        "lastName": "Stumvoll"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Soroka University Medical Center, Beer-Sheva, Israel."
+          }
+         ]
+        },
+        "firstName": "Ilan",
+        "fullName": "Shelef I",
+        "initials": "I",
+        "lastName": "Shelef"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Brigham and Women's Hospital and Harvard Medical School, Boston, USA."
+          }
+         ]
+        },
+        "firstName": "Frank B",
+        "fullName": "Hu FB",
+        "initials": "FB",
+        "lastName": "Hu"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Brigham and Women's Hospital and Harvard Medical School, Boston, USA."
+          }
+         ]
+        },
+        "firstName": "Meir J",
+        "fullName": "Stampfer MJ",
+        "initials": "MJ",
+        "lastName": "Stampfer"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Medical Department III - Endocrinology, Nephrology, Rheumatology, University of Leipzig Medical Center, 04103 Leipzig, Germany; German Center for Diabetes Research (DZD), Neuherberg, Germany."
+          }
+         ]
+        },
+        "firstName": "Peter",
+        "fullName": "Kovacs P",
+        "initials": "P",
+        "lastName": "Kovacs"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "The Health & Nutrition Innovative International Research Center, Department of Epidemiology, Biostatistics and Community Health Sciences, Faculty of Health Sciences, School of Public Health, Ben-Gurion University of the Negev, Beer-Sheva, 8410501, Israel; Medical Department III - Endocrinology, Nephrology, Rheumatology, University of Leipzig Medical Center, 04103 Leipzig, Germany; Department of Nutrition, Harvard T.H. Chan School of Public Health, Boston, MA, USA; School of Sustainability, Reichman University, Israel. Electronic address: irish@bgu.ac.il."
+          }
+         ]
+        },
+        "firstName": "Iris",
+        "fullName": "Shai I",
+        "initials": "I",
+        "lastName": "Shai"
+       }
+      ]
+     },
+     "authorString": "Zelicha H, Keller M, Meir AY, Rinott E, Tsaban G, Kaplan A, Hoffmann A, Blüher M, Ceglarek U, Isermann B, Stumvoll M, Shelef I, Hu FB, Stampfer MJ, Kovacs P, Shai I.",
+     "chemicalList": {
+      "chemical": [
+       {
+        "name": "Methylenetetrahydrofolate Reductase (NADPH2)",
+        "registryNumber": "EC 1.5.1.20"
+       },
+       {
+        "name": "MTHFR protein, human",
+        "registryNumber": "EC 1.5.1.20"
+       },
+       {
+        "name": "Folic Acid",
+        "registryNumber": "935E97BOY8"
+       }
+      ]
+     },
+     "citedByCount": 0,
+     "dataLinksTagsList": {
+      "dataLinkstag": [
+       "altmetrics",
+       "supporting_data"
+      ]
+     },
+     "dateOfCompletion": "2026-07-23",
+     "dateOfCreation": "2026-06-10",
+     "dateOfRevision": "2026-08-24",
+     "doi": "10.1016/j.clnu.2026.106701",
+     "electronicPublicationDate": "2026-05-29",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-06-11",
+     "firstPublicationDate": "2026-05-29",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1016/j.clnu.2026.106701"
+       }
+      ]
+     },
+     "grantsList": {
+      "grant": [
+       {
+        "agency": "California Walnuts",
+        "orderIn": 0
+       },
+       {
+        "agency": "Israel Ministry of Innovation Science &amp; Technology",
+        "grantId": "3 -13604",
+        "orderIn": 0
+       },
+       {
+        "agency": "Deutsche Forschungsgemeinschaft",
+        "grantId": "EXC-3105/1\\u2013533765739",
+        "orderIn": 0
+       },
+       {
+        "agency": "Ministry of Science and Technology, Israel",
+        "orderIn": 0
+       },
+       {
+        "agency": "Ministry of Health, State of Israel",
+        "grantId": "87472511",
+        "orderIn": 0
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "Y",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "Y",
+     "hasPDF": "N",
+     "hasReferences": "Y",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "Y",
+     "hasTextMinedTerms": "Y",
+     "id": "42269400",
+     "inEPMC": "N",
+     "inPMC": "N",
+     "isOpenAccess": "N",
+     "journalInfo": {
+      "dateOfPublication": "2026 Aug",
+      "journal": {
+       "essn": "1532-1983",
+       "isoabbreviation": "Clin Nutr",
+       "issn": "0261-5614",
+       "medlineAbbreviation": "Clin Nutr",
+       "nlmid": "8309603",
+       "title": "Clinical nutrition (Edinburgh, Scotland)"
+      },
+      "journalIssueId": 4233007,
+      "monthOfPublication": 8,
+      "printPublicationDate": "2026-08-01",
+      "volume": "63",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Mediterranean Diet",
+       "Nutrigenomics",
+       "Mthfr Polymorphism",
+       "Cardiometabolic Risk",
+       "Folate Metabolism"
+      ]
+     },
+     "language": "eng",
+     "license": "cc by",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Humans",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Folic Acid",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "BL",
+           "majorTopic_YN": "N",
+           "qualifierName": "blood"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Methylenetetrahydrofolate Reductase (NADPH2)",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Diet, Mediterranean",
+        "majorTopic_YN": "Y"
+       },
+       {
+        "descriptorName": "Polymorphism, Single Nucleotide",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Adult",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Middle Aged",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Female",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Male",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Intra-Abdominal Fat",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "DG",
+           "majorTopic_YN": "N",
+           "qualifierName": "diagnostic imaging"
+          }
+         ]
+        }
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "106701",
+     "pmid": "42269400",
+     "pubModel": "Print-Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "Randomized Controlled Trial",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "ppublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Effect of green mediterranean diet on serum folate and its interaction with genetic variation in folate metabolism: The DIRECT PLUS 18-month dietary randomized controlled trial.",
+     "tmAccessionTypeList": {
+      "accessionType": [
+       "refsnp"
+      ]
+     }
+    }
+   ]
+  },
+  "version": "6.9"
+ },
+ "headers": {
+  "content-type": "application/json;charset=UTF-8"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": {
+   "format": "json",
+   "pageSize": 1,
+   "query": "EXT_ID:42269400 AND SRC:MED",
+   "resultType": "core",
+   "synonym": "false"
+  },
+  "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
+ },
+ "retrieved_at": "2026-09-12T17:13:32+00:00",
+ "status": 200,
+ "text": null
+}

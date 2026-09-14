@@ -1,0 +1,19 @@
+{
+ "headers": {
+  "content-type": "application/json"
+ },
+ "request": {
+  "body": {
+   "query": "query KnownDrugs($id: String!) { target(ensemblId: $id) { id drugAndClinicalCandidates { count rows { id maxClinicalStage drug { id name drugType maximumClinicalStage mechanismsOfAction { rows { mechanismOfAction actionType targetName targets { id approvedSymbol } } } } diseases { diseaseFromSource disease { id name } } clinicalReports { id type source url trialPhase clinicalStage trialOverallStatus year trialWhyStopped diseases { disease { id name } } } } } } }",
+   "variables": {
+    "id": "ENSG00000177000"
+   }
+  },
+  "method": "POST",
+  "params": null,
+  "url": "https://api.platform.opentargets.org/api/v4/graphql"
+ },
+ "retrieved_at": "2026-09-12T18:54:29+00:00",
+ "status": 200,
+ "text": "{\"data\":{\"target\":{\"id\":\"ENSG00000177000\",\"drugAndClinicalCandidates\":{\"count\":0,\"rows\":[]}}}}"
+}

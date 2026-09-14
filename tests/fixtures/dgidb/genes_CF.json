@@ -1,0 +1,21 @@
+{
+ "headers": {
+  "content-type": "application/json; charset=utf-8"
+ },
+ "request": {
+  "body": {
+   "query": "query GeneDrugs($names: [String!]!) { genes(names: $names) { nodes { name conceptId longName geneCategoriesWithSources { name sourceNames } interactions { id gene { name conceptId } drug { name conceptId approved antiNeoplastic immunotherapy } interactionScore evidenceScore drugSpecificity geneSpecificity interactionTypes { type directionality definition } sources { sourceDbName sourceDbVersion } publications { pmid citation } } } } }",
+   "variables": {
+    "names": [
+     "CF"
+    ]
+   }
+  },
+  "method": "POST",
+  "params": null,
+  "url": "https://dgidb.org/api/graphql"
+ },
+ "retrieved_at": "2026-09-12T18:57:07+00:00",
+ "status": 200,
+ "text": "{\"data\":{\"genes\":{\"nodes\":[]}}}"
+}

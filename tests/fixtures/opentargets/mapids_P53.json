@@ -1,0 +1,21 @@
+{
+ "headers": {
+  "content-type": "application/json"
+ },
+ "request": {
+  "body": {
+   "query": "query MapSymbols($terms: [String!]!) { mapIds(queryTerms: $terms, entityNames: [\"target\"]) { total mappings { term hits { id entity name score object { ... on Target { id approvedSymbol } } } } } }",
+   "variables": {
+    "terms": [
+     "P53"
+    ]
+   }
+  },
+  "method": "POST",
+  "params": null,
+  "url": "https://api.platform.opentargets.org/api/v4/graphql"
+ },
+ "retrieved_at": "2026-09-12T18:54:33+00:00",
+ "status": 200,
+ "text": "{\"data\":{\"mapIds\":{\"total\":1,\"mappings\":[{\"term\":\"P53\",\"hits\":[{\"id\":\"ENSG00000141510\",\"entity\":\"target\",\"name\":\"TP53\",\"score\":1,\"object\":{\"id\":\"ENSG00000141510\",\"approvedSymbol\":\"TP53\"}}]}]}}}"
+}

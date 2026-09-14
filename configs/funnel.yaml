@@ -1,0 +1,101 @@
+# Tier A funnel: exon/splice-proximal regions from a release-pinned Ensembl GTF.
+#
+# The funnel decides which ingested variants are sent to the public sources in
+# stage 2. It must be deterministic (same config + same file => byte-identical BED),
+# release-pinned (a re-run next year builds the same set), and a superset of every
+# variant a coding or splicing mechanism could explain. Every value below was chosen
+# from a live probe of the release-116 files on 2026-09-12 and then measured on the
+# downloaded file (see the manifest written next to the BED for what was actually
+# observed at build time).
+
+# --- source ------------------------------------------------------------------------
+# Ensembl release 116 == GENCODE 50 (GRCh38.p14, genebuild 2025-11). Pinned rather
+# than "current" because /pub/current_gtf/ does not exist (404) and /pub/current/ is
+# re-stamped at every release; the release-pinned path is stable.
+release: 116
+base_url: "https://ftp.ensembl.org/pub/release-{release}/gtf/homo_sapiens/"
+
+# The chromosomes-only file. Of the three human GTF variants, .chr_patch_hapl_scaff
+# duplicates loci on alt/patch contigs (wrong for a WGS funnel) and the plain .gtf.gz
+# adds only unplaced scaffolds, which have no canonical name in this engine and are
+# dropped at ingest anyway. The .chr file is the smallest exact fit.
+filename: "Homo_sapiens.GRCh38.{release}.chr.gtf.gz"
+
+# Ensembl publishes BSD `sum(1)` checksums ("<16-bit rotating checksum> <1 KiB blocks>"),
+# not md5/sha256. This value is the CHECKSUMS entry observed live for the file above;
+# download_gtf() re-reads the live CHECKSUMS file and refuses to proceed if the two
+# disagree, then verifies the downloaded bytes with a pure-Python implementation of
+# the same algorithm (verified against Ensembl's own entry for README: "56461 11").
+checksum: "31909 137737"
+
+# --- what counts as an exon --------------------------------------------------------
+# Protein-coding genes (20,107 in this file) plus the mitochondrial tRNA and rRNA
+# genes (22 Mt_tRNA + 2 Mt_rRNA; 4,021 bp of exon in all): the commonest pathogenic mtDNA
+# variants sit in MT-TL1 (m.3243A>G), MT-TK and MT-RNR1 (m.1555A>G), none of which is
+# protein_coding. Every other non-coding class stays out (189k lncRNA transcripts,
+# 1,901 snRNA, IG/TR segments, pseudogenes); the clinically established non-coding
+# genes are admitted by name below instead.
+gene_biotypes:
+  - protein_coding
+  - Mt_tRNA
+  - Mt_rRNA
+
+# ALL transcripts of those genes with a coding-type biotype, not only MANE Select or
+# Ensembl canonical: a variant in an alternative exon is still interpretable, and
+# restricting to MANE loses 36% of the coding-gene exonic footprint (measured on the
+# release-116 file: 109.7 Mb unpadded for protein_coding transcripts vs 70.5 Mb for
+# MANE_Select-tagged ones).
+#   protein_coding            mandatory (278,455 transcripts)
+#   nonsense_mediated_decay   real spliced isoforms of coding genes that carry poison
+#                             and alternative exons and share splice junctions
+#                             (91,818 transcripts; +8.4 Mb unpadded)
+#   protein_coding_LoF        tiny (86) and coding by definition
+#   Mt_tRNA, Mt_rRNA          the only transcript biotypes of the MT genes above (24)
+# Together: 370,383 transcripts, 118.1 Mb unpadded (3.82% of the genome). With the
+# allow-list below the full build has 20,138 genes, 370,390 transcripts, 234,068
+# padded intervals and 142,565,357 bp (measured 2026-09-12).
+# Excluded on purpose: retained_intron (its "exons" are intronic sequence and would
+# add deep-intronic bases: +19.5 Mb), protein_coding_CDS_not_defined (fragments; the
+# old processed_transcript, which is itself retired: 12 transcripts left), lncRNA.
+transcript_biotypes:
+  - protein_coding
+  - nonsense_mediated_decay
+  - protein_coding_LoF
+  - Mt_tRNA
+  - Mt_rRNA
+
+# Genes kept regardless of biotype: every exon of every transcript of a gene with one
+# of these gene_name values. Non-coding genes with an established Mendelian disease
+# (each present exactly once in the release-116 file; 1,346 bp of exon in all):
+#   RNU4ATAC  snRNA     MOPD I / Roifman / Lowry-Wood syndromes
+#   RMRP      ribozyme  cartilage-hair hypoplasia
+#   TERC      lncRNA    dyskeratosis congenita / telomeropathies
+#   RNU12     snRNA     early-onset cerebellar ataxia
+#   RNU4-2    snRNA     ReNU syndrome (neurodevelopmental disorder)
+#   RNU7-1    snRNA     Aicardi-Goutieres syndrome
+#   SNORD118  snoRNA    leukoencephalopathy with calcifications and cysts
+# Extend here, never by widening the biotypes; a name that is not in the file is
+# simply not matched (check the manifest's n_exon_lines_by_name).
+gene_names_always:
+  - RNU4ATAC
+  - RMRP
+  - TERC
+  - RNU12
+  - RNU4-2
+  - RNU7-1
+  - SNORD118
+
+# --- padding -----------------------------------------------------------------------
+# +/-50 bp around every exon: a superset of VEP's splice_region (3-8 bp intronic) and
+# of the window SpliceAI scores at its default distance (50), so nothing the splice
+# predictors can flag is outside the funnel. Measured cost over +/-8: +20.5 Mb (+17%),
+# for a total of ~142.6 Mb = 4.62% of the genome in ~234k intervals (the probe's
+# head-sample extrapolation of ~2.2% was low by ~1.7x across every choice; the
+# relative costs it reported hold). The canonical donor +1 variant CFTR c.489+1G>T
+# (7:117531115, 1 bp beyond MANE exon 4) is captured by any pad >= 1.
+pad_bp: 50
+
+# Sum of the 25 primary GRCh38 contigs (1-22, X, Y and MT, whose 16,569 bp are
+# included); the denominator of the genome_fraction statistic. Per-contig lengths are
+# in engine.retrieve.funnel.GRCH38_LENGTHS, as rest.ensembl.org/info/assembly reports.
+genome_length: 3088286401
