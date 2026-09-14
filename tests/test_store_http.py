@@ -89,6 +89,19 @@ class _Handler(BaseHTTPRequestHandler):
             return self._send(200, {"ok": True, "path": self.path})
         if self.path.startswith("/boom"):
             return self._send(500, {"error": "boom"})
+        if self.path.startswith("/cut"):
+            if _Handler.fail_first > 0:
+                # a body cut short: Content-Length promises more than is sent, then the connection closes
+                _Handler.fail_first -= 1
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", "4000")
+                self.end_headers()
+                self.wfile.write(b'{"ok": tr')
+                self.wfile.flush()
+                self.connection.close()
+                return None
+            return self._send(200, {"ok": True, "path": self.path})
         return self._send(200, {"ok": True, "path": self.path})
 
     def do_POST(self):
@@ -156,6 +169,15 @@ def test_retries_on_429_then_succeeds_and_never_caches_errors(tmp_path: Path, se
     with pytest.raises(HttpError):
         h.get(f"{server}/boom")
     assert h.live_requests > n
+
+
+def test_a_body_cut_short_is_retried_like_a_5xx(tmp_path: Path, server: str):
+    """Ensembl under load closes a POST mid-body (IncompleteRead); that is a transient
+    failure, not a result, and must not kill a ten-minute retrieve."""
+    _Handler.fail_first = 1
+    h = _http(tmp_path)
+    r = h.get(f"{server}/cut")
+    assert r.status == 200 and json.loads(r.text)["ok"] is True and h.live_requests == 2
 
 
 def test_rate_limiter_spaces_requests():

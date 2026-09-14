@@ -18,6 +18,7 @@ import json
 import os
 import threading
 import time
+import http.client
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -216,7 +217,9 @@ class Http:
                     time.sleep(max(_backoff(attempt, e.headers.get("Retry-After")), floor))
                     continue
                 raise HttpError(e.code, full, body) from e
-            except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+            except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.HTTPException) as e:
+                # HTTPException covers a body cut short mid-transfer (IncompleteRead) and a
+                # malformed status line — transient on a busy public endpoint, retried like a 5xx
                 last_err = e
                 if attempt < self.retries:
                     time.sleep(max(_backoff(attempt, None), floor / 4))
