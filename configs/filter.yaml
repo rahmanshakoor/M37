@@ -35,9 +35,13 @@ rarity:
   #           above recessive_max_af can come back as rare here; such rows are
   #           counted (counts.rarity.af_fallback_first_masked_rows) and noted.
   #   max   - the largest present value wins (ties: earlier column) — the reading
-  #           under which that cannot happen. A documented departure from the
-  #           contract's wording; switch it on deliberately.
-  af_fallback_pick: first
+  #           under which that cannot happen. Shipped default since 2026-09-14: on
+  #           the first full case run "first" let 4,219 rows read a rare exome copy
+  #           while the genome copy was common (AGAP3 p.Cys32TrpfsTer99 at genome AF
+  #           0.9997 reached priority 3 as a homozygote), which is exactly the
+  #           situation the prefilter creates. A documented departure from the
+  #           contract's wording, taken deliberately.
+  af_fallback_pick: max
 
 # --- consequence -------------------------------------------------------------------
 consequence:

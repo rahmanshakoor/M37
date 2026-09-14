@@ -408,10 +408,12 @@ def test_config_vocabularies_are_checked_against_the_producing_code(section, key
 
 
 def test_shipped_defaults_are_the_contract_rules():
-    """CONTRACTS.md as written: AF is the first non-empty source, a shared PID is cis.
-    The other readings exist as switches and are echoed when used."""
+    """CONTRACTS.md as written for phase (a shared PID is cis); for the AF fallback the
+    shipped default is the documented departure ``max`` (the commoner VEP copy
+    decides), since ``first`` let common variants read as rare on the first full
+    case. The other readings exist as switches and are echoed when used."""
     cfg = FilterConfig.load(DEFAULT_CONFIG)
-    assert cfg.rarity.af_fallback_pick == "first" and cfg.phase.trust_pgt is False
+    assert cfg.rarity.af_fallback_pick == "max" and cfg.phase.trust_pgt is False
     assert cfg.rarity.rescue_max_af == 0.05 and cfg.clinvar.rescue_min_stars == 1
 
 
@@ -643,18 +645,20 @@ def test_rarity_rescues_reviewed_clinvar_plp_and_records_a_refusal(cfg: FilterCo
 
 
 def test_af_is_the_first_non_empty_source_and_masked_rows_are_counted(tmp_path: Path, cfg: FilterConfig):
-    """CONTRACTS.md rule 3 as written. Stage 2 skips the gnomAD API when the *larger*
-    VEP copy is common, so the first copy can be rare while a later one is not; the
-    run counts and notes such rows, and ``af_fallback_pick: max`` is the switch."""
+    """CONTRACTS.md rule 3 as written (``af_fallback_pick: first``). Stage 2 skips the
+    gnomAD API when the *larger* VEP copy is common, so the first copy can be rare
+    while a later one is not; the run counts and notes such rows. The shipped
+    default ``max`` is the reading under which that cannot happen."""
+    first = with_(cfg, "rarity", af_fallback_pick="first")
     split = dict(gnomad_af="", vep_gnomade_af="0.005", vep_gnomadg_af="0.30")
-    d = screen_row(0, row(**split), cfg)
+    d = screen_row(0, row(**split), first)
     assert d.rule == "" and (d.af_used, d.af_source) == ("0.005", "vep_gnomade_af") and d.af_masked
     # the first column, when present, is never second-guessed
-    d = screen_row(0, row(gnomad_af="0.004", vep_gnomade_af="0.005", vep_gnomadg_af="0.30"), cfg)
+    d = screen_row(0, row(gnomad_af="0.004", vep_gnomade_af="0.005", vep_gnomadg_af="0.30"), first)
     assert d.rule == "" and (d.af_used, d.af_source) == ("0.004", "gnomad_af") and not d.af_masked
 
     run = make_run(tmp_path, [row(**split), row(pos="40170150", ref="C", alt="T", gnomad_af="", vep_gnomadg_af="0.30")])
-    m = json.loads(run_filter(run, DEFAULT_CONFIG).read_text())
+    m = json.loads(run_filter(run, write_config(tmp_path, rarity={"af_fallback_pick": "first"})).read_text())
     by = decisions_by_key(run)
     assert (by[CIS_A]["af_used"], by[CIS_A]["af_source"]) == ("0.005", "vep_gnomade_af")
     assert by[CIS_B]["rule"] == "rarity:af=0.30"
@@ -662,7 +666,7 @@ def test_af_is_the_first_non_empty_source_and_masked_rows_are_counted(tmp_path: 
                                      "af_fallback_first_masked_rows": 1}
     assert any("af_fallback_pick=first" in n for n in m["notes"])
 
-    m = json.loads(run_filter(run, write_config(tmp_path, rarity={"af_fallback_pick": "max"})).read_text())
+    m = json.loads(run_filter(run, DEFAULT_CONFIG).read_text())
     assert m["params"]["rarity"]["af_fallback_pick"] == "max"
     by = decisions_by_key(run)
     assert by[CIS_A]["rule"] == "rarity:af=0.30" and (by[CIS_A]["af_used"], by[CIS_A]["af_source"]) == ("0.30", "vep_gnomadg_af")

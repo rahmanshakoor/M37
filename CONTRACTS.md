@@ -49,7 +49,7 @@ rarity:
   homozygote_max_nhom: 5        # gnomAD homozygotes allowed for a recessive candidate allele
   rescue_max_af: 0.05           # a reviewed ClinVar P/LP allele is rescued from the two ceilings above only at or under this AF
   af_source_order: [gnomad_af, vep_gnomade_af, vep_gnomadg_af]   # first non-empty wins; absent everywhere = 0
-  af_fallback_pick: first       # how the columns after the first are read when the first is empty: first | max
+  af_fallback_pick: max         # how the columns after the first are read when the first is empty: first | max (max since 2026-09-14: "first" let 4,219 common rows read as rare on the first full case)
 consequence:
   keep_impacts: [HIGH, MODERATE]
   keep_splice_min_ds: 0.2       # any impact kept if spliceai_ds_max >= this
@@ -59,6 +59,8 @@ clinvar:
   drop_if_benign_min_stars: 2                             # Benign/Likely_benign with ≥2 stars → dropped
   rescue_min_stars: 1                                     # review stars a P/LP entry needs to rescue a row from the AF/nhom ceilings
 quality:
+  cluster_min_rows: 5           # ≥ this many surviving rows of one gene within cluster_window_bp → caveat dense_cluster (a read pile)
+  cluster_window_bp: 200
   caveat_min_dp: 10
   caveat_min_gq: 20
   caveat_flagged_filters: true  # a non-empty quality_flag is a caveat, never a drop
