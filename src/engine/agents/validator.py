@@ -90,6 +90,11 @@ VEP_AF_LABELS = {"vep_gnomade_af": "exomes", "vep_gnomadg_af": "genomes"}
 FREQUENCY_CODES = ("PM2", "BS1", "BA1")
 COMPUTATIONAL_CODES = ("PP3", "BP4")
 GENE_CONSTRAINT_CODES = ("PP2", "BP1")
+PHENOTYPE_CODES = ("PP4",)
+"""PP4 (phenotype highly specific for a disease with a single genetic aetiology) is a
+case-level claim the engine can partly check: it is counted only when the gene-blind
+phenotype ranker (stage 4) put the candidate's gene first for the case's HPO terms.
+The single-aetiology half of the definition is not checked and the report says so."""
 """PP2 (missense in a gene with a low rate of benign missense variation) and BP1
 (missense in a gene where truncations are the mechanism) are gene-level facts about
 constraint that only a ``constraint:`` record (gnomAD missense o/e) could establish;
@@ -259,7 +264,7 @@ class ValidationReport:
         "redactions": 0, "identifiers_unverified": 0, "keys_respelled": 0, "strength_capped": 0, "chembl_cleared": 0,
         "frequency_recomputed": 0, "frequency_from_vep": 0, "frequency_disputed": 0, "frequency_unverified": 0,
         "computational_recomputed": 0, "computational_disputed": 0, "computational_unverified": 0,
-        "constraint_unverified": 0, "retired_not_counted": 0, "classification_replaced": 0,
+        "constraint_unverified": 0, "phenotype_disputed": 0, "retired_not_counted": 0, "classification_replaced": 0,
     })
 
     @property
@@ -291,6 +296,8 @@ def frequency_rules(th: dict[str, float], af_field: str) -> dict[str, str]:
                 f"(≤{REVEL_BP4[2][0]} supporting, ≤{REVEL_BP4[1][0]} moderate, ≤{REVEL_BP4[0][0]} strong); "
                 f"otherwise CADD PHRED ≤{CADD_BP4_MAX} supporting; non-coding/synonymous by SpliceAI ≤{SPLICEAI_BP4_MAX} supporting"),
         "PP3+PVS1": "PP3 is not counted beside a met PVS1 on the same variant (ClinGen SVI)",
+        "PP4": "counted only when the gene-blind phenotype ranker (stage 4) ranks the candidate's gene first for the case's "
+               "HPO terms; the single-aetiology condition is not checked",
         "PP2/BP1": "counted only with a constraint: record (gnomAD missense o/e) in evidence_ids; otherwise unverified, not met",
         "PP5/BP6": "retired by the ClinGen SVI (Biesecker & Harrison 2018): accepted for the record, marked, never counted",
         "classification": "ClinGen SVI points (Tavtigian 2020) over the met, non-retired criteria: supporting 1, moderate 2, "
@@ -318,6 +325,7 @@ class _Walk:
     """Every record id the answer cites anywhere (as first read) — the records an
     identifier in prose may be carried by."""
     pvs1_met: dict[str, bool] = field(default_factory=dict)
+    phenotype_rank: dict[str, Any] | None = None
     """Variant key → whether the model wrote a met PVS1 for it (read before its criteria
     are cleaned, so PP3 on the same variant can be refused)."""
     _corpus: dict[str, str] = field(default_factory=dict)
@@ -352,13 +360,17 @@ def validate(obj: BaseModel | dict[str, Any], index: EvidenceIndex, *,
              model: type[BaseModel] | None = None,
              thresholds: dict[str, float] | None = None,
              af_field: str = AF_FIELD,
-             keys: Iterable[str] | None = None) -> tuple[BaseModel, ValidationReport]:
+             keys: Iterable[str] | None = None,
+             phenotype_rank: dict[str, Any] | None = None) -> tuple[BaseModel, ValidationReport]:
     """Return ``(cleaned, report)``. ``obj`` is the model's answer as a pydantic object
     or a raw dict (then ``model`` says which schema, or it is inferred for the two
     known ones). ``keys`` are the candidate's variant keys: given, a variant entry
     whose key is none of them is dropped; absent, any parseable key is accepted (and
     respelled canonically). The returned object is a fresh instance; ``obj`` is not
-    modified. Raises only if the cleaned object does not fit its schema."""
+    modified. ``phenotype_rank`` (``{"rank": int | None, "record_id": str | None}``) is
+    the gene-blind phenotype ranker's verdict on the candidate's gene, when stage 4
+    ran: PP4 is counted only for the ranker's top gene. Raises only if the cleaned
+    object does not fit its schema."""
     if isinstance(obj, BaseModel):
         model = model or type(obj)
         data = obj.model_dump()
@@ -373,7 +385,7 @@ def validate(obj: BaseModel | dict[str, Any], index: EvidenceIndex, *,
     report = ValidationReport(model=model.__name__, thresholds=th, rules=frequency_rules(th, af_field))
     sources = frozenset(KNOWN_SOURCES | index.sources())
     wanted = None if keys is None else {canonical_key(str(k)) or str(k): str(k) for k in keys}
-    walk = _Walk(index, report, th, af_field, sources, wanted, cited=_collect_cited(data, sources))
+    walk = _Walk(index, report, th, af_field, sources, wanted, cited=_collect_cited(data, sources), phenotype_rank=phenotype_rank)
     _clean_object(data, model, "", walk, key=None)
     return model.model_validate(data), report
 
@@ -497,6 +509,7 @@ def _clean_items(items: list[Any], model: type[BaseModel], path: str, w: _Walk, 
             _recompute_frequency(item, child, w, key)
             _recompute_computational(item, child, w, key)
             _unverified_gene_constraint(item, child, w)
+            _check_phenotype(item, child, w)
             _mark_retired(item, child, w)
         kept.append(item)
     return kept
@@ -973,6 +986,26 @@ def _unverified(item: dict[str, Any], code: str, path: str, w: _Walk, key: str |
 # ---------------------------------------------------------------- computational
 
 RETIRED_MARK = "[RETIRED — {reason}]"
+
+
+def _check_phenotype(item: dict[str, Any], path: str, w: _Walk) -> None:
+    """PP4 stands only on the phenotype ranker's top gene; elsewhere it is disputed
+    to not met, and without a stage-4 verdict it is left as the model called it."""
+    code = _code_of(item)
+    if code not in PHENOTYPE_CODES or not item.get("met") or w.phenotype_rank is None:
+        return
+    rank, rid = w.phenotype_rank.get("rank"), w.phenotype_rank.get("record_id")
+    if rank == 1:
+        if rid and rid in w.index and rid not in item["evidence_ids"]:
+            item["evidence_ids"].append(rid)
+        return
+    w.report.counts["phenotype_disputed"] += 1
+    reason = (f"{code} recomputed from the gene-blind phenotype ranker: the gene is ranked "
+              f"{rank if rank is not None else 'unranked'} for the case's HPO terms, not first, so the phenotype is not "
+              "specific to it → not met; the model said met")
+    w.report.disputes.append(Dispute(path, code, rid, True, False, None, reason))
+    item["met"] = False
+    item["justification"] = f"{DISPUTED_MARK.format(reason=reason)} {item.get('justification', '')}".rstrip()
 
 
 def _unverified_gene_constraint(item: dict[str, Any], path: str, w: _Walk) -> None:

@@ -218,7 +218,12 @@ API shapes come from the `claude-api` skill files, not memory.
   SpliceAI 0.2/0.1 for splicing) — a claimed strength above what the scores support is
   lowered, a claim below every threshold is disputed to not met, a variant without a record
   is unverified. AlphaMissense is carried for the reader and never counted. (Built
-  2026-09-14, replacing the 2015 Table 5 as the verdict.)
+  2026-09-14, replacing the 2015 Table 5 as the verdict.) 2026-09-16: PP3 is never counted
+  beside a met PVS1 on the same variant; PP2/BP1 are unverified (not met) without a
+  `constraint:` record; PP4 is counted only when the stage-4 phenotype ranker put the gene first
+  (`validate(..., phenotype_rank=)`); a PM2 resting on a store gap is left as the model called
+  it and flagged. `engine reason --revalidate` replays the recorded transcripts (same tool
+  calls, same final answers) through the current validator without calling a model.
 
 ```python
 class Criterion(BaseModel):

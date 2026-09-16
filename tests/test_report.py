@@ -222,14 +222,15 @@ def test_chain_view_resolves_every_evidence_id_and_keeps_the_rejection(full_run:
     assert chain["gene_symbol"] == "CFTR" and chain["model"] == "comphet" and chain["priority"] == 1
     assert [(v["key"], v["classification"]) for v in chain["variants"]] == [(F508DEL, "vus"), (G542X, "pathogenic")]
     index = json.loads((full_run / "02_retrieve" / "evidence" / "index.json").read_text())
+    index.update(json.loads((full_run / "04_rank" / "evidence" / "index.json").read_text()))  # PP4 cites the ranker's record
     for v in chain["variants"]:
         for c in v["criteria"]:
             assert c["code"] != "PS3"  # the fabricated citation was rejected, so the criterion is gone
             for e in c["evidence"]:
                 assert e["url"] == index[e["id"]]["url"]
         pp4 = next(c for c in v["criteria"] if c["code"] == "PP4")
-        assert pp4["evidence"] == [] and pp4["met"] is True
-    assert [e["id"] for e in chain["references"]] == sorted(CFTR_PAIR_IDS)
+        assert [e["id"] for e in pp4["evidence"]] == ["exomiser:CFTR"] and pp4["met"] is True  # CFTR is the ranker's gene 1
+    assert [e["id"] for e in chain["references"]] == sorted(CFTR_PAIR_IDS + ["exomiser:CFTR"])
     assert chain["validation"] is not None
     assert any(FAKE_PMID in r["reason"] or "PS3" in r["path"] + r["reason"] for r in chain["validation"]["rejections"])
     assert chain["validation"]["counts"]["items_dropped"] >= 1
@@ -428,7 +429,7 @@ def test_html_shows_classification_phase_limits_and_the_validator(full_run: Path
             assert escape(c["justification"].split("[")[0].strip()[:50]) in html
     assert "<h4>Validator</h4>" in html and "Rejections (" in html and "Rejections (0)" not in html.split("<h2>Medicine")[0]
     assert "PS3" in html and (FAKE_PMID in html or "not carried by a citable record" in html or "paper" in html)
-    assert "case-level; cites no record" in html  # PP4
+    assert "case-level; cites no record" in html or "exomiser:CFTR" in html  # PP4: case-level, or cited to the ranker's record
 
 
 def test_html_medicine_in_rubric_order_and_provenance_sha256s(full_run: Path):

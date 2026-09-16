@@ -869,3 +869,22 @@ def test_live_literature_tools_write_citable_records(tmp_path: Path):
     rec = store.get(FROSST)
     assert rec is not None and rec.source_version.startswith("Europe PMC REST") and rec.url == "https://europepmc.org/article/MED/7647779"
     assert [r.record_id for r in store.iter("pmid-search")] == found["search_record"].split() and http.live_requests == 2
+
+
+def test_revalidate_replays_the_recorded_transcript_without_a_model(run_dir: Path):
+    """After a rule change the recorded answer can be re-judged: the replay client runs
+    the recorded tool calls for real and returns the recorded final text, and the
+    manifest says no model was called."""
+    from engine.reason.run import ReplayClient
+    first = read(rr.run_reason(run_dir, 1, fake_client([cftr_answer()], turns=[]), "fake-model", "low", False, http=stub_http()))
+    chain_before = read(run_dir / "05_reason" / "chains" / "CFTR:hom.json")
+    replay = ReplayClient(run_dir / "05_reason" / "transcripts")
+    assert list(replay.transcripts) == ["CFTR:hom"]
+    m = read(rr.run_reason(run_dir, 1, replay, "fake-model", "low", False, http=stub_http()))
+    assert m["params"]["provider"] == "replay (recorded transcripts)" and m["params"]["replayed_transcripts"] == ["CFTR:hom"]
+    assert any(n.startswith("Chains re-validated by replaying") for n in m["notes"])
+    chain_after = read(run_dir / "05_reason" / "chains" / "CFTR:hom.json")
+    assert chain_after == chain_before  # same rules, same answer → same chain
+    assert m["counts"]["usage"] == first["counts"]["usage"]  # the original run's usage is carried, not zero
+    t = read(run_dir / "05_reason" / "transcripts" / "CFTR:hom.json")
+    assert t["disclosure"].endswith("no model was called in this pass")

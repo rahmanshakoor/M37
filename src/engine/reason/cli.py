@@ -50,25 +50,39 @@ from engine.agents.client import DEFAULT_EFFORT, EFFORTS
 @click.option("--case", "case_path", type=click.Path(exists=True, dir_okay=False, path_type=Path),
               help="case.yaml, for the HPO terms when stage 4 has not run (default: 04_rank/joined.json).")
 @click.option("-v", "--verbose", is_flag=True, help="Name the candidates (gene symbols) on the terminal.")
+@click.option("--revalidate", is_flag=True,
+              help="Call no model: replay the recorded transcripts (same tool calls, same final answers) through the "
+                   "current validator and rewrite the chains. For re-checking a recorded answer after a rule change.")
 def reason(run_dir: Path, top_n: int | None, provider: str | None, model: str | None, effort: str, dry_run: bool,
-           max_turns: int | None, cache_root: Path | None, offline: bool, case_path: Path | None, verbose: bool) -> None:
+           max_turns: int | None, cache_root: Path | None, offline: bool, case_path: Path | None, verbose: bool,
+           revalidate: bool) -> None:
     """Stage 5: an ACMG/AMP evidence chain per candidate, every criterion tied to a record id."""
     from engine.agents.client import AgentError
-    from engine.reason.run import DEFAULT_MAX_TURNS, DEFAULT_TOP_N, run_reason
+    from engine.reason.run import DEFAULT_MAX_TURNS, DEFAULT_TOP_N, STAGE_DIR, ReplayClient, run_reason
 
     top_n = top_n or DEFAULT_TOP_N
     max_turns = max_turns or DEFAULT_MAX_TURNS
     defaulted = provider is None
-    try:
-        provider, model = providers.resolve(provider, model)
-    except (FileNotFoundError, ValueError, providers.ProviderError) as e:
-        click.echo(f"  FAILED: {e}", err=True)
-        sys.exit(1)
+    client = None
+    if revalidate:
+        try:
+            client = ReplayClient(run_dir / STAGE_DIR / "transcripts")
+        except FileNotFoundError as e:
+            click.echo(f"  FAILED: {e}", err=True)
+            sys.exit(1)
+        first = next(iter(client.transcripts.values()))
+        provider, model, effort = "replay", first.get("model") or "replay", first.get("effort") or effort
+    else:
+        try:
+            provider, model = providers.resolve(provider, model)
+        except (FileNotFoundError, ValueError, providers.ProviderError) as e:
+            click.echo(f"  FAILED: {e}", err=True)
+            sys.exit(1)
     click.echo(f"reason · {run_dir} · top {top_n} · {provider} · {model} · effort {effort}"
-               f"{' · OFFLINE' if offline else ''}{' · DRY RUN' if dry_run else ''}")
+               f"{' · OFFLINE' if offline else ''}{' · DRY RUN' if dry_run else ''}{' · REVALIDATE (replayed transcripts)' if revalidate else ''}")
     try:
-        manifest = run_reason(run_dir, top_n, None, model, effort, dry_run, max_turns=max_turns, cache_root=cache_root,
-                              offline=offline, case_path=case_path, provider=provider,
+        manifest = run_reason(run_dir, top_n, client, model, effort, dry_run, max_turns=max_turns, cache_root=cache_root,
+                              offline=offline, case_path=case_path, provider=None if revalidate else provider,
                               progress=lambda msg: click.echo("  " + msg))
     except AgentError as e:
         click.echo(f"  FAILED: {e}", err=True)

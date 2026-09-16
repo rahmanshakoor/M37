@@ -163,7 +163,7 @@ def run_reason(
         "top_n": top_n,
         "candidates": [c["candidate_id"] for c in chosen],
         "dry_run": dry_run,
-        "provider": provider,
+        "provider": "replay (recorded transcripts)" if isinstance(client, ReplayClient) else provider,
         "model": model,
         "effort": effort,
         "max_turns": max_turns,
@@ -241,6 +241,10 @@ def run_reason(
         progress(f"candidate {i}/{len(chosen)}: {_classification_line(cleaned)} · "
                  f"{report.counts['items_dropped']} rejected · {report.counts['frequency_disputed']} disputed")
 
+    if isinstance(client, ReplayClient):
+        m.params["replayed_transcripts"] = list(client.replayed)
+        m.note("Chains re-validated by replaying the recorded transcripts (same tool calls, same final answers); "
+               "no model was called in this pass. Usage figures are the original run's.")
     index_path = store.write_index()
     m.add_output("evidence_index", index_path)
     m.counts["evidence_records"] = store.count()
@@ -346,8 +350,11 @@ def check_chain(chain: EvidenceChain, bundle: Bundle, records: list[EvidenceReco
     and the classification. One report carries all of it."""
     aligned, notes, dropped = align_chain(chain, bundle)
     checks = stage_checks(aligned, AccessionResolver(records))
+    rank = bundle.rank or {}
+    phenotype_rank = ({"rank": rank.get("exomiser_rank"), "record_id": rank.get("exomiser_evidence_id") or rank.get("evidence_id")}
+                      if bundle.rank is not None else None)
     cleaned, report = validate(checks.chain, scoped, af_field=af_field, thresholds=thresholds,
-                               keys=[v.key for v in bundle.variants])
+                               keys=[v.key for v in bundle.variants], phenotype_rank=phenotype_rank)
     report.rejections[:0] = dropped + checks.dropped + checks.redacted
     report.counts["items_dropped"] += len(dropped) + len(checks.dropped)
     for name in ("redactions", "ids_checked", "ids_unknown"):
@@ -401,6 +408,45 @@ def align_chain(chain: EvidenceChain, bundle: Bundle) -> tuple[EvidenceChain, li
             kept.append(VariantChain(key=k, criteria=[], summary="The model returned no criteria for this variant.").model_dump())
     data["variants"] = sorted(kept, key=lambda v: keys.index(v["key"]))
     return EvidenceChain.model_validate(data), notes, rejections
+
+
+class ReplayClient:
+    """Replays recorded stage-5 transcripts instead of calling a model: the same tool
+    calls, run for real (so the papers the model read are fetched into the store again,
+    from the HTTP cache), then the same final answer, word for word. For re-validating
+    a recorded answer under a changed validator — the manifest says the chains were
+    replayed, and the usage and disclosure carried are the original run's."""
+
+    def __init__(self, transcripts_dir: Path):
+        self.transcripts: dict[str, dict[str, Any]] = {}
+        for p in sorted(Path(transcripts_dir).glob("*.json")):
+            if p.name.endswith(".failed.json"):
+                continue
+            doc = json.loads(p.read_text())
+            if doc.get("final_text"):
+                self.transcripts[p.stem] = doc
+        if not self.transcripts:
+            raise FileNotFoundError(f"no recorded transcripts with a final answer under {transcripts_dir}")
+        self.replayed: list[str] = []
+
+    def transcript_for(self, request: ac.AgentRequest) -> tuple[str, dict[str, Any]]:
+        cids = [c for c in self.transcripts if c in request.user]
+        if not cids:
+            raise ac.AgentError("no recorded transcript matches this request's candidate")
+        cid = max(cids, key=len)
+        return cid, self.transcripts[cid]
+
+    def run(self, request: ac.AgentRequest) -> ac.AgentResult:
+        cid, t = self.transcript_for(request)
+        turns = [ac.FakeTurn([(c["name"], c["input"]) for c in turn.get("tool_calls") or []], text=turn.get("text") or "")
+                 for turn in t.get("transcript") or [] if turn.get("tool_calls")]
+        fake = ac.FakeClient(json.loads(t["final_text"]), turns=turns, model=t.get("model") or "replay", effort=t.get("effort") or "low")
+        result = fake.run(request)
+        result.usage = ac.Usage(**{k: v for k, v in (t.get("usage") or {}).items() if k in ac.Usage.__dataclass_fields__})
+        result.disclosure = (t.get("disclosure") or "") + " — replayed from the recorded transcript; no model was called in this pass"
+        result.final_text = t["final_text"]
+        self.replayed.append(cid)
+        return result
 
 
 def classify(chain: EvidenceChain) -> EvidenceChain:
