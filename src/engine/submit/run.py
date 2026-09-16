@@ -20,10 +20,10 @@ zero with the right answer, so this stage owns them:
   compound heterozygotes on X when the sample is male (a haploid chromosome has no
   second allele; stage 3 now refuses them, this guards older runs);
 * ``finding_type`` follows the template's meaning — ``secondary`` is an incidental
-  finding: a variant the stage-5 chain classified pathogenic or likely pathogenic
-  under a model that does not explain this presentation (a dominant single
-  heterozygote). A lone heterozygote nobody has classified is a weak ``primary``
-  candidate, not an incidental finding;
+  finding: under a model that does not explain this presentation (a dominant single
+  heterozygote), a variant the stage-5 chain classified pathogenic or likely
+  pathogenic, or one ClinVar calls P/LP at two stars or better. A lone heterozygote
+  nobody has classified is a weak ``primary`` candidate, not an incidental finding;
 * the file is dry-run through the scorer against the top row as a hypothetical key,
   so a format error is caught before a submission is spent.
 """
@@ -60,6 +60,10 @@ CLINVAR_BENIGN = {"Benign", "Likely_benign"}
 SECONDARY_MODELS = {"het_single"}
 """Models that do not explain a recessive presentation: a P/LP variant under one is
 an incidental (``secondary``) finding."""
+SECONDARY_MIN_CLINVAR_STARS = 2
+"""A lone heterozygote ClinVar calls P/LP at this review level or better is an
+incidental finding whatever the engine's own chain concludes about it — the template
+asks for incidental findings, not for the engine's agreement with ClinVar."""
 ARTEFACT_FAMILIES = ("HLA-", "MUC", "KIR", "NBPF", "PRAMEF", "TAS2R", "OR", "LILR", "FCGB", "GOLGA", "USP17L", "TBC1D3", "NPIPA", "NPIPB")
 """Gene families whose apparent rare compound-hets are mostly mapping artefacts in
 short-read WGS (paralogs, high polymorphism). Ordered last, never removed."""
@@ -145,8 +149,21 @@ def _skip_reason(c: dict[str, Any], cl: dict[str, str], sex: str) -> str:
     return ""
 
 
+def _clinvar_plp(v: dict[str, Any], min_stars: int = SECONDARY_MIN_CLINVAR_STARS) -> bool:
+    members = [m.split(",")[0] for m in (v.get("clinvar_pathogenicity") or "").split("/") if m]
+    try:
+        stars = int(v.get("clinvar_stars") or 0)
+    except ValueError:
+        stars = 0
+    return bool(members) and all(m in ("Pathogenic", "Likely_pathogenic") for m in members) and stars >= min_stars
+
+
 def _finding_type(c: dict[str, Any], cl: dict[str, str]) -> str:
-    if c["model"] in SECONDARY_MODELS and any(cl.get(v["key"], "") in PLP for v in c["variants"]):
+    """``secondary`` = an incidental finding: under a model that does not explain the
+    presentation, a variant the engine's chain classified P/LP, or one ClinVar calls
+    P/LP at ≥ SECONDARY_MIN_CLINVAR_STARS — the chain's own verdict is stated in the
+    notes either way."""
+    if c["model"] in SECONDARY_MODELS and any(cl.get(v["key"], "") in PLP or _clinvar_plp(v) for v in c["variants"]):
         return "secondary"
     return "primary"
 

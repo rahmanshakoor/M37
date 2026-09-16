@@ -157,3 +157,21 @@ def test_without_rank_or_chains_still_writes(tmp_path: Path):
     rows = list(csv.DictReader(open(csv_path)))
     # MTHFR kept (no chain says benign); TP53 is primary (nobody classified it, so not an incidental finding)
     assert [r["finding_type"] for r in rows] == ["primary", "primary", "primary", "primary"]
+
+
+def test_clinvar_plp_lone_het_is_secondary_even_when_the_chain_says_vus(tmp_path: Path):
+    """The template's finding_type means incidental finding: a lone heterozygote ClinVar
+    calls P/LP at two stars is one whatever the engine's own chain concludes."""
+    lztr1 = {"candidate_id": "LZTR1:het_single", "gene_symbol": "LZTR1", "gene_id": "ENSG9", "model": "het_single", "priority": 3,
+             "phase": {"status": "not_applicable", "evidence": ""}, "rule_hits": [], "caveats": [],
+             "variants": [_variant("22:20996720:C:G", hgvsp="p.Tyr748Ter", clinvar_pathogenicity="Pathogenic/Likely_pathogenic", clinvar_stars="2")]}
+    one_star = {**lztr1, "candidate_id": "X1:het_single", "gene_symbol": "X1",
+                "variants": [_variant("1:5000000:C:G", clinvar_pathogenicity="Pathogenic", clinvar_stars="1")]}
+    run = _run_dir(tmp_path, extra=[lztr1, one_star])
+    (run / "05_reason" / "chains" / "LZTR1:het_single.json").write_text(json.dumps(
+        {"candidate_id": "LZTR1:het_single", "variants": [{"key": "22:20996720:C:G", "classification": "vus", "criteria": [], "summary": ""}],
+         "phase_statement": "", "mechanism_hypothesis": "", "limits": [], "what_would_change_the_call": [], "literature": []}))
+    ft = {r.candidate_id: r.finding_type for r in plan(run).rows}
+    assert ft["LZTR1:het_single"] == "secondary"   # ClinVar 2★ P/LP outranks the chain's vus for the label
+    assert ft["X1:het_single"] == "primary"        # one star is not enough on its own
+    assert ft["TP53:het_single"] == "secondary"    # the chain's own pathogenic still counts

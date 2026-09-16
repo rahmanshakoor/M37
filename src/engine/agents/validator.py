@@ -89,6 +89,12 @@ VEP_AF_FIELDS = ("vep_gnomade_af", "vep_gnomadg_af")
 VEP_AF_LABELS = {"vep_gnomade_af": "exomes", "vep_gnomadg_af": "genomes"}
 FREQUENCY_CODES = ("PM2", "BS1", "BA1")
 COMPUTATIONAL_CODES = ("PP3", "BP4")
+GENE_CONSTRAINT_CODES = ("PP2", "BP1")
+"""PP2 (missense in a gene with a low rate of benign missense variation) and BP1
+(missense in a gene where truncations are the mechanism) are gene-level facts about
+constraint that only a ``constraint:`` record (gnomAD missense o/e) could establish;
+the store holds none today, so a model claiming either is marked unverified and it
+is not counted."""
 REVEL_PP3 = ((0.932, "strong"), (0.773, "moderate"), (0.644, "supporting"))
 REVEL_BP4 = ((0.016, "strong"), (0.183, "moderate"), (0.290, "supporting"))
 CADD_PP3_MIN = 25.3
@@ -253,7 +259,7 @@ class ValidationReport:
         "redactions": 0, "identifiers_unverified": 0, "keys_respelled": 0, "strength_capped": 0, "chembl_cleared": 0,
         "frequency_recomputed": 0, "frequency_from_vep": 0, "frequency_disputed": 0, "frequency_unverified": 0,
         "computational_recomputed": 0, "computational_disputed": 0, "computational_unverified": 0,
-        "retired_not_counted": 0, "classification_replaced": 0,
+        "constraint_unverified": 0, "retired_not_counted": 0, "classification_replaced": 0,
     })
 
     @property
@@ -285,6 +291,7 @@ def frequency_rules(th: dict[str, float], af_field: str) -> dict[str, str]:
                 f"(≤{REVEL_BP4[2][0]} supporting, ≤{REVEL_BP4[1][0]} moderate, ≤{REVEL_BP4[0][0]} strong); "
                 f"otherwise CADD PHRED ≤{CADD_BP4_MAX} supporting; non-coding/synonymous by SpliceAI ≤{SPLICEAI_BP4_MAX} supporting"),
         "PP3+PVS1": "PP3 is not counted beside a met PVS1 on the same variant (ClinGen SVI)",
+        "PP2/BP1": "counted only with a constraint: record (gnomAD missense o/e) in evidence_ids; otherwise unverified, not met",
         "PP5/BP6": "retired by the ClinGen SVI (Biesecker & Harrison 2018): accepted for the record, marked, never counted",
         "classification": "ClinGen SVI points (Tavtigian 2020) over the met, non-retired criteria: supporting 1, moderate 2, "
                           "strong 4, very strong 8, benign negative; P ≥ 10, LP 6–9, VUS 0–5, LB −1 to −6, B ≤ −7. "
@@ -489,6 +496,7 @@ def _clean_items(items: list[Any], model: type[BaseModel], path: str, w: _Walk, 
             _cap_strength(item, child, w)
             _recompute_frequency(item, child, w, key)
             _recompute_computational(item, child, w, key)
+            _unverified_gene_constraint(item, child, w)
             _mark_retired(item, child, w)
         kept.append(item)
     return kept
@@ -965,6 +973,22 @@ def _unverified(item: dict[str, Any], code: str, path: str, w: _Walk, key: str |
 # ---------------------------------------------------------------- computational
 
 RETIRED_MARK = "[RETIRED — {reason}]"
+
+
+def _unverified_gene_constraint(item: dict[str, Any], path: str, w: _Walk) -> None:
+    """PP2/BP1 rest on gene-level constraint the store cannot show: not counted."""
+    code = _code_of(item)
+    if code not in GENE_CONSTRAINT_CODES or not item.get("met"):
+        return
+    if any(rid.startswith("constraint:") for rid in item.get("evidence_ids") or []):
+        return
+    w.report.counts["constraint_unverified"] += 1
+    reason = (f"{code} needs gene-level constraint evidence (gnomAD missense o/e) as a constraint: record; none is in the "
+              "store, so the claim cannot be checked → not met; the model said met")
+    w.report.notes.append(f"{path}: {reason}")
+    w.report.disputes.append(Dispute(path, code, None, True, False, None, reason))
+    item["met"] = False
+    item["justification"] = f"{UNVERIFIED_MARK.format(reason=reason)} {item.get('justification', '')}".rstrip()
 
 
 def _mark_retired(item: dict[str, Any], path: str, w: _Walk) -> None:
