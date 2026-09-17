@@ -1,0 +1,42 @@
+{
+ "hpo:HP:0001738": {
+  "path": "hpo/hpo_HP_0001738.4092ef356a.json",
+  "retrieved_at": "2026-09-17T19:39:23+00:00",
+  "sha256": "a6b17b7bb43ecc100b025bba806e1aa88fad773f4370caa1b6b30066b206175e",
+  "source": "hpo",
+  "source_version": "JAX ontology API hp (the service exposes no release identifier)",
+  "url": "https://hpo.jax.org/browse/term/HP:0001738"
+ },
+ "hpo:HP:0002110": {
+  "path": "hpo/hpo_HP_0002110.0d540716a2.json",
+  "retrieved_at": "2026-09-17T19:39:26+00:00",
+  "sha256": "38ac0192061528d383d5b96da7f32c91c37f03bcb2d099879b3e37c61c6360e8",
+  "source": "hpo",
+  "source_version": "JAX ontology API hp (the service exposes no release identifier)",
+  "url": "https://hpo.jax.org/browse/term/HP:0002110"
+ },
+ "hpo:HP:0002205": {
+  "path": "hpo/hpo_HP_0002205.c076f78771.json",
+  "retrieved_at": "2026-09-17T19:39:24+00:00",
+  "sha256": "581a31019299085353cc83a44061d8c745e7a164c5c2383711937822e08497c0",
+  "source": "hpo",
+  "source_version": "JAX ontology API hp (the service exposes no release identifier)",
+  "url": "https://hpo.jax.org/browse/term/HP:0002205"
+ },
+ "hpo:HP:0006528": {
+  "path": "hpo/hpo_HP_0006528.61e8d2d83f.json",
+  "retrieved_at": "2026-09-17T19:39:25+00:00",
+  "sha256": "ca81ff32da5cac013ec8c78abba3b8ba9080adba0136d6dc7acf759be71e9d4b",
+  "source": "hpo",
+  "source_version": "JAX ontology API hp (the service exposes no release identifier)",
+  "url": "https://hpo.jax.org/browse/term/HP:0006528"
+ },
+ "hpo:HP:0012236": {
+  "path": "hpo/hpo_HP_0012236.6784cbbbf0.json",
+  "retrieved_at": "2026-09-17T19:39:23+00:00",
+  "sha256": "0c668a01c3f7a07467e7aca4c925fa0147e1e21a94ce54e6f14ac6cf9fde7813",
+  "source": "hpo",
+  "source_version": "JAX ontology API hp (the service exposes no release identifier)",
+  "url": "https://hpo.jax.org/browse/term/HP:0012236"
+ }
+}

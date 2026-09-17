@@ -41,18 +41,21 @@ from engine.agents.client import DEFAULT_EFFORT, EFFORTS
               help="Write the bundle and the exact prompt, call no model and no drug source, exit 0. Like any run it "
                    "replaces the stage's earlier outputs (the report included); the evidence store is kept.")
 @click.option("--max-turns", type=click.IntRange(1), default=None,
-              help="Tool-calling turns allowed (default: 10).")
+              help="Tool-calling turns allowed (default: 16 — the ladder searches every intervention class).")
 @click.option("--cache", "cache_root", type=click.Path(file_okay=False, path_type=Path),
               help="HTTP cache for Open Targets, DGIdb, ChEMBL, ClinicalTrials.gov and Europe PMC (outside the repo). "
                    "Default: $ENGINE_CACHE or ../cache.")
 @click.option("--offline", is_flag=True, help="Serve every source from the cache only; fail on any cache miss.")
 @click.option("--case", "case_path", type=click.Path(exists=True, dir_okay=False, path_type=Path),
-              help="case.yaml, for the HPO terms when stage 4 has not run (default: 04_rank/joined.json).")
+              help="case.yaml, for the HPO terms when stage 4 has not run (default: 04_rank/joined.json) and for its "
+                   "disease: list (Open Targets disease ids, e.g. MONDO_0009061), whose public records become the "
+                   "report's patient context.")
 @click.option("-v", "--verbose", is_flag=True, help="Name the candidate (gene symbol) on the terminal.")
 def medicine(run_dir: Path, candidate_id: str | None, provider: str | None, model: str | None, effort: str,
              dry_run: bool, max_turns: int | None, cache_root: Path | None, offline: bool, case_path: Path | None,
              verbose: bool) -> None:
-    """Stage 6: a medicine report for one candidate — mechanism, drug hypotheses with counter-arguments, follow-up."""
+    """Stage 6: a medicine report for one candidate — variant mechanism, disease consequence, the intervention classes
+    searched, drug hypotheses with counter-arguments, what was rejected, surveillance and follow-up."""
     from engine.agents.client import AgentError
     from engine.medicine.run import DEFAULT_MAX_TURNS, run_medicine
 
@@ -84,9 +87,12 @@ def medicine(run_dir: Path, candidate_id: str | None, provider: str | None, mode
         click.echo(f"  {label}: bundle and prompt written · chains available: {c['chains_available']:,} · no model called")
     else:
         u = c.get("usage", {})
-        click.echo(f"  {label}: mechanism claims: {c['mechanism_claims']:,} · drug candidates: {c['drug_candidates']:,} "
-                   f"(with trials: {c['drug_candidates_with_trials']:,}) · follow-up: {c['follow_up_experiments']:,} · "
-                   f"rejections: {c['rejections']:,} · records added: {c['evidence_records_added']:,}")
+        click.echo(f"  {label}: candidates proposed: {c['drug_candidates']:,} (with trials: {c['drug_candidates_with_trials']:,}) · "
+                   f"classes: {c['intervention_classes']:,} · rejected: {c['considered_and_rejected']:,} · "
+                   f"follow-up: {c['follow_up_experiments']:,} · validator rejections: {c['rejections']:,} · "
+                   f"records added: {c['evidence_records_added']:,}")
+        if not p.get("ladder_walked"):
+            click.echo("  the ladder was not walked: see the manifest's notes")
         click.echo(f"  tokens in/out: {u.get('input_tokens', 0):,}/{u.get('output_tokens', 0):,} · "
                    f"api calls: {u.get('api_calls', 0):,} · tool calls: {u.get('tool_calls', 0):,}")
     click.echo(f"  manifest: {manifest}")

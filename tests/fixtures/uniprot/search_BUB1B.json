@@ -1,0 +1,144 @@
+{
+ "body": {
+  "results": [
+   {
+    "entryType": "UniProtKB reviewed (Swiss-Prot)",
+    "extraAttributes": {
+     "uniParcId": "UPI000006E699"
+    },
+    "genes": [
+     {
+      "geneName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000312",
+         "id": "HGNC:1149",
+         "source": "HGNC"
+        }
+       ],
+       "value": "BUB1B"
+      },
+      "synonyms": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000303",
+          "id": "14706340",
+          "source": "PubMed"
+         },
+         {
+          "evidenceCode": "ECO:0000303",
+          "id": "16760428",
+          "source": "PubMed"
+         },
+         {
+          "evidenceCode": "ECO:0000303",
+          "id": "17376779",
+          "source": "PubMed"
+         },
+         {
+          "evidenceCode": "ECO:0000303",
+          "id": "17785528",
+          "source": "PubMed"
+         },
+         {
+          "evidenceCode": "ECO:0000303",
+          "id": "9763420",
+          "source": "PubMed"
+         }
+        ],
+        "value": "BUBR1"
+       },
+       {
+        "value": "MAD3L"
+       },
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000303",
+          "id": "9618306",
+          "source": "PubMed"
+         }
+        ],
+        "value": "SSK1"
+       }
+      ]
+     }
+    ],
+    "organism": {
+     "taxonId": 9606
+    },
+    "primaryAccession": "O60566",
+    "proteinDescription": {
+     "alternativeNames": [
+      {
+       "fullName": {
+        "value": "MAD3/BUB1-related protein kinase"
+       },
+       "shortNames": [
+        {
+         "value": "hBUBR1"
+        }
+       ]
+      },
+      {
+       "fullName": {
+        "value": "Mitotic checkpoint kinase MAD3L"
+       }
+      },
+      {
+       "fullName": {
+        "value": "Protein SSK1"
+       }
+      }
+     ],
+     "recommendedName": {
+      "ecNumbers": [
+       {
+        "evidences": [
+         {
+          "evidenceCode": "ECO:0000269",
+          "id": "10477750",
+          "source": "PubMed"
+         },
+         {
+          "evidenceCode": "ECO:0000269",
+          "id": "31201382",
+          "source": "PubMed"
+         }
+        ],
+        "value": "2.7.11.1"
+       }
+      ],
+      "fullName": {
+       "value": "Mitotic checkpoint serine/threonine-protein kinase BUB1 beta"
+      }
+     }
+    },
+    "sequence": {
+     "length": 1050
+    },
+    "uniProtkbId": "BUB1B_HUMAN"
+   }
+  ]
+ },
+ "headers": {
+  "content-type": "application/json",
+  "x-total-results": "1",
+  "x-uniprot-release": "2026_03",
+  "x-uniprot-release-date": "02-September-2026"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": {
+   "fields": "accession,id,gene_primary,gene_names,protein_name,length,organism_id",
+   "format": "json",
+   "query": "(gene_exact:BUB1B) AND (organism_id:9606) AND (reviewed:true)"
+  },
+  "url": "https://rest.uniprot.org/uniprotkb/search"
+ },
+ "retrieved_at": "2026-09-17T19:40:52+00:00",
+ "status": 200,
+ "text": null
+}

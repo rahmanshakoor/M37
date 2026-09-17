@@ -1,38 +1,48 @@
 """Stage 6 orchestrator — ``engine medicine``.
 
 One candidate per run: the stage-5 chain names the gene, the mechanism hypothesis and
-the classification the engine computed; this stage asks the second agent what, if
-anything, could act on that mechanism — and holds the answer to the same rule as
-stage 5: nothing reaches the report unless a record in the run directory carries it.
+the classification the engine computed; this stage asks the second agent to walk the
+medicine ladder — variant mechanism, cellular and disease consequence, the classes of
+intervention that act on that consequence, candidates proposed and rejected,
+surveillance and follow-up — and holds the answer to the same rule as stage 5:
+nothing reaches the report unless a record in the run directory carries it.
 
 The citation scope is per candidate, as in stage 5: the stage-5 bundle's record ids,
 every id the validated chain cites (papers in ``05_reason/evidence``, the variant
-records, the Exomiser record), and every record the tools return in *this*
-conversation — every Open Targets, DGIdb and ChEMBL record ``drugs_for_gene`` wrote,
-every trial ``search_trials`` returned, every paper the literature tools fetched. A
-drug candidate stands only on a record it cites from a drug source that carries the
-drug's name — a drug named from memory, or cited to a record about another drug, is
-deleted; a ChEMBL id no record the candidate cites carries is cleared; a bare NCT id,
-DOI or PMID in prose that no citable record carries is redacted.
+records, the Exomiser record), the case terms' ``hpo:`` records, the public disease
+records (``opentargets:disease:``), the ids a validated gene dossier cites, and every
+record the tools return in *this* conversation — every Open Targets, DGIdb and ChEMBL
+record ``drugs_for_gene`` and ``search_chembl`` wrote, every trial ``search_trials``
+returned, every paper the literature tools fetched. A drug candidate stands only on a
+record it cites from a drug source that carries the drug's name — a drug named from
+memory, or cited to a record about another drug, is deleted; a ChEMBL id no record
+the candidate cites carries is cleared; a bare NCT id, DOI or PMID in prose that no
+citable record carries is redacted. The ladder is enforced the same way: an
+intervention class stands only on search records this conversation made, a candidate
+only inside a surviving class, with at least two counter-arguments, a paediatric-safety
+argument and the indication its record says it was approved for; a follow-up item
+only with a citation.
 
 What is written, and why in this form (the layout mirrors stage 5 so a judge reads
 both the same way):
 
 * ``bundles/<candidate_id>.json`` — what the model was given: the stage-5 variant
   bundle (records with payloads), the chain as validated, the ids it cites, the case
-  HPO terms, and the prompt text built from them.
+  HPO terms with their ``hpo:`` records, the disease records, the gene dossier when
+  stage 5 wrote one, the run's secondary findings, and the prompt text built from them.
 * ``prompts/<candidate_id>.json`` / ``.md`` — the request as built: system prompt, user
-  prompt, tool definitions as sent, the output schema (identity pinned by enum), model,
-  effort, turn budget, and the two fixed texts the client adds. Written in every run;
-  a ``--dry-run`` stops here.
+  prompt, tool definitions as sent, the output schema (identity pinned by enum, the
+  engine-filled fields dropped), model, effort, turn budget, and the two fixed texts
+  the client adds. Written in every run; a ``--dry-run`` stops here.
 * ``transcripts/<candidate_id>.json`` — every turn, tool call and result, token usage
   and the final text as the model wrote it; ``.failed.json`` on a failure.
-* ``evidence/`` — the drug, trial and paper records the tools fetched, in the stage-2
-  format, so anything the report cites is a record like any other.
-* ``report.json`` — the validated :class:`~engine.agents.schema.MedicineReport`;
+* ``evidence/`` — the drug, trial, disease and paper records the tools fetched, in
+  the stage-2 format, so anything the report cites is a record like any other.
+* ``report.json`` — the validated :class:`~engine.agents.schema.MedicineReport` with
+  the engine-filled patient context and secondary findings;
   ``validation/<candidate_id>.json`` — every rejection and redaction;
-  ``report.md`` — the report rendered in the rubric's order (mechanism → candidates
-  with counter-arguments → follow-up → limits) with References; ``manifest.json``.
+  ``report.md`` — the report rendered in the rubric's order (:mod:`engine.medicine.render`);
+  ``manifest.json``.
 
 A run replaces the stage's outputs (the per-candidate directories, the report, the
 manifest) before it starts; ``evidence/`` is a store and is kept — a record fetched
@@ -53,22 +63,31 @@ from typing import Any, Callable, Iterable
 
 import anthropic
 import pydantic
+import yaml
 
 from engine.agents import client as ac
 from engine.agents import providers
-from engine.agents.bundle import Bundle, VariantBundle, build_bundle, find_candidate
-from engine.agents.render import cited_ids, render_medicine_report
-from engine.agents.schema import EvidenceChain, MedicineReport, combine_acmg
-from engine.agents.validator import EvidenceIndex, Rejection, ValidationReport, canonical_id, validate
-from engine.manifest import Manifest
-from engine.medicine.chembl import ChemblRetriever
+from engine.agents.bundle import Bundle, VariantBundle, build_bundle, find_candidate, hpo_lines
+from engine.agents.redaction import Redactions, unwrap
+from engine.agents.terms import check_terms
+from engine.agents.render import cited_ids
+from engine.agents.schema import (DiseaseRef, EvidenceChain, HpoTermRef, MedicineReport, PatientContext, SecondaryFinding,
+                                  acmg_points, combine_acmg)
+from engine.agents.validator import KNOWN_SOURCES, EvidenceIndex, Rejection, ValidationReport, canonical_id, citation_tokens, validate
+from engine.config import DISEASE_ID
+from engine.manifest import Manifest, sha256_file
+from engine.medicine.chembl import DEFAULT_CHEMBL_SEARCH, MAX_CHEMBL_SEARCH, SEARCH_FIELDS, ChemblRetriever
 from engine.medicine.ctgov import TrialsRetriever
 from engine.medicine.dgidb import DgidbRetriever
-from engine.medicine.opentargets import OpenTargetsRetriever
+from engine.medicine.opentargets import OpenTargetsRetriever, extract_disease
 from engine.medicine.prompts import PROMPT_VERSION, SYSTEM_PROMPT, instructions_sha256, prompt_sha256, user_prompt
-from engine.medicine.tools import (DEFAULT_TRIALS, DISEASES_PER_GENE, FIELD_CHARS, MAX_GENES, MAX_TRIALS, MedicineRetrievers,
-                                   MedicineTools)
+from engine.medicine.render import render_medicine_report
+from engine.medicine.tools import (DEFAULT_TRIALS, DISEASES_PER_GENE, FIELD_CHARS, MAX_GENES, MAX_TRIALS, MedicineLog,
+                                   MedicineRetrievers, MedicineTools)
 from engine.reason.run import resolve_hpo
+from engine.retrieve.hpo import (
+    API_URL as HPO_API_URL, VERSION_NOTE as HPO_VERSION_NOTE, case_terms,
+)
 from engine.reason.tools import ABSTRACT_CHARS, COORDINATE_RULE, DEFAULT_MAX_RESULTS, MAX_RESULTS_CAP
 from engine.retrieve.http import Http, HttpCache, RateLimiter, default_cache_root
 from engine.retrieve.literature import LiteratureRetriever
@@ -84,9 +103,13 @@ EVIDENCE_STAGES = (RETRIEVE_DIR, RANK_DIR, REASON_DIR, STAGE_DIR)
 """Where a record this stage may serve or cite can live: the stages before it and its
 own store."""
 OUTPUT_DIRS = ("bundles", "prompts", "transcripts", "validation")
-DEFAULT_MAX_TURNS = 10
-CITATION_SCOPE = ("the stage-5 bundle's record ids, the ids the validated chain cites, and the records returned by "
-                  "this candidate's own tool calls")
+DEFAULT_MAX_TURNS = 16
+"""Tool-calling turns: the ladder asks for a literature, trial and ChEMBL search per
+intervention class and a drug lookup per pathway node, which ten turns did not hold."""
+TOOLS = ("get_record", "search_literature", "get_paper", "drugs_for_gene", "search_trials", "search_chembl")
+CITATION_SCOPE = ("the stage-5 bundle's record ids, the ids the validated chain cites, the case terms' hpo: records, "
+                  "the disease records, the ids the gene dossier cites, and the records returned by this candidate's "
+                  "own tool calls")
 DRUG_RECORD_SOURCES = ("opentargets:drug:", "dgidb:", "chembl:", "nct:", "pmid:")
 """Where a record *about a drug* can come from: a drug row, an interaction, a ChEMBL
 object, a trial or a paper. A drug candidate must cite one of these that carries the
@@ -95,9 +118,29 @@ a paper about the gene alone or the variant records cannot hold a candidate up."
 NAME_RULE = ("the candidate's name, lower-cased — or each of its '/'-separated components, a parenthesised alias "
              "counting for its component — must occur in the id, URL or payload of a record it cites from a drug source")
 """The rule as the manifest records it (``params.stage_checks.drug_candidate``)."""
-REDACTED = "[citation removed: no such record]"
+SEARCH_SOURCES = ("pmid-search:", "nct-search:", "chembl-search:", "dgidb-gene:", "opentargets:")
+"""The search-shaped records an intervention class may stand on: a literature, trial
+or ChEMBL search, a DGIdb gene record or an Open Targets target record — each the
+proof that the engine looked, made in this conversation."""
+LADDER_RULES = {
+    "counter_arguments": "a drug candidate with fewer than two non-empty counter-arguments is dropped",
+    "paediatric_safety": "a drug candidate with an empty paediatric_safety is dropped",
+    "approved_indication": "a drug candidate with an empty approved_indication is dropped (a research compound states what the record says)",
+    "intervention_class": ("an intervention class is dropped unless every id in `searched` is a search-shaped record this "
+                           "conversation's tools returned (pmid-search:, nct-search:, chembl-search:, dgidb-gene:<SYMBOL>, "
+                           "opentargets:<ENSG>), and unless a verdict other than candidates_proposed carries a rejection_reason; "
+                           "a surviving class citing nothing has its search records copied into evidence_ids"),
+    "class_membership": "a drug candidate, or a considered_and_rejected entry naming a class, is dropped unless that class survived",
+    "follow_up": "a follow-up experiment whose inline citations resolve to no citable record is dropped",
+}
+"""The six ladder rules as the manifest records them (``params.stage_checks``)."""
 MIN_NAME_CHARS = 3
 """A name (or alias) shorter than this matches any corpus by accident and counts for nothing."""
+DESCRIPTION_CHARS = 600
+"""How much of a disease description the bundle shows; ``get_record`` has the rest."""
+DISEASE_PHENOTYPES_SHOWN = 25
+"""HPO annotations of the disease listed in the bundle — enough to see the phenotype
+the disease definition names; the record holds up to 100."""
 
 Progress = Callable[[str], None]
 
@@ -107,8 +150,9 @@ _BARE_NCT = re.compile(r"^(?:nct:)?(NCT\d{8})$", re.IGNORECASE)
 """The validator's spelling rule for ``trial_ids``: a bare ``NCT01807923`` is ``nct:NCT01807923``."""
 _PAREN = re.compile(r"\(([^()]*)\)")
 _SPACE = re.compile(r"\s+")
+_OT_TARGET = re.compile(r"^opentargets:ENSG\d{11}$")
 _ACCESSION = re.compile(
-    r"(?<![\w:/.-])(?P<aux>(?:nct-search|pmid-search|dgidb-gene):[A-Za-z0-9_-]+)"
+    r"(?<![\w:/.-])(?P<aux>(?:nct-search|pmid-search|chembl-search|dgidb-gene):[A-Za-z0-9_-]+)"
     r"|(?P<url>(?:https?://)?(?:www\.)?(?:"
     r"europepmc\.org/(?:article|abstract)/MED/(?P<url_pmid>\d+)"
     r"|pubmed\.ncbi\.nlm\.nih\.gov/(?P<url_pmid2>\d+)"
@@ -116,7 +160,7 @@ _ACCESSION = re.compile(
     r"|ncbi\.nlm\.nih\.gov/clinvar/variation/(?P<url_vcv>\d+)"
     r"|clinicaltrials\.gov/(?:study|ct2/show)/(?P<url_nct>NCT\d{8})"
     r"|ebi\.ac\.uk/chembl/(?:explore/)?(?:compound|target)(?:_report_card)?/(?P<url_chembl>CHEMBL\d+)"
-    r"|platform\.opentargets\.org/(?:drug|target|evidence)/(?P<url_ot>[A-Za-z0-9_]+)"
+    r"|platform\.opentargets\.org/(?:drug|target|evidence|disease)/(?P<url_ot>[A-Za-z0-9_]+)"
     r"|dgidb\.org/(?:genes|drugs)/(?P<url_dgidb>[A-Za-z0-9:._-]+)"
     r")[^\s\]\)>\"']*)"
     r"|(?<![\w:/.])(?:doi:\s*|https?://(?:dx\.)?doi\.org/)?(?P<doi>10\.\d{4,9}/[^\s\[\]()<>\"']+)"
@@ -130,8 +174,8 @@ _ACCESSION = re.compile(
 )
 """Bare accessions a medicine report might carry without a record: stage 5's set plus
 ChEMBL ids, the drug databases' URLs, and the ids of the engine's own auxiliary records
-(``nct-search:``, ``pmid-search:``, ``dgidb-gene:``), which the validator treats as
-citations only while a record of that source is in scope."""
+(``nct-search:``, ``pmid-search:``, ``chembl-search:``, ``dgidb-gene:``), which the
+validator treats as citations only while a record of that source is in scope."""
 _TRAIL = ".,;:"
 
 
@@ -151,10 +195,12 @@ def run_medicine(
     http: Http | None = None,
     retrievers: MedicineRetrievers | None = None,
     case_hpo: list[str] | None = None,
+    case_disease: list[str] | None = None,
     case_path: Path | None = None,
     literature_max_results: int = DEFAULT_MAX_RESULTS,
     max_genes: int = MAX_GENES,
     trials_max_results: int = DEFAULT_TRIALS,
+    chembl_max_results: int = DEFAULT_CHEMBL_SEARCH,
     provider: str | None = None,
     progress: Progress = lambda s: None,
 ) -> Path:
@@ -163,8 +209,9 @@ def run_medicine(
     ``client`` defaults to the ``provider``'s client (``engine.agents.providers``;
     ``None`` is the Anthropic SDK client), built when needed (never in a dry run);
     ``model`` defaults to the provider's and is settled by ``providers.provider_model``
-    (see stage 5); ``retrievers`` (tests) or ``http``/``cache_root``/
-    ``offline`` shape the drug, trial and literature services. Raises
+    (see stage 5); ``retrievers`` (tests) or ``http``/``cache_root``/``offline`` shape
+    the drug, trial, disease and literature services. ``case_disease`` (tests) or the
+    case file's ``disease:`` list names the public disease records to show. Raises
     :class:`~engine.agents.client.AgentError` when the model or a tool's service fails
     — a report is never written around a failure."""
     run_dir = Path(run_dir)
@@ -187,8 +234,12 @@ def run_medicine(
         m.add_input(name, path)
     m.tools["anthropic-sdk"] = anthropic.__version__
     hpo, hpo_source = resolve_hpo(case_hpo, case_path, run_dir / RANK_DIR / "joined.json")
+    disease, disease_source = resolve_disease(case_disease, case_path)
     if case_path is not None:
         m.add_input("case", case_path, checksum=False)
+    dossier_path = run_dir / REASON_DIR / "dossier" / f"{_name(cid)}.json"
+    if dossier_path.exists():
+        m.add_input("dossier", dossier_path)
 
     _clear_outputs(out_dir)
     store = EvidenceStore(out_dir / "evidence")  # exists before the index is built, so it is in it
@@ -198,6 +249,33 @@ def run_medicine(
         http_used = _http(http, cache_root, offline)
         retrievers = default_retrievers(http_used)
     disclosure = providers.disclosure(provider or "anthropic", model, effort) if dry_run else None
+
+    def _hpo_http() -> Http:
+        """The transport the patient-context sources run on — the stage's own ``Http``,
+        built once (a dry run builds no retrievers, so this is where it comes from) and
+        recorded in the manifest like every other source's."""
+        nonlocal http_used
+        if http_used is None:
+            http_used = _http(http, cache_root, offline)
+        return http_used
+
+    def opentargets() -> Any:
+        """The disease source: the run's retrievers, or — in a dry run, where no other
+        source is built — the Open Targets retriever over the stage's ``Http`` alone."""
+        if retrievers is not None:
+            return retrievers.opentargets
+        return OpenTargetsRetriever(_hpo_http())
+
+    progress("candidate: bundle")
+    context = patient_records(hpo, disease, index, store, opentargets,
+                              http_factory=lambda: _hpo_http())
+    dossier = load_dossier(dossier_path)
+    findings, finding_notes = secondary_findings(run_dir, cid)
+    bundle = build_medicine_bundle(candidate, chain, run_dir, hpo, index, hpo_records=context.hpo_records,
+                                   disease_records=context.disease_records, dossier=dossier, secondary=findings)
+    write_bundle(bundle, out_dir)
+    for n in [*context.notes, *finding_notes, *bundle.notes]:
+        m.note(f"{cid}: {n}")
 
     m.params.update({
         "candidate": cid,
@@ -215,38 +293,50 @@ def run_medicine(
         "final_instruction_sha256": prompt_sha256(ac.FINAL_INSTRUCTION),
         "tool_budget_error_sha256": prompt_sha256(ac.TOOL_BUDGET_ERROR),
         "instructions_sha256": instructions_sha256(),
-        "tools": ["get_record", "search_literature", "get_paper", "drugs_for_gene", "search_trials"],
-        "output_schema": "MedicineReport; candidate_id and gene_symbol pinned to the candidate's",
+        "tools": list(TOOLS),
+        "output_schema": ("MedicineReport without patient_context/secondary_findings (engine-filled); candidate_id and "
+                          "gene_symbol pinned to the candidate's"),
         "citation_scope": CITATION_SCOPE,
         "evidence_stages": list(EVIDENCE_STAGES),
         "stage_checks": {"drug_candidate": f"dropped unless {NAME_RULE}", "drug_record_sources": list(DRUG_RECORD_SOURCES),
                          "min_name_chars": MIN_NAME_CHARS,
                          "chembl_id": "cleared unless a record the candidate itself cites carries it",
                          "bare_accessions_in_prose": "redacted unless carried by a citable record",
-                         "id_spelling": "as the validator: source prefix case-folded, whitespace stripped, a bare NCT id read as nct:NCT…"},
+                         "id_spelling": "as the validator: source prefix case-folded, whitespace stripped, a bare NCT id read as nct:NCT…",
+                         **LADDER_RULES},
         "drugs": {"max_genes": max_genes, "sources": ["opentargets", "dgidb", "chembl"], "field_chars": FIELD_CHARS,
                   "opentargets_diseases_per_gene": DISEASES_PER_GENE},
         "trials": {"default_max_results": trials_max_results, "max_results_cap": MAX_TRIALS, "field_chars": FIELD_CHARS,
                    "coordinates_in_queries": COORDINATE_RULE},
+        "chembl_search": {"default_max_results": chembl_max_results, "max_results_cap": MAX_CHEMBL_SEARCH,
+                          "fields": [SEARCH_FIELDS["mechanism"], SEARCH_FIELDS["drug_indication"]],
+                          "coordinates_in_queries": COORDINATE_RULE},
         "literature": {"default_max_results": literature_max_results, "max_results_cap": MAX_RESULTS_CAP,
                        "abstract_chars": ABSTRACT_CHARS, "peer_reviewed_only": True,
                        "coordinates_in_queries": COORDINATE_RULE},
         "retrievers": retriever_params(retrievers),
         "hpo": list(hpo),
         "hpo_source": hpo_source,
+        "hpo_terms": {"source": f"JAX ontology API {HPO_API_URL}<id>", "store": f"{STAGE_DIR}/evidence/hpo",
+                      "served": context.hpo_served, "fetched": context.hpo_fetched, "missing": context.hpo_missing,
+                      "version_note": HPO_VERSION_NOTE},
+        "disease": list(disease),
+        "disease_source": disease_source,
+        "disease_records": {"served": context.disease_served, "fetched": context.disease_fetched,
+                            "missing": context.disease_missing},
+        "patient_context": patient_context(bundle).model_dump(),
+        "dossier": {"path": str(dossier_path), "sha256": sha256_file(dossier_path)} if dossier is not None else None,
+        "secondary_findings": [f.candidate_id for f in findings],
         "offline": bool(getattr(http_used, "offline", offline)),
         "cache_root": _cache_root_of(http_used),
     })
-    m.counts.update({"chains_available": len(list_chains(run_dir)), "candidates_selected": 1, "reports_written": 0})
+    m.counts.update({"chains_available": len(list_chains(run_dir)), "candidates_selected": 1, "reports_written": 0,
+                     "secondary_findings": len(findings), "hpo_terms": len(hpo),
+                     "hpo_records": len(context.hpo_records)})
 
-    progress("candidate: bundle")
-    bundle = build_medicine_bundle(candidate, chain, run_dir, hpo, index)
-    write_bundle(bundle, out_dir)
-    for n in bundle.notes:
-        m.note(f"{cid}: {n}")
     tools = MedicineTools(index, store, retrievers, gene_symbol=bundle.gene_symbol, gene_id=bundle.gene_id,
                           citable=bundle.record_ids, default_max_results=literature_max_results,
-                          max_genes=max_genes, default_trials=trials_max_results)
+                          max_genes=max_genes, default_trials=trials_max_results, default_chembl_search=chembl_max_results)
     request = build_request(bundle, tools, model=model, effort=effort, max_turns=max_turns)
     write_prompt(request, out_dir, cid)
     if bundle.missing_ids:
@@ -257,8 +347,10 @@ def run_medicine(
         index_path = store.write_index()
         m.add_output("evidence_index", index_path)
         m.counts["evidence_records"] = store.count()
-        m.counts["evidence_records_added"] = 0
-        m.note("dry run: bundle and prompt written; no model was called and no report was produced.")
+        m.counts["evidence_records_added"] = len(context.disease_fetched)
+        m.params["ladder_walked"] = None
+        m.note("dry run: bundle and prompt written; no model was called and no report was produced; the disease records "
+               "were served or fetched (see params.disease_records).")
         m.params["disclosure"] = disclosure
         manifest_path = out_dir / "manifest.json"
         m.write(manifest_path)
@@ -287,30 +379,44 @@ def run_medicine(
 
     records = citable_records(tools, index)
     scoped = EvidenceIndex.from_records(records)
-    cleaned, report = check_report(result.output, bundle, records, scoped, index)
+    cleaned, report = check_report(result.output, bundle, records, scoped, index, searched=search_ids(tools.log))
+    walked, why_not = ladder_walked(cleaned)
     _write_json(out_dir / "report.json", cleaned.model_dump())
     _write_json(out_dir / "validation" / f"{_name(cid)}.json", {"candidate_id": cid, **report.as_dict()})
     for r in report.rejections:
         m.note(f"{cid}: rejected {r.path}: {r.reason}")
     for n in report.notes:
         m.note(f"{cid}: {n}")
+    if not walked:
+        m.note(f"{cid}: the ladder was not walked: {why_not}")
     md_path = _write_text(out_dir / "report.md", render_document(bundle, cleaned, scoped, disclosure=result.disclosure,
-                                                                  model=model, effort=effort))
+                                                                  model=model, effort=effort, rejections=report.rejections))
     index_path = store.write_index()
 
     m.add_output("report_json", out_dir / "report.json")
     m.add_output("report_md", md_path)
     m.add_output("evidence_index", index_path)
+    by_verdict: dict[str, int] = {}
+    for c in cleaned.intervention_classes:
+        by_verdict[c.verdict] = by_verdict.get(c.verdict, 0) + 1
     m.counts.update({
         "reports_written": 1,
         "evidence_records": store.count(),
-        "evidence_records_added": len(dict.fromkeys(tools.log.written)),
+        "evidence_records_added": len(dict.fromkeys([*context.hpo_fetched, *context.disease_fetched, *tools.log.written])),
         "usage": asdict(result.usage),
         "mechanism_claims": len(cleaned.mechanism),
+        "consequence_claims": len(cleaned.consequence),
         "pathway_targets": len(cleaned.pathway_targets),
+        "intervention_classes": len(cleaned.intervention_classes),
+        "classes_by_verdict": dict(sorted(by_verdict.items())),
         "drug_candidates": len(cleaned.candidates),
         "drug_candidates_with_trials": sum(1 for d in cleaned.candidates if d.trial_ids),
+        "considered_and_rejected": len(cleaned.considered_and_rejected),
+        "surveillance": len(cleaned.surveillance),
         "follow_up_experiments": len(cleaned.follow_up_experiments),
+        "secondary_findings": len(cleaned.secondary_findings),
+        "searches": {"literature": len(tools.log.searches), "trials": len(tools.log.trial_searches),
+                     "chembl": len(tools.log.chembl_searches), "genes": len(tools.log.genes)},
         "validation": dict(report.counts),
         "rejections": report.counts["items_dropped"] + report.counts["literature_removed"] + report.counts["redactions"],
         "tool_calls": dict(_tool_call_counts(result)),
@@ -318,11 +424,13 @@ def run_medicine(
     m.params["validation"] = {"rejections": [asdict(r) for r in report.rejections], "notes": list(report.notes)}
     m.params["tools_used"] = tools.log.as_dict()
     m.params["source_versions"] = source_versions(records)
+    m.params["ladder_walked"] = walked
     m.params["agent"] = {"model": result.model, "effort": result.effort, "stop_reason": result.stop_reason,
                          "disclosure": result.disclosure, "usage": asdict(result.usage), "request": dict(result.request)}
     m.params["disclosure"] = result.disclosure
-    progress(f"candidate: {len(cleaned.candidates)} drug candidate(s) kept · {len(cleaned.mechanism)} mechanism claim(s) · "
-             f"{m.counts['rejections']} rejected")
+    progress(f"candidate: {len(cleaned.candidates)} candidate(s) proposed · {len(cleaned.intervention_classes)} class(es) "
+             f"searched · {len(cleaned.considered_and_rejected)} considered and rejected · "
+             f"{report.counts['redactions']} redaction(s)")
     manifest_path = out_dir / "manifest.json"
     m.write(manifest_path)
     return manifest_path
@@ -371,6 +479,26 @@ def load_chain(path: Path) -> EvidenceChain:
                          f"{e.error_count()} error(s) — {where}") from e
 
 
+def resolve_disease(case_disease: list[str] | None, case_path: Path | None) -> tuple[list[str], str]:
+    """Open Targets disease ids and where they came from: an explicit list, the case
+    file's ``disease:``, or nothing. Each id is validated (``MONDO_0009061``) before
+    any request; a colon or a lower-case prefix is refused, not fetched."""
+    if case_disease is not None:
+        return _disease_ids(case_disease), "argument"
+    if case_path is not None:
+        raw = yaml.safe_load(Path(case_path).read_text()) or {}
+        return _disease_ids(raw.get("disease") or []), f"case file {case_path}"
+    return [], "none"
+
+
+def _disease_ids(ids: list[Any]) -> list[str]:
+    out = [str(d).strip() for d in ids]
+    bad = [d for d in out if not DISEASE_ID.match(d)]
+    if bad:
+        raise ValueError(f"not Open Targets disease ids (expected MONDO_0000000, EFO_…, Orphanet_…): {bad}")
+    return list(dict.fromkeys(out))
+
+
 def _priorities(run_dir: Path) -> dict[str, int]:
     path = Path(run_dir) / FILTER_DIR / "candidates.json"
     if not path.exists():
@@ -383,12 +511,123 @@ def _priorities(run_dir: Path) -> dict[str, int]:
     return out
 
 
+# ------------------------------------------------------------------ patient context
+
+@dataclass
+class PatientRecords:
+    """The records the patient-context block is built from, and how each was had."""
+
+    hpo_records: list[EvidenceRecord] = field(default_factory=list)
+    hpo_served: list[str] = field(default_factory=list)
+    hpo_fetched: list[str] = field(default_factory=list)
+    hpo_missing: list[str] = field(default_factory=list)
+    disease_records: list[EvidenceRecord] = field(default_factory=list)
+    disease_served: list[str] = field(default_factory=list)
+    disease_fetched: list[str] = field(default_factory=list)
+    disease_missing: list[str] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+
+
+def patient_records(hpo: Iterable[str], disease: Iterable[str], index: EvidenceIndex, store: EvidenceStore,
+                    opentargets: Callable[[], Any], http_factory: Callable[[], Http]) -> PatientRecords:
+    """The case terms' ``hpo:`` records (:func:`~engine.retrieve.hpo.case_terms`:
+    served from any store of the run — stage 5 fetched them — and fetched once here
+    for a term no store holds; a term the JAX API 404s is noted and shown bare), and
+    the ``opentargets:disease:`` record per disease id — served from a store when one
+    holds it, else fetched with ``opentargets()`` (built lazily, once) and written
+    into ``store``. A disease the platform does not know is a note, never an error."""
+    out = PatientRecords()
+    terms = case_terms(hpo, index, store, http_factory=http_factory)
+    out.hpo_records = list(terms.records)
+    out.hpo_served = list(terms.served)
+    out.hpo_fetched = list(terms.fetched)
+    out.hpo_missing = list(terms.missing)
+    for term in terms.missing:
+        out.notes.append(f"HPO term {term} has no record at the JAX API (404); it is shown bare in the bundle "
+                         "and is not citable")
+    source: Any = None
+    for did in disease:
+        rid = f"opentargets:disease:{did}"
+        rec = index.get(rid)
+        if rec is not None:
+            out.disease_served.append(rid)
+        else:
+            if source is None:
+                source = opentargets()
+            rec = source.disease(did)
+            if rec is None:
+                out.disease_missing.append(did)
+                out.notes.append(f"Open Targets has no disease {did}; no disease record for it, not citable")
+                continue
+            store.put(rec)
+            out.disease_fetched.append(rid)
+        out.disease_records.append(rec)
+    return out
+
+
+def patient_context(bundle: MedicineBundle) -> PatientContext:
+    """The engine-filled block: one entry per case term (label from its ``hpo:``
+    record, or blank without one) and one per disease record."""
+    by_id = {str((r.get("payload") or {}).get("id") or r["record_id"].split(":", 1)[1]): r for r in bundle.hpo_terms}
+    hpo = []
+    for term in bundle.case_hpo:
+        rec = by_id.get(term)
+        payload = (rec or {}).get("payload") or {}
+        hpo.append(HpoTermRef(id=term, label=str(payload.get("name") or ""), record_id=rec["record_id"] if rec else None))
+    disease = [DiseaseRef(id=str(r["payload"].get("id") or ""), name=str(r["payload"].get("name") or ""),
+                          description=str(r["payload"].get("description") or ""), record_id=r["record_id"])
+               for r in bundle.disease_records]
+    return PatientContext(hpo=hpo, disease=disease)
+
+
+def load_dossier(path: Path) -> dict[str, Any] | None:
+    """The validated gene dossier stage 5 wrote for the candidate, or ``None`` when
+    there is none. A file that is not a JSON object is a ``ValueError``."""
+    if not Path(path).exists():
+        return None
+    doc = json.loads(Path(path).read_text())
+    if not isinstance(doc, dict):
+        raise ValueError(f"the gene dossier at {path} is not a JSON object")
+    return doc
+
+
+def secondary_findings(run_dir: Path, candidate_id: str) -> tuple[list[SecondaryFinding], list[str]]:
+    """Every other stage-5 chain whose candidate is a lone heterozygote (``het_single``)
+    and whose criteria combine, by the engine's rule, to pathogenic or likely
+    pathogenic for any variant — recomputed here, never read from the file. Recorded
+    on the bundle for the reader; the prompt names them as non-targets."""
+    findings: list[SecondaryFinding] = []
+    notes: list[str] = []
+    for other, path in list_chains(run_dir).items():
+        if other == candidate_id:
+            continue
+        try:
+            cand = find_candidate(run_dir, other)
+        except KeyError:
+            notes.append(f"chain {other} has no stage-3 candidate; not read for secondary findings")
+            continue
+        if cand.get("model") != "het_single":
+            continue
+        try:
+            chain = load_chain(path)
+        except ValueError as e:
+            notes.append(f"chain {other} not read for secondary findings: {e}")
+            continue
+        classes = {v.key: combine_acmg(v.criteria) for v in chain.variants}
+        if any(c in ("pathogenic", "likely_pathogenic") for c in classes.values()):
+            findings.append(SecondaryFinding(candidate_id=other, gene_symbol=str(cand.get("gene_symbol") or ""),
+                                             model=str(cand.get("model") or ""), classifications=classes))
+    return findings, notes
+
+
 # --------------------------------------------------------------------------- bundle
 
 @dataclass
 class MedicineBundle:
     """What the medicine agent is given: the stage-5 bundle for the candidate's
-    variants, the validated chain, and the citation vocabulary the two define."""
+    variants, the validated chain, the patient context as records, the gene dossier
+    when there is one, the run's secondary findings, and the citation vocabulary
+    they define."""
 
     candidate_id: str
     gene_symbol: str
@@ -406,6 +645,15 @@ class MedicineBundle:
     """Ids the chain cites that no store holds — visible, never silently citable."""
     record_ids: list[str]
     """The citation vocabulary before any tool call."""
+    hpo_terms: list[dict[str, Any]] = field(default_factory=list)
+    """The case terms' ``hpo:`` records (as ``asdict``), sorted by id."""
+    disease_records: list[dict[str, Any]] = field(default_factory=list)
+    """The ``opentargets:disease:`` records, in the case's order."""
+    dossier: dict[str, Any] | None = None
+    """The validated gene dossier (``05_reason/dossier/<cid>.json``) when stage 5 wrote one."""
+    dossier_record_ids: list[str] = field(default_factory=list)
+    """Ids the dossier cites that a store of the run holds."""
+    secondary_findings: list[dict[str, Any]] = field(default_factory=list)
     text: str = ""
     notes: list[str] = field(default_factory=list)
     """What the bundle changed about the chain as read (a classification recomputed)."""
@@ -418,18 +666,24 @@ class MedicineBundle:
 
 
 def build_medicine_bundle(candidate: dict[str, Any], chain: EvidenceChain, run_dir: Path, case_hpo: Iterable[str],
-                          index: EvidenceIndex) -> MedicineBundle:
-    """The stage-5 bundle (:func:`~engine.agents.bundle.build_bundle`) plus the chain:
-    the vocabulary is the bundle's ids and every id the chain cites that the run holds.
-    The classification shown per variant is recomputed from the chain's own criteria
-    (ACMG/AMP combining rules); a chain file that disagrees with its criteria is used
-    at the engine's value and the disagreement is noted."""
-    base: Bundle = build_bundle(candidate, run_dir, case_hpo)
+                          index: EvidenceIndex, *, hpo_records: Iterable[EvidenceRecord] = (),
+                          disease_records: Iterable[EvidenceRecord] = (), dossier: dict[str, Any] | None = None,
+                          secondary: Iterable[SecondaryFinding] = ()) -> MedicineBundle:
+    """The stage-5 bundle (:func:`~engine.agents.bundle.build_bundle`) plus the chain,
+    the patient-context records, the dossier and the secondary findings: the
+    vocabulary is the bundle's ids, every id the chain or the dossier cites that the
+    run holds, the ``hpo:`` records and the disease records. The classification shown
+    per variant is recomputed from the chain's own criteria (the SVI point rule); a
+    chain file that disagrees with its criteria is used at the engine's value and the
+    disagreement is noted."""
+    base: Bundle = build_bundle(candidate, run_dir, case_hpo, hpo_records=hpo_records)
     chain_data = chain.model_dump()
     notes = _recompute_classifications(chain, chain_data)
     cited = cited_ids(chain_data, index)
     present = [i for i in cited if i in index]
     missing = [i for i in cited if i not in index]
+    diseases = [asdict(r) for r in disease_records]
+    dossier_ids = [i for i in cited_ids(dossier, index) if i in index] if dossier is not None else []
     bundle = MedicineBundle(
         candidate_id=base.candidate_id,
         gene_symbol=str(candidate.get("gene_symbol") or ""),
@@ -442,7 +696,12 @@ def build_medicine_bundle(candidate: dict[str, Any], chain: EvidenceChain, run_d
         gene_records=base.gene_records,
         chain_record_ids=present,
         missing_ids=missing,
-        record_ids=sorted(set(base.record_ids) | set(present)),
+        record_ids=sorted(set(base.record_ids) | set(present) | {r["record_id"] for r in diseases} | set(dossier_ids)),
+        hpo_terms=base.hpo_terms,
+        disease_records=diseases,
+        dossier=json.loads(json.dumps(dossier, sort_keys=True)) if dossier is not None else None,
+        dossier_record_ids=dossier_ids,
+        secondary_findings=[f.model_dump() for f in secondary],
         notes=notes,
     )
     bundle.text = render_text(bundle)
@@ -450,11 +709,13 @@ def build_medicine_bundle(candidate: dict[str, Any], chain: EvidenceChain, run_d
 
 
 def _recompute_classifications(chain: EvidenceChain, chain_data: dict[str, Any]) -> list[str]:
-    """Set every variant's ``classification`` in ``chain_data`` to what its criteria
-    combine to; one note per variant whose file said otherwise."""
+    """Set every variant's ``classification`` and ``points`` in ``chain_data`` to what
+    its criteria combine to (the SVI point rule); one note per variant whose file said
+    another classification."""
     notes: list[str] = []
     for i, (v, d) in enumerate(zip(chain.variants, chain_data["variants"])):
         computed = combine_acmg(v.criteria)
+        d["points"] = acmg_points(v.criteria)
         if v.classification != computed:
             notes.append(f"chain variants[{i}].classification: the file says {v.classification!r}, its criteria combine "
                          f"to {computed!r} (ACMG/AMP 2015 rules); the engine's value is used")
@@ -467,8 +728,10 @@ def write_bundle(bundle: MedicineBundle, stage_dir: Path) -> Path:
 
 
 def render_text(bundle: MedicineBundle) -> str:
-    """The prompt block: the candidate, one section per variant with its stage-5
-    verdict and criteria, the chain's reasoning, and the citable list. Every fact is
+    """The prompt block, in this order: the candidate; the patient context as records
+    (the disease records, the case terms with their labels); one section per variant
+    with its stage-5 verdict and criteria; the chain's reasoning; the gene dossier
+    when there is one; the run's secondary findings; the citable list. Every fact is
     followed by the record id it came from."""
     c = bundle.candidate
     chain = bundle.chain
@@ -476,11 +739,16 @@ def render_text(bundle: MedicineBundle) -> str:
         f"# Candidate {bundle.candidate_id}",
         (f"gene: {bundle.gene_symbol or '-'} ({bundle.gene_id or 'no gene id'}) · model: {c.get('model') or '-'} · "
          f"priority: {c.get('priority', '-')}"),
-        f"phase: {_phase(c.get('phase'))}",
-        f"caveats: {'; '.join(c.get('caveats') or []) or 'none'}",
+        f"phase: {_phase(c.get('phase'))} · caveats: {'; '.join(c.get('caveats') or []) or 'none'}",
         f"exomiser: {_rank_line(bundle.rank)}" + _tag([r["record_id"] for r in bundle.gene_records]),
-        f"case HPO: {', '.join(bundle.case_hpo) or 'none given'}",
+        "",
+        "## Patient context (records only — nothing here comes from a person's notes)",
     ]
+    if bundle.disease_records:
+        lines.extend(_disease_line(r) for r in bundle.disease_records)
+    else:
+        lines.append("disease: none given (no disease id in the case file; the case terms below are the phenotype)")
+    lines.extend(hpo_lines(bundle.case_hpo, bundle.hpo_terms))
     verdicts = {v["key"]: v for v in chain.get("variants", [])}
     for v in bundle.variants:
         lines.append("")
@@ -491,11 +759,65 @@ def render_text(bundle: MedicineBundle) -> str:
     lines.append("limits: " + ("; ".join(_one_line(x) for x in chain.get("limits") or []) or "none stated"))
     lines.append("what would change the call: " + ("; ".join(_one_line(x) for x in chain.get("what_would_change_the_call") or []) or "none stated"))
     lines.append("literature: " + (" ".join(f"[{p}]" for p in chain.get("literature") or []) or "none"))
+    if bundle.dossier is not None:
+        lines.append("")
+        lines.extend(_dossier_lines(bundle.dossier))
+    lines.extend(["", "## Secondary findings in this run (not targets of this report)"])
+    if bundle.secondary_findings:
+        for f in bundle.secondary_findings:
+            calls = "; ".join(f"{k} {str(v).replace('_', ' ')}" for k, v in sorted(f.get("classifications", {}).items()))
+            lines.append(f"{f.get('candidate_id')} {f.get('gene_symbol')} {f.get('model')}: {calls}")
+    else:
+        lines.append("none")
+    lines.append("")
     if bundle.missing_ids:
         lines.append("cited by the chain but not in any store (not citable): " + ", ".join(bundle.missing_ids))
-    lines.append("")
     lines.append("citable record ids: " + (" ".join(f"[{r}]" for r in bundle.record_ids) or "none"))
     return "\n".join(lines) + "\n"
+
+
+def _disease_line(rec: dict[str, Any]) -> str:
+    cols = extract_disease(EvidenceRecord(**rec))
+    parts = [f"disease: {cols['name'] or cols['disease_id']} [{rec['record_id']}] — {_short(_one_line(cols['description']), DESCRIPTION_CHARS) or 'no description in the record'}"]
+    if cols["synonyms"]:
+        parts.append("synonyms: " + ", ".join(cols["synonyms"].split(";")))
+    if cols["omim"]:
+        parts.append("OMIM " + ", ".join(cols["omim"].split(";")))
+    if cols["orphanet"]:
+        parts.append("Orphanet " + ", ".join(cols["orphanet"].split(";")))
+    names = [n for n in cols["phenotype_names"].split(";") if n]
+    if cols["n_phenotypes"]:
+        shown = ", ".join(names[:DISEASE_PHENOTYPES_SHOWN]) or "none listed"
+        more = f" (+{len(names) - DISEASE_PHENOTYPES_SHOWN} more in the record)" if len(names) > DISEASE_PHENOTYPES_SHOWN else ""
+        parts.append(f"HPO annotations of the disease ({cols['n_phenotypes']}): {shown}{more}")
+    return "; ".join(parts)
+
+
+def _dossier_lines(d: dict[str, Any]) -> list[str]:
+    """The validated gene dossier as the prompt shows it — every claim with its ids."""
+    acc = str(d.get("uniprot_accession") or "")
+    lines = ["## Gene dossier (validated in stage 5; cite its ids)"]
+    lines.append(f"protein: {acc + ' ' if acc else ''}" + (_claims_text(d.get("protein")) or "no protein claim"))
+    lines.append("mechanism of disease: " + (_claims_text(d.get("mechanism_of_disease")) or "no claim"))
+    positions = []
+    for p in _dicts(d.get("variant_positions")):
+        residue = p.get("protein_position")
+        where = f"residue {residue}" if residue is not None else "residue unknown"
+        region = ", ".join(str(x) for x in p.get("region") or []) or "no annotated feature"
+        consequence = _one_line(p.get("consequence"))
+        positions.append(f"{p.get('key')} → {where}, {region}" + (f" — {consequence}" if consequence else "")
+                         + _tag(p.get("evidence_ids")))
+    lines.append("variant positions: " + ("; ".join(positions) or "none"))
+    lines.append("region knowledge: " + (_claims_text(d.get("region_knowledge")) or "none"))
+    lines.append("genotype patterns: " + (_claims_text(d.get("genotype_patterns")) or "none"))
+    lines.append("functional test: " + (_claims_text(d.get("functional_test")) or "none"))
+    lines.append("dossier limits: " + ("; ".join(_one_line(x) for x in d.get("limits") or []) or "none stated"))
+    lines.append("dossier literature: " + (" ".join(f"[{p}]" for p in d.get("literature") or []) or "none"))
+    return lines
+
+
+def _claims_text(claims: Any) -> str:
+    return "; ".join(f"{_one_line(c.get('statement'))}{_tag(c.get('evidence_ids'))}" for c in _dicts(claims))
 
 
 def _variant_lines(v: VariantBundle, verdict: dict[str, Any] | None) -> list[str]:
@@ -503,8 +825,11 @@ def _variant_lines(v: VariantBundle, verdict: dict[str, Any] | None) -> list[str
     by_source: dict[str, list[str]] = {}
     for r in v.records:
         by_source.setdefault(r["source"], []).append(r["record_id"])
-    label = (verdict or {}).get("classification") or "not classified"
-    lines = [f"## Variant {v.key} — {str(label).replace('_', ' ')}"]
+    label = str((verdict or {}).get("classification") or "not classified").replace("_", " ")
+    points = (verdict or {}).get("points")
+    if points is not None:
+        label += f" ({int(points):+d} SVI points)"
+    lines = [f"## Variant {v.key} — {label}"]
     mane = get("mane")
     lines.append(f"genotype {get('gt')} · {get('consequence')} ({get('impact')}) · {get('transcript_id')}"
                  f"{' (MANE ' + mane + ')' if mane != '-' else ''} · {get('hgvsc')} · {get('hgvsp')}{_tag(by_source.get('vep'))}")
@@ -559,8 +884,9 @@ def _rank_line(rank: dict[str, Any] | None) -> str:
 
 def build_request(bundle: MedicineBundle, tools: MedicineTools, *, model: str, effort: str, max_turns: int) -> ac.AgentRequest:
     """The agent request: the frozen system prompt, the bundle as the user turn, the
-    five tools, and an answer schema that pins ``candidate_id`` and ``gene_symbol`` to
-    the candidate's, so the API itself refuses a report about another gene."""
+    six tools, and an answer schema that pins ``candidate_id`` and ``gene_symbol`` to
+    the candidate's — so the API itself refuses a report about another gene — and
+    drops the engine-filled fields, so the model is never asked for them."""
     return ac.AgentRequest(
         system=SYSTEM_PROMPT,
         user=user_prompt(bundle, max_turns=max_turns),
@@ -569,8 +895,8 @@ def build_request(bundle: MedicineBundle, tools: MedicineTools, *, model: str, e
         max_turns=max_turns,
         model=model,
         effort=effort,
-        output_schema=ac.answer_schema(MedicineReport, enum={"candidate_id": [bundle.candidate_id],
-                                                             "gene_symbol": [bundle.gene_symbol]}),
+        output_schema=ac.answer_schema(MedicineReport, drop=("patient_context", "secondary_findings"),
+                                       enum={"candidate_id": [bundle.candidate_id], "gene_symbol": [bundle.gene_symbol]}),
     )
 
 
@@ -613,53 +939,104 @@ def citable_records(tools: MedicineTools, index: EvidenceIndex) -> list[Evidence
     return records
 
 
+def search_ids(log: MedicineLog) -> list[str]:
+    """The search-shaped records this conversation made — what an intervention class
+    may name in ``searched``: every literature, trial and ChEMBL search record, and the
+    DGIdb gene and Open Targets target records ``drugs_for_gene`` returned."""
+    genes = [r for r in log.drug_records if r.startswith("dgidb-gene:") or _OT_TARGET.match(r)]
+    return sorted({*log.searches, *log.trial_searches, *log.chembl_searches, *genes})
+
+
 def check_report(output: Any, bundle: MedicineBundle, records: list[EvidenceRecord], scoped: EvidenceIndex,
-                 run_index: EvidenceIndex) -> tuple[MedicineReport, ValidationReport]:
+                 run_index: EvidenceIndex, *, searched: Iterable[str] = ()) -> tuple[MedicineReport, ValidationReport]:
     """Everything between the model's answer and the report on disk, in order: pin the
-    identity to the bundle (:func:`align_report`), the stage's own checks
-    (:func:`stage_checks`), the shared validator over the candidate's scoped index, a
-    note for every rejected id that exists elsewhere in the run. Every path in the
-    report names the model's own positions."""
+    identity to the bundle and fill the engine's fields (:func:`align_report`), the
+    stage's own checks (:func:`stage_checks`, with ``searched`` the search records the
+    conversation made), the HPO term check
+    (:func:`~engine.agents.terms.check_terms`: an ``HP:`` id no ``hpo:`` record in
+    scope carries becomes a footnote marker, a label that is not the record's is
+    disputed in place), the shared validator over the candidate's scoped index, a note
+    for every rejected id that exists elsewhere in the run. Every path in the report
+    names the model's own positions."""
     aligned, notes = align_report(output, bundle)
-    checks = stage_checks(aligned, records)
-    cleaned, report = validate(checks.report, scoped, model=MedicineReport)
-    for r in report.rejections + report.disputes:  # the validator saw the list after the stage's drops
+    redactions = Redactions.continuing(aligned)
+    checks = stage_checks(aligned, records, searched=searched, redactions=redactions)
+    staged = len(redactions.rejections)  # the stage's own redactions already name the model's positions
+    terms = check_terms(checks.report, scoped, redact=redactions.redact)
+    for r in redactions.rejections[staged:] + terms.disputes:  # the term check saw the lists after the drops
         r.path = _original_path(r.path, checks.positions)
-    report.rejections[:0] = checks.dropped + checks.redacted
+    pre = list(redactions.rejections)  # the stage's and the term check's redactions, each with its marker
+    cleaned, report = validate(checks.report, scoped, model=MedicineReport, redactions=redactions)
+    for r in report.rejections + report.disputes:  # the validator saw the lists after the stage's drops
+        r.path = _original_path(r.path, checks.positions)
+    report.rejections[:0] = checks.dropped + pre
+    report.disputes.extend(terms.disputes)
     report.counts["items_dropped"] += len(checks.dropped)
     for name in ("redactions", "ids_checked", "ids_unknown"):
-        report.counts[name] += len(checks.redacted)
+        report.counts[name] += len(pre)
+    report.counts.update(checks.counts)
+    report.counts.update(terms.counts)
     out_of_scope = [rid for rid in cited_ids(aligned, run_index) if rid not in scoped and rid in run_index]
     report.counts["citations_out_of_scope"] = len(out_of_scope)
-    report.notes = notes + [f"out of scope: {rid} exists in the run's evidence but was neither in the candidate's list "
-                           "nor returned by a tool in this conversation; rejected" for rid in out_of_scope] + report.notes
+    report.notes = notes + checks.notes + terms.notes + [
+        f"out of scope: {rid} exists in the run's evidence but was neither in the candidate's list "
+        "nor returned by a tool in this conversation; rejected" for rid in out_of_scope] + report.notes
     return cleaned, report
 
 
 def align_report(output: Any, bundle: MedicineBundle) -> tuple[dict[str, Any], list[str]]:
-    """The model's report as a dict with its identity pinned to the bundle: the
-    candidate id and the gene symbol are the bundle's, and a change is noted."""
+    """The model's report as a dict with its identity pinned to the bundle — the
+    candidate id and the gene symbol are the bundle's, and a change is noted — and the
+    engine's fields filled: ``patient_context`` from the bundle's records,
+    ``secondary_findings`` from the run's other chains. Anything the model wrote there
+    is replaced and noted (the answer schema does not offer the fields)."""
     data: dict[str, Any] = output.model_dump() if hasattr(output, "model_dump") else copy.deepcopy(dict(output))
     notes: list[str] = []
     for key, value in (("candidate_id", bundle.candidate_id), ("gene_symbol", bundle.gene_symbol)):
         if data.get(key) != value:
             notes.append(f"{key}: the model wrote {data.get(key)!r}; replaced by the candidate's {value!r}")
             data[key] = value
+    for key, value in (("patient_context", patient_context(bundle).model_dump()),
+                       ("secondary_findings", [dict(f) for f in bundle.secondary_findings])):
+        if data.get(key) not in (None, [], {}):
+            notes.append(f"{key}: the model wrote a value; replaced by the engine's")
+        data[key] = value
     return data, notes
+
+
+def ladder_walked(report: MedicineReport) -> tuple[bool, str]:
+    """Whether the report shows the ladder was walked: at least one intervention class
+    survived, some class is backed by a literature search, and some class by a trial
+    or a ChEMBL search. The second value says what is missing (empty when walked)."""
+    classes = report.intervention_classes
+    if not classes:
+        return False, "no intervention class survived the checks"
+    searched = {canonical_id(str(s)) for c in classes for s in c.searched}
+    missing = []
+    if not any(s.startswith("pmid-search:") for s in searched):
+        missing.append("no class is backed by a literature search (pmid-search:)")
+    if not any(s.startswith(("nct-search:", "chembl-search:")) for s in searched):
+        missing.append("no class is backed by a trial or ChEMBL search (nct-search: / chembl-search:)")
+    return not missing, "; ".join(missing)
 
 
 @dataclass
 class StageChecks:
-    """What the checks did: the report as it goes on to the validator, the drug
-    candidates dropped (no cited drug-source record names the drug), the accessions
-    redacted and the ChEMBL ids cleared — one :class:`~engine.agents.validator.Rejection`
-    each, path as the validator spells it — and, for every surviving candidate, its
-    position in the model's own list."""
+    """What the checks did: the report as it goes on to the validator, the items
+    dropped (one :class:`~engine.agents.validator.Rejection` each, path as the
+    validator spells it), the accessions redacted and the ChEMBL ids cleared, the
+    counts per rule, the notes, and — per list the stage prunes — the model's own
+    position of every surviving item."""
 
     report: dict[str, Any]
     dropped: list[Rejection] = field(default_factory=list)
     redacted: list[Rejection] = field(default_factory=list)
-    positions: list[int] = field(default_factory=list)
+    positions: dict[str, list[int]] = field(default_factory=dict)
+    counts: dict[str, int] = field(default_factory=lambda: {
+        "counter_arguments_short": 0, "paediatric_safety_missing": 0, "approved_indication_missing": 0,
+        "classes_unbacked": 0, "classes_unreasoned": 0, "candidates_unclassed": 0, "follow_up_uncited": 0,
+    })
+    notes: list[str] = field(default_factory=list)
 
 
 class AccessionResolver:
@@ -713,33 +1090,96 @@ class AccessionResolver:
         return token.rstrip(_TRAIL).lower() in self.corpus
 
 
-def stage_checks(data: dict[str, Any], records: Iterable[EvidenceRecord]) -> StageChecks:
-    """Drop every drug candidate that cites no drug-source record carrying its name;
-    clear a ``chembl_id`` no record the candidate cites carries; redact every
-    unresolvable accession in prose. Ids are read as the validator spells them, so a
-    bare ``NCT…`` in ``trial_ids`` or a ``PMID:`` prefix counts; whether every id
-    resolves is still the validator's call (it sees the list after these drops)."""
+def stage_checks(data: dict[str, Any], records: Iterable[EvidenceRecord], *, searched: Iterable[str] = (),
+                 redactions: Redactions | None = None) -> StageChecks:
+    """The stage's own gates, before the validator. Drop every intervention class not
+    backed by a search this conversation made (``searched``) or lacking the reason its
+    verdict needs; every drug candidate that cites no drug-source record carrying its
+    name, carries fewer than two counter-arguments, no paediatric-safety argument or
+    no approved indication, or belongs to no surviving class; every rejected entry
+    naming a class that survived nowhere; every follow-up item citing nothing. Clear a
+    ``chembl_id`` no record the candidate cites carries; redact every unresolvable
+    accession in prose. Ids are read as the validator spells them, so a bare ``NCT…``
+    in ``trial_ids`` or a ``PMID:`` prefix counts; whether every id resolves is still
+    the validator's call (it sees the lists after these drops). ``redactions`` is the
+    report's marker counter; without one the count continues from the markers the
+    report already carries."""
     records = list(records)
     by_id = {r.record_id: r for r in records}
     resolver = AccessionResolver(records)
-    out = StageChecks(copy.deepcopy(data))
+    sources = set(KNOWN_SOURCES) | {r.source for r in records}
+    backing = {canonical_id(str(s)) for s in searched}
+    redactions = redactions or Redactions.continuing(data)
+    out = StageChecks(copy.deepcopy(data), redacted=redactions.rejections)
     d = out.report
-    for name in ("mechanism", "pathway_targets"):
+    for name in ("mechanism", "consequence", "pathway_targets", "surveillance"):
         for i, claim in enumerate(_dicts(d.get(name))):
-            claim["statement"] = _redact(claim.get("statement"), f"{name}[{i}].statement", resolver, out.redacted)
+            claim["statement"] = _redact(claim.get("statement"), f"{name}[{i}].statement", resolver, redactions)
+
+    # -- rung 3: a class stands on the searches made for it
+    classes: list[Any] = []
+    out.positions["intervention_classes"] = []
+    for i, cls in enumerate(_list(d.get("intervention_classes"))):
+        path = f"intervention_classes[{i}]"
+        if not isinstance(cls, dict):
+            out.positions["intervention_classes"].append(i)
+            classes.append(cls)  # not this stage's call; the validator's schema check raises on it
+            continue
+        name = _squash(cls.get("name"))
+        ids = [canonical_id(str(x)) for x in _list(cls.get("searched")) if x is not None and str(x).strip()]
+        if not ids or any(x not in backing for x in ids):
+            out.dropped.append(Rejection(path, f"intervention class {name!r} is not backed by a search made in this conversation"))
+            out.counts["classes_unbacked"] += 1
+            continue
+        verdict = str(cls.get("verdict") or "")
+        if verdict != "candidates_proposed" and not str(cls.get("rejection_reason") or "").strip():
+            out.dropped.append(Rejection(path, f"intervention class {name!r} has verdict {verdict!r} but no rejection_reason"))
+            out.counts["classes_unreasoned"] += 1
+            continue
+        cls["searched"] = list(dict.fromkeys(ids))
+        if not [x for x in _list(cls.get("evidence_ids")) if x is not None and str(x).strip()]:
+            cls["evidence_ids"] = list(cls["searched"])
+            out.notes.append(f"{path}: cites no record; its search records stand as its evidence_ids")
+        for key in ("acts_on", "rejection_reason"):
+            cls[key] = _redact(cls.get(key), f"{path}.{key}", resolver, redactions)
+        out.positions["intervention_classes"].append(i)
+        classes.append(cls)
+    d["intervention_classes"] = classes
+    surviving = {_squash(c.get("name")) for c in classes if isinstance(c, dict)}
+
+    # -- rung 4: candidates
     kept: list[Any] = []
-    for i, cand in enumerate(d.get("candidates") if isinstance(d.get("candidates"), list) else []):
+    out.positions["candidates"] = []
+    for i, cand in enumerate(_list(d.get("candidates"))):
         path = f"candidates[{i}]"
         if not isinstance(cand, dict):
-            out.positions.append(i)
-            kept.append(cand)  # not this stage's call; the validator's schema check raises on it
+            out.positions["candidates"].append(i)
+            kept.append(cand)
             continue
+        name = _squash(cand.get("name"))
         own = [by_id[x] for x in cited_record_ids(cand) if x in by_id]
         drug_records = [r for r in own if r.record_id.startswith(DRUG_RECORD_SOURCES)]
         if not AccessionResolver(drug_records).carries_name(cand.get("name")):
-            out.dropped.append(Rejection(path, f"drug candidate {_squash(cand.get('name'))!r} cites no record from a drug "
+            out.dropped.append(Rejection(path, f"drug candidate {name!r} cites no record from a drug "
                                                "source that names it (a drug row, an interaction, a ChEMBL molecule, a "
                                                "trial or a paper carrying the name)"))
+            continue
+        args = [str(a).strip() for a in _list(cand.get("counter_arguments")) if isinstance(a, str) and str(a).strip()]
+        if len(args) < 2:
+            out.dropped.append(Rejection(path, f"drug candidate {name!r} carries {len(args)} counter-argument(s); at least two are required"))
+            out.counts["counter_arguments_short"] += 1
+            continue
+        if not str(cand.get("paediatric_safety") or "").strip():
+            out.dropped.append(Rejection(path, f"drug candidate {name!r} gives no paediatric-safety reasoning"))
+            out.counts["paediatric_safety_missing"] += 1
+            continue
+        if not str(cand.get("approved_indication") or "").strip():
+            out.dropped.append(Rejection(path, f"drug candidate {name!r} states no approved indication as recorded"))
+            out.counts["approved_indication_missing"] += 1
+            continue
+        if _squash(cand.get("intervention_class")) not in surviving:
+            out.dropped.append(Rejection(path, f"drug candidate {name!r} belongs to no searched intervention class"))
+            out.counts["candidates_unclassed"] += 1
             continue
         chembl = str(cand.get("chembl_id") or "").strip().upper()
         if chembl and not (_CHEMBL.match(chembl) and AccessionResolver(own).carries_chembl(chembl)):
@@ -748,15 +1188,44 @@ def stage_checks(data: dict[str, Any], records: Iterable[EvidenceRecord]) -> Sta
             cand["chembl_id"] = None
         elif chembl:
             cand["chembl_id"] = chembl
-        for key in ("mechanism_of_action", "approval_status", "rationale"):
-            cand[key] = _redact(cand.get(key), f"{path}.{key}", resolver, out.redacted)
-        cand["counter_arguments"] = [_redact(x, f"{path}.counter_arguments[{k}]", resolver, out.redacted)
-                                     for k, x in enumerate(cand.get("counter_arguments") or [])]
-        out.positions.append(i)
+        for key in ("mechanism_of_action", "approval_status", "approved_indication", "rationale", "paediatric_safety"):
+            cand[key] = _redact(cand.get(key), f"{path}.{key}", resolver, redactions)
+        cand["counter_arguments"] = [_redact(x, f"{path}.counter_arguments[{k}]", resolver, redactions) for k, x in enumerate(args)]
+        out.positions["candidates"].append(i)
         kept.append(cand)
     d["candidates"] = kept
-    for name in ("follow_up_experiments", "limits"):
-        d[name] = [_redact(x, f"{name}[{k}]", resolver, out.redacted) for k, x in enumerate(d.get(name) or [])]
+
+    rejected: list[Any] = []
+    out.positions["considered_and_rejected"] = []
+    for i, item in enumerate(_list(d.get("considered_and_rejected"))):
+        path = f"considered_and_rejected[{i}]"
+        if not isinstance(item, dict):
+            out.positions["considered_and_rejected"].append(i)
+            rejected.append(item)
+            continue
+        cls = _squash(item.get("intervention_class"))
+        if cls and cls not in surviving:
+            out.dropped.append(Rejection(path, f"rejected entry {_squash(item.get('name'))!r} names an intervention class that was not searched"))
+            out.counts["candidates_unclassed"] += 1
+            continue
+        item["reason"] = _redact(item.get("reason"), f"{path}.reason", resolver, redactions)
+        out.positions["considered_and_rejected"].append(i)
+        rejected.append(item)
+    d["considered_and_rejected"] = rejected
+
+    # -- rung 5: a follow-up item cites a record
+    follow: list[Any] = []
+    out.positions["follow_up_experiments"] = []
+    for i, text in enumerate(_list(d.get("follow_up_experiments"))):
+        path = f"follow_up_experiments[{i}]"
+        if isinstance(text, str) and not any(t in by_id for t in citation_tokens(text, sources)):
+            out.dropped.append(Rejection(path, "follow-up experiment cites no record"))
+            out.counts["follow_up_uncited"] += 1
+            continue
+        out.positions["follow_up_experiments"].append(i)
+        follow.append(_redact(text, path, resolver, redactions) if isinstance(text, str) else text)
+    d["follow_up_experiments"] = follow
+    d["limits"] = [_redact(x, f"limits[{k}]", resolver, redactions) for k, x in enumerate(d.get("limits") or [])]
     return out
 
 
@@ -785,56 +1254,65 @@ def _squash(text: Any) -> str:
     return _SPACE.sub(" ", str(text if text is not None else "")).strip().lower()
 
 
-def _redact(text: Any, path: str, resolver: AccessionResolver, rejections: list[Rejection]) -> str:
+def _redact(text: Any, path: str, resolver: AccessionResolver, redactions: Redactions) -> str:
     def repl(m: re.Match[str]) -> str:
         if resolver.resolves(m):
             return m.group(0)
-        rejections.append(Rejection(path, f"bare accession not carried by any citable record: {m.group(0).rstrip(_TRAIL)}"))
-        return REDACTED + m.group(0)[len(m.group(0).rstrip(_TRAIL)):]  # keep the sentence's punctuation
-    out = _ACCESSION.sub(repl, "" if text is None else str(text))
-    return out.replace(f"[{REDACTED}]", REDACTED)  # an accession the model bracketed on its own
+        marker = redactions.redact(path, f"bare accession not carried by any citable record: {m.group(0).rstrip(_TRAIL)}")
+        return marker + m.group(0)[len(m.group(0).rstrip(_TRAIL)):]  # keep the sentence's punctuation
+    return unwrap(_ACCESSION.sub(repl, "" if text is None else str(text)))  # an accession the model bracketed on its own
 
 
 def _dicts(items: Any) -> list[dict[str, Any]]:
     return [x for x in items if isinstance(x, dict)] if isinstance(items, list) else []
 
 
-_CANDIDATE_PATH = re.compile(r"^candidates\[(\d+)\]")
+_LIST_PATH = re.compile(r"^([a-z_]+)\[(\d+)\]")
 
 
-def _original_path(path: str, positions: list[int]) -> str:
-    """A validator path over the list the stage checks left → the model's own position."""
-    m = _CANDIDATE_PATH.match(path)
-    if not m:
+def _original_path(path: str, positions: dict[str, list[int]]) -> str:
+    """A validator path over a list the stage checks pruned → the model's own position."""
+    m = _LIST_PATH.match(path)
+    if not m or m.group(1) not in positions:
         return path
-    i = int(m.group(1))
-    return f"candidates[{positions[i] if i < len(positions) else i}]" + path[m.end():]
+    kept = positions[m.group(1)]
+    i = int(m.group(2))
+    return f"{m.group(1)}[{kept[i] if i < len(kept) else i}]" + path[m.end():]
 
 
 # --------------------------------------------------------------------------- render
 
 def render_document(bundle: MedicineBundle, report: MedicineReport, index: EvidenceIndex, *,
-                    disclosure: str | None, model: str, effort: str) -> str:
-    """``report.md``: a header naming the candidate and its stage-5 verdict, then the
+                    disclosure: str | None, model: str, effort: str, rejections: Iterable[Any] = ()) -> str:
+    """``report.md``: a header naming the candidate and its stage-5 verdict, a preamble
+    that says what the validator removed only when it removed a candidate, then the
     report in the rubric's order with References resolved against the index it was
     validated with."""
+    rejections = list(rejections)
     verdicts = ", ".join(f"{v['key']} {str(v.get('classification') or 'not computed').replace('_', ' ')}"
                          for v in bundle.chain.get("variants", [])) or "no variant"
+    removed = sum(1 for r in rejections if re.fullmatch(r"candidates\[\d+\]", str(_path_of(r))))
+    preamble = ("Hypotheses for follow-up, argued from retrieved records only — not a treatment recommendation. "
+                "Every claim cites a record id and the References resolve them.")
+    if removed:
+        preamble += f" {removed} proposed candidate(s) were removed by the validator; see the manifest."
     out = [
         f"# Medicine — {bundle.candidate_id}",
         "",
         (f"candidate {bundle.candidate_id} · gene {bundle.gene_symbol or '-'} · model {bundle.candidate.get('model') or '-'} · "
          f"stage-5 classification: {verdicts} · model {model} · effort {effort}"),
         "",
-        ("Hypotheses for follow-up, argued from retrieved records only — not a treatment recommendation. Every claim cites a "
-         "record id and the References resolve them; a drug candidate that cited no drug-source record naming the drug, "
-         "cited an unknown record or trial, or gave no counter-argument was removed by the validator (see the manifest)."),
+        preamble,
         "",
         "---",
         "",
-        render_medicine_report(report, index, disclosure=disclosure).rstrip("\n"),
+        render_medicine_report(report, index, disclosure=disclosure, rejections=rejections, bundle=bundle).rstrip("\n"),
     ]
     return "\n".join(out) + "\n"
+
+
+def _path_of(rejection: Any) -> str:
+    return str(rejection.get("path") if isinstance(rejection, dict) else getattr(rejection, "path", ""))
 
 
 # --------------------------------------------------------------------------- pieces
@@ -944,6 +1422,10 @@ def _num(text: str) -> str:
 
 def _one_line(text: Any) -> str:
     return re.sub(r"\s+", " ", str(text if text is not None else "")).strip()
+
+
+def _short(text: str, limit: int) -> str:
+    return text if len(text) <= limit else text[: limit - 1].rstrip() + "…"
 
 
 def _name(candidate_id: str) -> str:

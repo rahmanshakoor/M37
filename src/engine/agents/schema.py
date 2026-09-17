@@ -93,26 +93,119 @@ class MechanismClaim(BaseModel):
     evidence_ids: list[str] = Field(default_factory=list)
 
 
+ClassVerdict = Literal["candidates_proposed", "considered_and_rejected", "no_evidence_found"]
+"""What the search for one intervention class came to. A class is reported whatever
+the outcome: the search records behind it say where the engine looked."""
+
+
+class InterventionClass(BaseModel):
+    """One rung-3 entry of the medicine ladder: a kind of intervention that could act
+    on a node of the disease consequence, and the searches made for it. Stage 6 drops
+    a class whose ``searched`` names no search record of its own conversation."""
+
+    name: str
+    acts_on: str
+    """The consequence node the class addresses, with inline ``[ids]``."""
+    targets: list[str] = Field(default_factory=list)
+    """Gene symbols looked up with ``drugs_for_gene`` for this class."""
+    searched: list[str] = Field(default_factory=list)
+    """The search records behind the class: ``pmid-search:``, ``nct-search:``,
+    ``chembl-search:``, ``dgidb-gene:`` and ``opentargets:<ENSG>`` ids."""
+    verdict: ClassVerdict
+    rejection_reason: str = ""
+    """Required text when ``verdict`` is not ``candidates_proposed``."""
+    evidence_ids: list[str] = Field(default_factory=list)
+
+
 class DrugCandidate(BaseModel):
     name: str
     chembl_id: str | None = None
+    intervention_class: str = ""
+    """Must equal the ``name`` of a surviving :class:`InterventionClass`."""
     mechanism_of_action: str
     approval_status: str
+    approved_indication: str = ""
+    """The indication the record says the drug was approved for — never this disease
+    unless a record says so. A research compound still states what the record says."""
     rationale: str
     counter_arguments: list[str] = Field(min_length=1)
+    """The stage requires at least two non-empty entries."""
+    paediatric_safety: str = ""
+    """The systemic-exposure argument for a child whose every cell carries the defect, cited."""
     evidence_ids: list[str] = Field(default_factory=list)
     trial_ids: list[str] = Field(default_factory=list)
+
+
+class ConsideredAndRejected(BaseModel):
+    """A drug or a class the evidence argues against — a result, not padding."""
+
+    name: str
+    intervention_class: str = ""
+    reason: str
+    evidence_ids: list[str] = Field(default_factory=list)
+    """The record(s) that reject it; the validator drops an entry citing nothing."""
+
+
+class HpoTermRef(BaseModel):
+    id: str
+    label: str
+    record_id: str | None = None
+
+
+class DiseaseRef(BaseModel):
+    id: str
+    name: str
+    description: str = ""
+    record_id: str
+
+
+class PatientContext(BaseModel):
+    """Engine-filled from the case terms' ``hpo:`` records and the public disease
+    records; dropped from the answer schema so the model never writes it."""
+
+    hpo: list[HpoTermRef] = Field(default_factory=list)
+    disease: list[DiseaseRef] = Field(default_factory=list)
+    source: str = "engine-filled from the case terms' hpo: records and the public disease records; no free text"
+
+
+class SecondaryFinding(BaseModel):
+    """Another chain of the run whose lone heterozygous variant the engine classifies
+    P/LP — recorded, never a repurposing target."""
+
+    candidate_id: str
+    gene_symbol: str
+    model: str
+    classifications: dict[str, str] = Field(default_factory=dict)
+    """Variant key → engine classification."""
+    note: str = ("a secondary finding, not a repurposing target; disclosure is the clinical team's decision "
+                 "under the study's recontact rules")
 
 
 class MedicineReport(BaseModel):
     candidate_id: str
     gene_symbol: str
     mechanism: list[MechanismClaim]
+    """Rung 1: the variant-level mechanism, from the chain."""
+    consequence: list[MechanismClaim] = Field(default_factory=list)
+    """Rung 2: the cellular and disease-level consequence chain."""
     pathway_targets: list[MechanismClaim] = Field(default_factory=list)
+    """Gene products the classes act on (rendered inside the classes section)."""
+    intervention_classes: list[InterventionClass] = Field(default_factory=list)
+    """Rung 3."""
     candidates: list[DrugCandidate]
+    """Rung 4, proposed."""
+    considered_and_rejected: list[ConsideredAndRejected] = Field(default_factory=list)
+    """Rung 4, rejected."""
+    surveillance: list[MechanismClaim] = Field(default_factory=list)
+    """Rung 5, cited."""
     follow_up_experiments: list[str] = Field(default_factory=list)
+    """Rung 5; each must carry at least one resolving inline citation."""
     limits: list[str] = Field(default_factory=list)
     literature: list[str] = Field(default_factory=list)
+    patient_context: PatientContext | None = None
+    """Engine-filled; dropped from the answer schema."""
+    secondary_findings: list[SecondaryFinding] = Field(default_factory=list)
+    """Engine-filled; dropped from the answer schema."""
 
 
 def _count(criteria: list[Criterion], codes: dict[str, str], strength: str) -> int:

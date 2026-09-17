@@ -25,7 +25,7 @@ def main() -> None:
     """Reproducible rare-disease variant engine.
 
     Stages run in order and each writes a manifest into the run directory:
-    ingest → retrieve → filter → rank → reason → medicine → bench → submit.
+    ingest → retrieve → filter → rank → reason (+ dossier) → medicine → bench → submit.
 
     ENGINE_LOG=INFO (or DEBUG) prints the stages' per-batch progress to stderr.
     """
@@ -174,6 +174,7 @@ STAGE_PACKAGES = {
     "filter": ("filter", "stage 3", "P3"),
     "rank": ("rank", "stage 4", "P4"),
     "reason": ("reason", "stage 5", "P5"),
+    "dossier": ("dossier", "stage 5 gene dossier", "P9"),
     "medicine": ("medicine", "stage 6", "P6"),
     "report": ("report", "report", "P7"),
     "ui": ("ui", "live mode", "P7"),

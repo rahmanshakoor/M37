@@ -19,6 +19,7 @@ work/<run>/
 ├── 03_filter/    decisions.tsv.gz · shortlist.tsv.gz · candidates.json · manifest.json
 ├── 04_rank/      exomiser/ (raw) · ranking.tsv · joined.json · evidence/ · manifest.json
 ├── 05_reason/    bundles/ · prompts/ · transcripts/ · validation/ · chains/<candidate_id>.json · evidence/ · evidence_chain.md · manifest.json
+│   └── dossier/  bundles/ · prompts/ · transcripts/ · validation/ · <candidate_id>.json · <candidate_id>.md · manifest.json
 └── 06_medicine/  bundles/ · prompts/ · transcripts/ · validation/ · evidence/ · report.json · report.md · manifest.json
 ```
 
@@ -201,11 +202,39 @@ API shapes come from the `claude-api` skill files, not memory.
   pydantic output, checks every `evidence_ids` entry exists in the index, every PMID cited
   exists as `pmid:<n>`, recomputes the ACMG frequency criteria (PM2/BA1/BS1) from the gnomAD
   record and flags disagreement; returns the object with rejected items removed and a list of
-  `Rejection{path, reason}`. Never raises on a rejection; raises only on a malformed object.
-- `bundle.py` — `build_bundle(candidate, run_dir) -> Bundle`: every evidence record for the
-  candidate's variants (full payloads), the extracted columns, the stage-4 rank, the case
-  HPO terms, and a compact text rendering for the prompt. Bundles are written to
-  `05_reason/bundles/<candidate_id>.json` so a judge can see exactly what the model saw.
+  `Rejection{path, reason, marker}`. Never raises on a rejection; raises only on a malformed object.
+  A redaction never leaves a sentence in the prose: an inline citation that names no record is
+  replaced by a numbered footnote marker `[^k]` (k = 1, 2, … per validated object, continuing
+  across the stage checks, the HPO term check and the validator — `engine.agents.redaction.Redactions`,
+  `Redactions.continuing(obj)` scans the object so the validator needs no argument) and the matching
+  `Rejection` carries `marker: k`; a renderer prints `[^k]: citation removed by the validator: <reason>`
+  at the end of the section the marker appears in (Markdown: `engine.agents.render`,
+  `engine.medicine.render`, `engine.dossier.render`, each taking `rejections=` and
+  `footnote_prefix=` for a file holding several documents; HTML: `<ol class="footnotes">` in
+  `engine.report.render`), and `citation removed by the validator (reason in the validation
+  record)` for a marker no rejection carries (one the model wrote, which the validator notes).
+  The tokenizer never reads `[^k]` as a citation, so re-validation neither redacts nor renumbers.
+  Near-miss ids: an id one separator edit (`:` `-` `_` `/` `.` substituted, inserted or deleted,
+  or case) away from exactly one store id of the same source — in `evidence_ids`/`trial_ids` or
+  in prose — is respelled to the store's id, counted `ids_respelled` and noted; two candidates are
+  noted as ambiguous and the id stays unknown; a digit or letter difference is never respelled.
+  `EvidenceIndex.ids_of(source)` lists one source's ids (memory first) for that search.
+  `KNOWN_SOURCES` includes `hpo` and `uniprot`, so a bare `hpo:HP:0012236` or `uniprot:P13569`
+  in prose counts as a citation in any scope.
+- `terms.py` — `check_terms(data, index, *, redact)`: the HPO term check stages 5, 6 and the
+  dossier step run after their own checks and before the validator. Every `HP:nnnnnnn` token
+  in the prose must be an id an `hpo:` record in the candidate's citation scope carries —
+  one that is not becomes a footnote marker and a rejection — and a label the model attached
+  to an id (`HP:nnnnnnn (phrase)`, `HP:nnnnnnn phrase`, `phrase (HP:nnnnnnn)`) must be the
+  record's label or one of its synonyms, else the id is followed by `[DISPUTED — …]` and a
+  `Dispute` naming the record's own spelling. Citation lists, ids and keys are never walked.
+- `bundle.py` — `build_bundle(candidate, run_dir, case_hpo, *, hpo_records=()) -> Bundle`: every
+  evidence record for the candidate's variants (full payloads), the extracted columns, the
+  stage-4 rank, the case HPO terms **with the label their `hpo:` record carries** —
+  `HP:nnnnnnn <label> [hpo:HP:nnnnnnn]` plus a definitions line, the ids on the citable list
+  (`hpo_lines`); a term with no record is shown bare and is not citable — and a compact text
+  rendering for the prompt. Bundles are written to `05_reason/bundles/<candidate_id>.json` so a
+  judge can see exactly what the model saw.
 - `schema.py` — the pydantic output models below. The **classification is computed by the
   engine** from the criteria, never asked of the model — by the ClinGen SVI point system
   (Tavtigian et al. 2020: supporting 1, moderate 2, strong 4, very strong 8, benign negative;
@@ -250,24 +279,36 @@ class EvidenceChain(BaseModel):
 class MechanismClaim(BaseModel):
     statement: str
     evidence_ids: list[str]
-class DrugCandidate(BaseModel):
+class InterventionClass(BaseModel):
     name: str
-    chembl_id: str | None
-    mechanism_of_action: str
-    approval_status: str
-    rationale: str
-    counter_arguments: list[str]  # required, non-empty
-    evidence_ids: list[str]
-    trial_ids: list[str]          # nct:<id> ids
+    acts_on: str                      # the consequence node it addresses, with inline [ids]
+    targets: list[str] = []           # gene symbols looked up with drugs_for_gene for this class
+    searched: list[str] = []          # pmid-search:, nct-search:, chembl-search:, dgidb-gene:, opentargets:<ENSG>
+    verdict: Literal["candidates_proposed", "considered_and_rejected", "no_evidence_found"]
+    rejection_reason: str = ""        # required when verdict != candidates_proposed
+    evidence_ids: list[str] = []
+class DrugCandidate(BaseModel):
+    name: str; chembl_id: str | None; intervention_class: str
+    mechanism_of_action: str; approval_status: str; approved_indication: str
+    rationale: str; counter_arguments: list[str]     # the stage requires >= 2
+    paediatric_safety: str; evidence_ids: list[str]; trial_ids: list[str]
+class ConsideredAndRejected(BaseModel):
+    name: str; intervention_class: str = ""; reason: str; evidence_ids: list[str] = []
+class PatientContext(BaseModel):   # engine-filled; dropped from the answer schema
+    hpo: list[HpoTermRef]; disease: list[DiseaseRef]; source: str
+class SecondaryFinding(BaseModel): # engine-filled; dropped from the answer schema
+    candidate_id: str; gene_symbol: str; model: str; classifications: dict[str, str]; note: str
 class MedicineReport(BaseModel):
-    candidate_id: str
-    gene_symbol: str
-    mechanism: list[MechanismClaim]
+    candidate_id: str; gene_symbol: str
+    mechanism: list[MechanismClaim]                 # rung 1, the variant
+    consequence: list[MechanismClaim]               # rung 2, the cell and the person
+    intervention_classes: list[InterventionClass]   # rung 3, searched and cited
     pathway_targets: list[MechanismClaim]
-    candidates: list[DrugCandidate]
-    follow_up_experiments: list[str]
-    limits: list[str]
-    literature: list[str]
+    candidates: list[DrugCandidate]                 # rung 4, proposed
+    considered_and_rejected: list[ConsideredAndRejected]
+    surveillance: list[MechanismClaim]              # rung 5
+    follow_up_experiments: list[str]; limits: list[str]; literature: list[str]
+    patient_context: PatientContext | None; secondary_findings: list[SecondaryFinding]
 ```
 
 ---
@@ -283,16 +324,97 @@ from `--case`, else stage 4's `joined.json`. Writes `bundles/`, `prompts/`, `tra
 `validation/`, `chains/<candidate_id>.json`, `evidence_chain.md`, manifest (model, effort,
 usage, provider disclosure line, validator rejections).
 
+Before the first bundle the stage fetches the **case HPO terms** once per run
+(`engine.retrieve.hpo`, the JAX ontology API `https://ontology.jax.org/api/hp/terms/<id>`) and
+writes one `hpo:HP:nnnnnnn` record per term into `05_reason/evidence/hpo/` — payload the JAX
+term object verbatim, `url` `https://hpo.jax.org/browse/term/<id>`. A term any earlier store of
+the run already holds is served from it, so a rerun on a warm store fetches nothing and stage 6
+fetches nothing stage 5 fetched; `--offline` with a term neither a store nor the cache carries
+aborts the stage. The bundle then shows `HP:nnnnnnn <label> [hpo:HP:nnnnnnn]` and a definitions
+line, and those ids are citable. The manifest records
+`params.hpo_terms{source, store, served, fetched, missing, version_note}` (the API publishes no
+HPO release, so a record is dated by `retrieved_at` alone) and `counts.hpo_terms` /
+`counts.hpo_records`; an id the API 404s is a note, shown bare and never citable. The stage
+check `engine.agents.terms.check_terms` runs between the stage's own checks and the validator:
+an `HP:` id no `hpo:` record in scope carries becomes a footnote marker, and a label that is not
+the record's or one of its synonyms is disputed in place.
+
+### Stage 5 — gene dossier · `engine dossier --run <dir> [--candidate <id>] [--provider …] [--model …] [--effort …] [--dry-run] [--max-turns N] [--cache <dir>] [--offline]`
+
+Package `engine.dossier`: a step inside stage 5, run after it, on one candidate (`--candidate`
+defaults to the stage-5 chain the manifest names). It retrieves the gene's UniProt entry
+(`engine.retrieve.uniprot`, `uniprot:<accession>` — the release comes from the response's
+`x-uniprot-release` / `x-uniprot-release-date` headers, which `engine.retrieve.http` keeps) and
+three fixed literature searches whose templates carry no coordinate, then asks the model for a
+`GeneDossier`. Retrieval is the engine's, so `--dry-run` still retrieves, writes the bundle and
+the prompt and calls no model. Writes `05_reason/dossier/{bundles,prompts,transcripts,validation}/<cid>.*`,
+`<cid>.json`, `<cid>.md` and `manifest.json` (`stage: "dossier"`); adds `uniprot:<accession>`,
+`pmid:` and `pmid-search:` records to `05_reason/evidence/` — records a **chain never cites**,
+since a chain's scope is its own conversation. A rerun replaces the step's outputs and keeps the
+store.
+
+```python
+class GeneDossier(BaseModel):
+    candidate_id: str; gene_symbol: str; uniprot_accession: str
+    protein: list[DossierClaim]                 # each must cite a uniprot: record
+    mechanism_of_disease: list[DossierClaim]
+    variant_positions: list[VariantPosition]    # key, consequence, evidence_ids from the model
+    region_knowledge: list[DossierClaim]; genotype_patterns: list[DossierClaim]
+    functional_test: list[DossierClaim]; limits: list[str]; literature: list[str]
+class VariantPosition(BaseModel):
+    key: str
+    protein_position: int | None   # ENGINE-FILLED from the vep: record's hgvsp
+    region: list[str]              # ENGINE-FILLED from the uniprot: record's features
+    consequence: str; evidence_ids: list[str]
+```
+
+Four stage checks, before the validator: `variant_positions` keys are pinned to the chain's (a
+foreign or duplicate key is dropped, an omitted chain variant gets an engine-filled entry);
+`protein_position` and `region` are the engine's from the records (a differing model value is
+noted, and the feature map is applied only when the transcript's reference amino acid matches
+the canonical sequence at that residue); a bare accession in prose is redacted to a footnote
+marker unless a citable record carries it (stage 5's rule plus UniProt, Pfam and InterPro ids
+resolving through the `uniprot:` record); a protein claim citing no `uniprot:` record is
+dropped. `check_terms` runs here too — the dossier's phenotype prose may name `HP:` ids.
+`<cid>.md` is also appended to `evidence_chain.md` inside `<!-- dossier:<cid> -->` markers —
+idempotent, with the file's sha256 before and after in the manifest; a stage-5 rerun rewrites
+`evidence_chain.md` and removes the section, so the step must be rerun after it.
+
 ## Stage 6 — `engine medicine --run <dir> [--candidate <id>] [--dry-run] [--case case.yaml] [--cache <dir>] [--offline]`
 
 Package `engine.medicine`. Retrievers (each an `EvidenceRecord` source with the P2 cache):
-`opentargets.py` (target–disease associations, pathways, tractability, known drugs),
-`dgidb.py` (drug–gene interactions), `chembl.py` (compound, mechanism, max phase / approval),
-`ctgov.py` (ClinicalTrials.gov v2 studies). Then the second agent with tools `get_record`,
-`search_literature`, `get_paper`, `drugs_for_gene(gene)` and `search_trials(condition,
-intervention, term, max_results)` (built: the registry's own three query parts, each nullable,
-rather than one free-text query), producing a `MedicineReport`; validate; render `report.md`
-in the rubric's order (mechanism → candidates with counter-arguments → follow-up → limits).
+`opentargets.py` (target–disease associations, pathways, tractability, known drugs, and the
+public disease record `opentargets:disease:<MONDO/EFO id>` the case file names in `disease:`),
+`dgidb.py` (drug–gene interactions), `chembl.py` (compound, mechanism, max phase / approval,
+and two text searches — `mechanism_of_action__icontains` and `mesh_heading__icontains` — each
+leaving a `chembl-search:<sha256>` record), `ctgov.py` (ClinicalTrials.gov v2 studies). The
+bundle shows the patient context as records (the disease record and the case terms with the
+labels their `hpo:` records carry — fetched here for a term no store of the run holds, exactly
+as stage 5 does), the chain's verdict and SVI points per variant, the validated gene dossier
+when the dossier step wrote one, and the run's secondary findings. Then the second agent with
+six tools — `get_record`, `search_literature`, `get_paper`, `drugs_for_gene(gene)` (at most 8
+genes), `search_trials(condition, intervention, term, max_results)` (the registry's own three
+query parts, each nullable, rather than one free-text query) and
+`search_chembl(mechanism_text, indication_text, max_results)` — walks a **five-rung ladder**:
+the variant mechanism, the cellular and disease consequence, the classes of intervention that
+act on that consequence (each searched and each naming its search records), the candidates
+proposed and the ones rejected on a record, then surveillance and follow-up. 16 turns.
+
+The stage's own checks run before the validator: an intervention class is dropped unless every
+id in `searched` is a search-shaped record of that conversation and unless a non-proposed
+verdict carries a `rejection_reason`; a drug candidate is dropped unless a cited drug-source
+record names it, it carries two non-empty counter-arguments, a `paediatric_safety` argument, an
+`approved_indication` as recorded and a surviving `intervention_class`; a rejected entry naming
+a dropped class and a follow-up item citing nothing are dropped. `patient_context` and
+`secondary_findings` are filled by the engine and dropped from the answer schema. `report.md`
+(`engine.medicine.render`) is written in the rubric's order — patient context, variant
+mechanism, cellular and disease consequence, intervention classes searched, drug candidates,
+considered and rejected, surveillance, follow-up, limits, secondary findings, literature,
+references — and an empty candidate list reads `No candidate proposed. Classes searched: …`,
+never "none survived validation". The manifest records `prompt_version`, the six tools,
+`chembl_search`, `disease` / `disease_source`, `hpo_terms`, `patient_context`, `dossier`, the
+stage-check rules and `ladder_walked` (whether a surviving class is backed by a literature
+search and by a trial or ChEMBL search).
 `drugs_for_gene` writes every record into `06_medicine/evidence/` before the model sees it:
 the Open Targets target profile, its top five target–disease associations by score
 (`opentargets:association:<ENSG>:<disease>`) and every known drug (`opentargets:drug:…`);
@@ -309,7 +431,8 @@ A hand-written, bgzipped VCF of 12 public variants (two CFTR pathogenic alleles,
 common benign SNPs) plus `case.yaml` with public CF HPO terms. Exercises stages 1–6 end to
 end without any patient data; it is also the first benchmark case for stage 7.
 `scripts/run_public_case.sh` runs it (stage 2 live, stage 4 when the verified Exomiser
-bundle and Docker are present, stage 5 dry unless `PUBLIC_LIVE_MODEL=1`, stage 6 dry). The
+bundle and Docker are present, stage 5 dry unless `PUBLIC_LIVE_MODEL=1`, then the dossier step
+dry, then stage 6 dry). The
 fixture also keeps the recorded stage-2 output (`02_retrieve/`) and the stage-5 chain the
 real stage 5 wrote over it with a scripted client (`05_reason/chain_CFTR_comphet.json`), so
 stages 3–6 run offline in the tests and the script can give stage 6 a chain without a model.

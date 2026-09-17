@@ -1,0 +1,15 @@
+{
+ "body": null,
+ "headers": {
+  "content-type": "text/html"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": null,
+  "url": "https://ontology.jax.org/api/hp/terms/HP:9999999"
+ },
+ "retrieved_at": "2026-09-17T19:39:26+00:00",
+ "status": 404,
+ "text": ""
+}

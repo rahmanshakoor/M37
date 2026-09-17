@@ -1,11 +1,13 @@
 """Open Targets retriever against recorded real responses (public genes only).
 
 The fixtures in ``tests/fixtures/opentargets/`` are the engine's own HTTP cache entries
-from two live sessions on 2026-09-12 (public genes only): ``meta``, the target block for
-CFTR and TP53 and for the unknown id ENSG00000000000, the drug block for CFTR (13 rows),
-TP53 (9 rows, four of them MDM2-complex inhibitors) and MTHFR (0 rows), the top-5
-associations for CFTR and TP53, and ``mapIds`` for CFTR, cftr, TP53, P53 (a synonym) and
-a made-up symbol — nothing else was ever sent. A stub Http answers each request with the
+from live sessions on 2026-09-12 and 2026-09-17 (public genes and public disease ids
+only): ``meta``, the target block for CFTR and TP53 and for the unknown id
+ENSG00000000000, the drug block for CFTR (13 rows), TP53 (9 rows, four of them
+MDM2-complex inhibitors) and MTHFR (0 rows), the top-5 associations for CFTR and TP53,
+``mapIds`` for CFTR, cftr, TP53, P53 (a synonym) and a made-up symbol, and the disease
+block for MONDO_0009061 (cystic fibrosis) and for the unknown id MONDO_9999999
+— nothing else was ever sent. A stub Http answers each request with the
 recorded bytes for the exact body the module builds, so a change to a query text fails
 here before it fails live; an id that was never recorded gets the server's verified
 answer for an unknown gene, ``{"data":{"target":null}}``. Tests that need the real
@@ -17,6 +19,7 @@ failure is re-fetched once and healed, and that a cache spanning a release is re
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import os
@@ -24,18 +27,21 @@ from pathlib import Path
 
 import pytest
 
-from engine.medicine.opentargets import (API_URL, ASSOCIATION_COLUMNS, ASSOCIATIONS_QUERY, DEFAULT_DISEASE_SIZE, DRUG_COLUMNS,
+from engine.medicine.opentargets import (API_URL, ASSOCIATION_COLUMNS, ASSOCIATIONS_QUERY, DEFAULT_DISEASE_SIZE,
+                                         DISEASE_COLUMNS, DISEASE_PHENOTYPE_PAGE, DISEASE_QUERY, DRUG_COLUMNS,
                                          DRUGS_QUERY, MAP_QUERY, META_QUERY, PER_SECOND, TARGET_COLUMNS, TARGET_QUERY,
-                                         OpenTargetsError, OpenTargetsRetriever, association_url, drug_url,
-                                         extract_association, extract_drug, extract_target, normalise_id, target_url)
+                                         OpenTargetsError, OpenTargetsRetriever, association_url, disease_url, drug_url,
+                                         extract_association, extract_disease, extract_drug, extract_target, normalise_id,
+                                         target_url, valid_disease_id)
 from engine.retrieve.http import Http, HttpCache, HttpError, RateLimiter, Response
 from engine.retrieve.store import EvidenceRecord
 
 FIXTURES = Path(__file__).parent / "fixtures" / "opentargets"
 CFTR, TP53, MTHFR, ABSENT = "ENSG00000001626", "ENSG00000141510", "ENSG00000177000", "ENSG00000000000"
+CF, NO_DISEASE = "MONDO_0009061", "MONDO_9999999"
 VERSION = "Open Targets Platform 26.06 (API 26.6.3, platform2606)"
 HOST = "api.platform.opentargets.org"
-QUERIES = {META_QUERY, TARGET_QUERY, DRUGS_QUERY, ASSOCIATIONS_QUERY, MAP_QUERY}
+QUERIES = {META_QUERY, TARGET_QUERY, DRUGS_QUERY, ASSOCIATIONS_QUERY, MAP_QUERY, DISEASE_QUERY}
 NEXT_META = {"data": {"meta": {"name": "Open Targets Platform", "product": "platform",
                                "apiVersion": {"x": "26", "y": "9", "z": "0", "suffix": None},
                                "dataVersion": {"year": "26", "month": "09", "iteration": None}, "dataPrefix": "platform2609"}}}
@@ -75,8 +81,9 @@ class StubHttp:
         assert json_body["query"] in QUERIES, "query text drifted from what was recorded live"
         d = self.recorded.get(_canon(json_body))
         if d is None:
-            assert json_body["query"] in (TARGET_QUERY, DRUGS_QUERY, ASSOCIATIONS_QUERY), "unrecorded request"
-            return Response(200, '{"data":{"target":null}}', "2026-09-12T18:54:28+00:00", False, "stub-null", {})
+            assert json_body["query"] in (TARGET_QUERY, DRUGS_QUERY, ASSOCIATIONS_QUERY, DISEASE_QUERY), "unrecorded request"
+            entity = "disease" if json_body["query"] == DISEASE_QUERY else "target"
+            return Response(200, '{"data":{"%s":null}}' % entity, "2026-09-12T18:54:28+00:00", False, "stub-null", {})
         return Response(d["status"], d["text"], d["retrieved_at"], False, "stub-recorded", d["headers"])
 
     def get(self, url: str, **kw) -> Response:
@@ -722,8 +729,11 @@ def test_params_are_manifest_ready():
     r = OpenTargetsRetriever(stub)
     params = r.params()
     assert json.loads(json.dumps(params, sort_keys=True)) == params  # JSON round-trips, nothing exotic
-    assert set(params) == {"api_url", "approval_stage", "datatypes", "disease_size", "enable_indirect",
-                           "max_page_size", "page_index", "per_second", "stage_order", "trial_report_type"}
+    assert set(params) == {"api_url", "approval_stage", "datatypes", "disease_phenotype_page", "disease_query_sha256",
+                           "disease_size", "enable_indirect", "max_page_size", "page_index", "per_second", "stage_order",
+                           "trial_report_type"}
+    assert params["disease_query_sha256"] == hashlib.sha256(DISEASE_QUERY.encode()).hexdigest()
+    assert params["disease_phenotype_page"] == DISEASE_PHENOTYPE_PAGE == 100
     assert params["api_url"] == API_URL and params["per_second"] == PER_SECOND
     assert params["disease_size"] == 25 and params["max_page_size"] == 3000 and params["page_index"] == 0
     assert params["enable_indirect"] is False and "enableIndirect: false" in ASSOCIATIONS_QUERY
@@ -733,6 +743,83 @@ def test_params_are_manifest_ready():
     assert stub.calls == []  # params never asks the server
     stub.limiter.per_second[HOST] = 1.0  # an orchestrator's rate is the one reported
     assert OpenTargetsRetriever(stub).params()["per_second"] == 1.0
+
+
+# ---------------------------------------------------------------- disease records
+
+def test_disease_record_from_recorded_response():
+    """The public disease record stage 6 shows as the patient context: the object as
+    served, the id in the record id and the platform's own page as the URL."""
+    stub = StubHttp()
+    r = OpenTargetsRetriever(stub)
+    rec = r.disease(CF)
+    fx = _fixture(f"disease_{CF}")
+    assert _sent(stub, DISEASE_QUERY) == [fx["request"]["body"]] == [{"query": DISEASE_QUERY, "variables": {"id": CF}}]
+    assert isinstance(rec, EvidenceRecord)
+    assert rec.record_id == f"opentargets:disease:{CF}" and rec.source == "opentargets" and rec.source_version == VERSION
+    assert rec.url == disease_url(CF) == f"https://platform.opentargets.org/disease/{CF}"
+    assert rec.query == {"api": API_URL, "graphql": DISEASE_QUERY, "variables": {"id": CF}}
+    assert rec.retrieved_at == fx["retrieved_at"]
+    assert rec.payload == json.loads(fx["text"])["data"]["disease"]
+    assert rec.payload["name"] == "cystic fibrosis"
+    assert rec.payload["description"].startswith("Autosomal recessive disorder caused by pathogenic variants in the CFTR gene")
+    assert rec.payload["phenotypes"]["count"] == 34 and len(rec.payload["phenotypes"]["rows"]) == 34
+
+
+def test_extract_disease_columns():
+    r = OpenTargetsRetriever(StubHttp())
+    rec = r.disease(CF)
+    cols = extract_disease(rec)
+    assert tuple(cols) == DISEASE_COLUMNS
+    assert (cols["disease_id"], cols["name"]) == (CF, "cystic fibrosis")
+    assert cols["description"].startswith("Autosomal recessive disorder caused by")
+    assert cols["synonyms"].split(";")[:2] == ["CF", "cystic fibrosis"]  # hasExactSynonym only
+    assert "fibrocystic disease of the pancreas" not in cols["synonyms"]  # hasRelatedSynonym is not a synonym here
+    assert cols["omim"] == "219700" and cols["orphanet"] == "586"
+    # the server's own count is 34; three of its rows carry a null phenotypeHPO and name no term
+    assert cols["n_phenotypes"] == "34" and len(cols["phenotype_ids"].split(";")) == 31
+    assert "HP_0100582" in cols["phenotype_ids"].split(";") and "Nasal polyposis" in cols["phenotype_names"].split(";")
+    assert r.extract(rec) == cols  # dispatched by record id
+
+
+def test_an_unknown_disease_is_none_not_an_error():
+    stub = StubHttp()
+    r = OpenTargetsRetriever(stub)
+    assert r.disease(NO_DISEASE) is None
+    assert _sent(stub, DISEASE_QUERY) == [{"query": DISEASE_QUERY, "variables": {"id": NO_DISEASE}}]
+    assert json.loads(_fixture(f"disease_{NO_DISEASE}")["text"]) == {"data": {"disease": None}}  # the recorded shape
+
+
+def test_disease_ids_are_validated_before_any_request():
+    stub = StubHttp()
+    r = OpenTargetsRetriever(stub)
+    assert valid_disease_id("  MONDO_0009061 ") == CF
+    for good in (CF, "EFO_0000400", "Orphanet_586", "DOID_1485", "HP_0012236", "OTAR_0000010"):
+        assert valid_disease_id(good) == good
+    for bad in ("MONDO:0009061", "mondo_0009061", "MONDO_", "0009061", "", "CFTR", "MONDO_0009061.1", "NCIT_C2975"):
+        with pytest.raises(ValueError, match="not an Open Targets disease id"):
+            r.disease(bad)
+    assert _sent(stub, DISEASE_QUERY) == []
+
+
+def test_a_disease_without_phenotype_annotations_is_kept_as_served():
+    """``phenotypes`` is nullable (MONDO_0000141 answers null live); the payload keeps
+    what the server sent and the projection says nothing about a count it never saw."""
+    body = {"data": {"disease": {"id": CF, "name": "x", "description": "", "synonyms": [], "dbXRefs": [],
+                                 "therapeuticAreas": [], "phenotypes": None}}}
+    rec = _canned(body).disease(CF)
+    assert rec is not None and rec.payload["phenotypes"] is None
+    cols = extract_disease(rec)
+    assert cols["n_phenotypes"] == "" and cols["phenotype_ids"] == "" and cols["phenotype_names"] == ""
+
+
+def test_a_disease_answering_for_another_id_or_a_short_page_raises():
+    body = {"data": {"disease": {"id": "MONDO_0000001", "name": "x"}}}
+    with pytest.raises(OpenTargetsError, match="did not echo the disease id"):
+        _canned(body).disease(CF)
+    short = {"data": {"disease": {"id": CF, "name": "x", "phenotypes": {"count": 34, "rows": []}}}}
+    with pytest.raises(OpenTargetsError, match="disease.phenotypes: server count 34"):
+        _canned(short).disease(CF)
 
 
 # ---------------------------------------------------------------- absence is narrow; everything else raises
@@ -833,5 +920,9 @@ def test_live_public_genes(tmp_path: Path):
     assert r.params()["per_second"] == PER_SECOND
     assoc = [extract_association(a) for a in r.associated_diseases(CFTR, size=5)]
     assert "MONDO_0009061" in [a["disease_id"] for a in assoc]
+    disease = r.disease(CF)
+    assert disease is not None and extract_disease(disease)["name"] == "cystic fibrosis"
+    assert extract_disease(disease)["description"].startswith("Autosomal recessive disorder caused by")
+    assert r.disease(NO_DISEASE) is None
     n = http.live_requests
     assert r.target(CFTR) == rec and http.live_requests == n  # warm cache: same bytes, no request

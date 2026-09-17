@@ -1,0 +1,1957 @@
+{
+ "body": {
+  "hitCount": 178,
+  "nextCursorMark": "AoIIQLFS7Cg1MzkyOTczOQ==",
+  "nextPageUrl": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=(TITLE_ABS:\"CFTR\" AND TITLE_ABS:\"Congenital bilateral absence of the vas deferens\") AND SRC:MED&cursorMark=AoIIQLFS7Cg1MzkyOTczOQ==&resultType=core&pageSize=8&format=json",
+  "request": {
+   "cursorMark": "*",
+   "pageSize": 8,
+   "queryString": "(TITLE_ABS:\"CFTR\" AND TITLE_ABS:\"Congenital bilateral absence of the vas deferens\") AND SRC:MED",
+   "resultType": "core",
+   "sort": "",
+   "synonym": false
+  },
+  "resultList": {
+   "result": [
+    {
+     "abstractText": "Obstructive azoospermia represents a critical diagnostic category in male infertility, with congenital bilateral absence of the vas deferens being a well-established etiology associated with Cystic Fibrosis Transmembrane Conductance Regulator (CFTR) gene variants. We report a 38-year-old man presenting with primary infertility and a history of recurrent pancreatitis. Evaluation revealed azoospermia with low ejaculate volume, normal hormonal profile, and bilateral absence of the vas deferens on physical examination. Genetic testing identified compound heterozygosity for a pathogenic CFTR variant (p.Phe508del) and a c.1210-34TG(12)T(5) splicing variant. The TG[n]T[m] polymorphic tract influences CFTR mRNA splicing, and the combination of T5 with longer TG repeats is associated with reduced CFTR function. This case underscores the importance of thorough urologic evaluation in patients with infertility and highlights the clinical relevance of less frequently emphasized variants such as TG12T5 in CFTR-related disorders.",
+     "affiliation": "Department of Urology, Hospital Angeles Metropolitano, Mexico City, MEX.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0002-3798-0968"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Urology, Hospital Angeles Metropolitano, Mexico City, MEX."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-3798-0968"
+        },
+        "firstName": "Hector R",
+        "fullName": "Gonzalez-Carranza HR",
+        "initials": "HR",
+        "lastName": "Gonzalez-Carranza"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Urology, UMAE Hospital de Especialidades No. 25, IMSS, Monterrey, MEX."
+          }
+         ]
+        },
+        "firstName": "Gonzalo",
+        "fullName": "Montero-Sanchez G",
+        "initials": "G",
+        "lastName": "Montero-Sanchez"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Urology, Hospital Regional Lic. Adolfo Lopez Mateos, ISSSTE, Mexico City, MEX."
+          }
+         ]
+        },
+        "firstName": "Lisandro C",
+        "fullName": "Vazquez-Niño LC",
+        "initials": "LC",
+        "lastName": "Vazquez-Niño"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Urology, Hospital Angeles Metropolitano, Mexico City, MEX."
+          }
+         ]
+        },
+        "firstName": "Luis A",
+        "fullName": "Reyes-Vallejo LA",
+        "initials": "LA",
+        "lastName": "Reyes-Vallejo"
+       }
+      ]
+     },
+     "authorString": "Gonzalez-Carranza HR, Montero-Sanchez G, Vazquez-Niño LC, Reyes-Vallejo LA.",
+     "citedByCount": 0,
+     "dateOfCompletion": "2026-08-10",
+     "dateOfCreation": "2026-08-10",
+     "dateOfRevision": "2026-08-13",
+     "doi": "10.7759/cureus.112411",
+     "electronicPublicationDate": "2026-07-10",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-08-13",
+     "firstPublicationDate": "2026-07-10",
+     "fullTextIdList": {
+      "fullTextId": [
+       "PMC13453316"
+      ]
+     },
+     "fullTextReceivedDate": "2026-09-09",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.7759/cureus.112411"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "html",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13453316"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "pdf",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13453316?pdf=render"
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "N",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "Y",
+     "hasReferences": "Y",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "Y",
+     "id": "42572672",
+     "inEPMC": "Y",
+     "inPMC": "Y",
+     "isOpenAccess": "Y",
+     "journalInfo": {
+      "dateOfPublication": "2026 Jul",
+      "issue": "7",
+      "journal": {
+       "essn": "2168-8184",
+       "isoabbreviation": "Cureus",
+       "issn": "2168-8184",
+       "medlineAbbreviation": "Cureus",
+       "nlmid": "101596737",
+       "title": "Cureus"
+      },
+      "journalIssueId": 4224864,
+      "monthOfPublication": 7,
+      "printPublicationDate": "2026-07-01",
+      "volume": "18",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "gene mutations",
+       "Cystic Fibrosis",
+       "Male Factor Infertility",
+       "Congenital Bilateral Absence Of Vas Deferens",
+       "Cftr Mutation"
+      ]
+     },
+     "language": "eng",
+     "license": "cc by",
+     "nihAuthMan": "N",
+     "pageInfo": "e112411",
+     "pmcid": "PMC13453316",
+     "pmid": "42572672",
+     "pubModel": "Electronic-eCollection",
+     "pubTypeList": {
+      "pubType": [
+       "Journal Article",
+       "Case Reports",
+       "case-report"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "epublish",
+     "source": "MED",
+     "title": "Obstructive Azoospermia Revealing CFTR-Related Disorder in an Adult With Recurrent Pancreatitis."
+    },
+    {
+     "abstractText": "<h4>Case</h4>We herein report a rare case of a Japanese man diagnosed with cystic fibrosis (CF) following a workup for male infertility and recurrent pancreatitis and discuss the clinical and diagnostic implications in a population wherein CF is exceptionally rare. A 27-year-old Japanese man who presented with azoospermia underwent clinical evaluation, imaging, and genetic testing. The patient, who had a history of recurrent pancreatitis, was subsequently diagnosed with congenital bilateral absence of the vas deferens (CBAVD).<h4>Outcome</h4>Genetic analysis identified a homozygous c.1210-11 T > G variant in the cystic fibrosis transmembrane conductance regulator (CFTR) gene. This variant is classified as pathogenic and is associated with variable clinical phenotypes. Combined with the clinical symptoms, the patient was diagnosed with CF. Spermatozoa were successfully retrieved via testicular sperm extraction for future use in intracytoplasmic sperm injection. A literature review was also conducted to contextualize the genetic findings.<h4>Conclusion</h4>We report a rare case of CF caused by a homozygous c.1210-11 T > G CFTR variant in a Japanese individual. This case highlights that CFTR-RD, while rare, should be considered in Japanese patients presenting with CBAVD or idiopathic pancreatitis.",
+     "affiliation": "Department of Urology, Center for Reproductive Medicine Yokohama City University Medical Center Yokohama Kanagawa Japan.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0002-7049-3379"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Urology, Center for Reproductive Medicine Yokohama City University Medical Center Yokohama Kanagawa Japan."
+          }
+         ]
+        },
+        "firstName": "Tomoki",
+        "fullName": "Saito T",
+        "initials": "T",
+        "lastName": "Saito"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Urology, Center for Reproductive Medicine Yokohama City University Medical Center Yokohama Kanagawa Japan."
+          },
+          {
+           "affiliation": "Department of Urology and Renal Transplantation Yokohama City University Medical Center Yokohama Kanagawa Japan."
+          },
+          {
+           "affiliation": "Department of Clinical Genetics Yokohama City University Medical Center Yokohama Kanagawa Japan."
+          }
+         ]
+        },
+        "firstName": "Shinnosuke",
+        "fullName": "Kuroda S",
+        "initials": "S",
+        "lastName": "Kuroda"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Urology, Center for Reproductive Medicine Yokohama City University Medical Center Yokohama Kanagawa Japan."
+          }
+         ]
+        },
+        "firstName": "Teppei",
+        "fullName": "Takeshima T",
+        "initials": "T",
+        "lastName": "Takeshima"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Urology and Renal Transplantation Yokohama City University Medical Center Yokohama Kanagawa Japan."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-7049-3379"
+        },
+        "firstName": "Takashi",
+        "fullName": "Kawahara T",
+        "initials": "T",
+        "lastName": "Kawahara"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Urology and Renal Transplantation Yokohama City University Medical Center Yokohama Kanagawa Japan."
+          }
+         ]
+        },
+        "firstName": "Junichi",
+        "fullName": "Teranishi J",
+        "initials": "J",
+        "lastName": "Teranishi"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Urology, Center for Reproductive Medicine Yokohama City University Medical Center Yokohama Kanagawa Japan."
+          }
+         ]
+        },
+        "firstName": "Jurii",
+        "fullName": "Karibe J",
+        "initials": "J",
+        "lastName": "Karibe"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Clinical Genetics Yokohama City University Medical Center Yokohama Kanagawa Japan."
+          }
+         ]
+        },
+        "firstName": "Fuka",
+        "fullName": "Anzai F",
+        "initials": "F",
+        "lastName": "Anzai"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Clinical Genetics Yokohama City University Medical Center Yokohama Kanagawa Japan."
+          }
+         ]
+        },
+        "firstName": "Miki",
+        "fullName": "Tanoshima M",
+        "initials": "M",
+        "lastName": "Tanoshima"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Urology Yokohama City University Hospital Yokohama Kanagawa Japan."
+          }
+         ]
+        },
+        "firstName": "Kazuhide",
+        "fullName": "Makiyama K",
+        "initials": "K",
+        "lastName": "Makiyama"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Urology, Center for Reproductive Medicine Yokohama City University Medical Center Yokohama Kanagawa Japan."
+          }
+         ]
+        },
+        "firstName": "Yasushi",
+        "fullName": "Yumura Y",
+        "initials": "Y",
+        "lastName": "Yumura"
+       }
+      ]
+     },
+     "authorString": "Saito T, Kuroda S, Takeshima T, Kawahara T, Teranishi J, Karibe J, Anzai F, Tanoshima M, Makiyama K, Yumura Y.",
+     "citedByCount": 0,
+     "dataLinksTagsList": {
+      "dataLinkstag": [
+       "supporting_data"
+      ]
+     },
+     "dateOfCompletion": "2026-01-23",
+     "dateOfCreation": "2026-01-23",
+     "dateOfRevision": "2026-01-25",
+     "doi": "10.1002/rmb2.70018",
+     "electronicPublicationDate": "2026-01-21",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-01-24",
+     "firstPublicationDate": "2026-01-21",
+     "fullTextIdList": {
+      "fullTextId": [
+       "PMC12820575"
+      ]
+     },
+     "fullTextReceivedDate": "2026-01-22",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1002/rmb2.70018"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "html",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC12820575"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "pdf",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC12820575?pdf=render"
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "Y",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "Y",
+     "hasReferences": "Y",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "Y",
+     "hasTextMinedTerms": "Y",
+     "id": "41574047",
+     "inEPMC": "Y",
+     "inPMC": "Y",
+     "isOpenAccess": "Y",
+     "journalInfo": {
+      "dateOfPublication": "2026 Jan-Dec",
+      "issue": "1",
+      "journal": {
+       "essn": "1447-0578",
+       "isoabbreviation": "Reprod Med Biol",
+       "issn": "1445-5781",
+       "medlineAbbreviation": "Reprod Med Biol",
+       "nlmid": "101213278",
+       "title": "Reproductive medicine and biology"
+      },
+      "journalIssueId": 4079742,
+      "monthOfPublication": 0,
+      "printPublicationDate": "2026-01-01",
+      "volume": "25",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Male infertility",
+       "Cystic Fibrosis",
+       "Cystic Fibrosis Transmembrane Conductance Regulator",
+       "Idiopathic Pancreatitis",
+       "Congenital Bilateral Absence Of The Vas Deferens"
+      ]
+     },
+     "language": "eng",
+     "license": "cc by-nc",
+     "nihAuthMan": "N",
+     "pageInfo": "e70018",
+     "pmcid": "PMC12820575",
+     "pmid": "41574047",
+     "pubModel": "Electronic-eCollection",
+     "pubTypeList": {
+      "pubType": [
+       "case-study",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "epublish",
+     "source": "MED",
+     "title": "A Case of Cystic Fibrosis in a Japanese Man With Congenital Bilateral Absence of the Vas Deferens and Recurrent Pancreatitis Caused by a Homozygous c.1210-11 T &gt; G Variant of the Cystic Fibrosis Transmembrane Conductance Regulator Gene.",
+     "tmAccessionTypeList": {
+      "accessionType": [
+       "doi"
+      ]
+     }
+    },
+    {
+     "abstractText": "Cystic fibrosis (CF) is a genetic disorder caused by mutations in the cystic fibrosis transmembrane conductance regulator (CFTR) gene and is classically associated with male infertility due to obstructive azoospermia secondary to congenital bilateral absence of the vas deferens. Increasing evidence suggests that CFTR dysfunction may also contribute to nonobstructive forms of male infertility. Accordingly, CFTR is widely expressed throughout the male reproductive tract, including Sertoli cells, germ cells, and mature spermatozoa. This review summarizes current evidence linking CFTR mutations and variants to hypogonadism, impaired spermatogenesis, altered sperm function, and reduced reproductive outcomes. Clinical studies indicate a high prevalence of testosterone deficiency in men with CF or CBAVD, often occurring in the presence of normal gonadotropin levels. Genetic and meta-analytic data support an association between CFTR variants, particularly the IVS8-5 T polymorphism, and nonobstructive azoospermia. Experimental studies further demonstrate that CFTR plays a critical role in spermatogenesis via regulation of the cAMP-CREB signaling pathway in Sertoli cells and through modulation of microRNA expression affecting germ cell proliferation. CFTR expression in spermatozoa is also implicated in capacitation, motility, and fertilizing capacity through coordinated chloride and bicarbonate transport and interactions with SLC26 family members. Emerging evidence additionally suggests a role for CFTR in early embryonic development, with potential implications for assisted reproductive technology outcomes. Collectively, these findings challenge the traditional view of CF-related male infertility as purely obstructive and highlight CFTR mutations as a potential contributor to nonobstructive infertility. Further studies are required to clarify pathogenic mechanisms and explore targeted therapeutic strategies.",
+     "affiliation": "University of Catania, Catania, Italy.",
+     "authMan": "N",
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "University of Catania, Catania, Italy."
+          }
+         ]
+        },
+        "firstName": "Andrea",
+        "fullName": "Crafa A",
+        "initials": "A",
+        "lastName": "Crafa"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "University of Catania, Catania, Italy."
+          }
+         ]
+        },
+        "firstName": "Aldo E",
+        "fullName": "Calogero AE",
+        "initials": "AE",
+        "lastName": "Calogero"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "University of Texas at Austin Dell Medical School, Austin, United States."
+          }
+         ]
+        },
+        "firstName": "Sarah C",
+        "fullName": "Vij SC",
+        "initials": "SC",
+        "lastName": "Vij"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "University of Catania, Catania, Italy. rossella.cannarella@unict.it."
+          }
+         ]
+        },
+        "firstName": "Rossella",
+        "fullName": "Cannarella R",
+        "initials": "R",
+        "lastName": "Cannarella"
+       }
+      ]
+     },
+     "authorString": "Crafa A, Calogero AE, Vij SC, Cannarella R.",
+     "citedByCount": 0,
+     "dataLinksTagsList": {
+      "dataLinkstag": [
+       "altmetrics"
+      ]
+     },
+     "dateOfCreation": "2026-05-17",
+     "dateOfRevision": "2026-05-17",
+     "doi": "10.1007/s10815-026-03896-0",
+     "electronicPublicationDate": "2026-05-18",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-05-19",
+     "firstPublicationDate": "2026-05-18",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1007/s10815-026-03896-0"
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "N",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "Y",
+     "hasPDF": "N",
+     "hasReferences": "Y",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "N",
+     "id": "42144530",
+     "inEPMC": "N",
+     "inPMC": "N",
+     "isOpenAccess": "N",
+     "journalInfo": {
+      "dateOfPublication": "2026 May",
+      "journal": {
+       "essn": "1573-7330",
+       "isoabbreviation": "J Assist Reprod Genet",
+       "issn": "1058-0468",
+       "medlineAbbreviation": "J Assist Reprod Genet",
+       "nlmid": "9206495",
+       "title": "Journal of assisted reproduction and genetics"
+      },
+      "journalIssueId": 4187446,
+      "monthOfPublication": 5,
+      "printPublicationDate": "2026-05-01",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Male infertility",
+       "Hypogonadism",
+       "Cystic Fibrosis",
+       "Cftr",
+       "Nonobstructive Azoospermia"
+      ]
+     },
+     "language": "eng",
+     "nihAuthMan": "N",
+     "pmid": "42144530",
+     "pubModel": "Print-Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "Review",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "aheadofprint",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Beyond obstructive azoospermia: emerging insights into reproductive health in men with cystic fibrosis."
+    },
+    {
+     "abstractText": "<h4>Purpose</h4>To describe a case of CBAVD due to a pathogenic variant in ADGRG2, detail the reproductive outcomes of the couple, and provide an up-to-date review of ADGRG2 variant pathophysiology as well as speculate on the mechanism by which defects in ADGRG2 function result in vasal agenesis.<h4>Methods</h4>Review of the first reported case in the USA and expound on ADGRG2 dysfunction vis-à-vis male reproductive ductal anatomy.<h4>Results</h4>A pathogenic variant in ADGRG2 was the genetic etiology of CBAVD. The couple underwent sperm harvesting coupled with ICSI and delivered two daughters.<h4>Conclusion</h4>Pathogenic variants in ADGRG2 are important to look for when CFTR analysis is negative and renal ultrasonography is normal.",
+     "affiliation": "Department of Urology, Boston University Chobanian and Avedisian School of Medicine, Boston, Massachusetts, USA. rhea.sindvani@bmc.org.",
+     "authMan": "N",
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Urology, Boston University Chobanian and Avedisian School of Medicine, Boston, Massachusetts, USA. rhea.sindvani@bmc.org."
+          }
+         ]
+        },
+        "firstName": "Rhea",
+        "fullName": "Sindvani R",
+        "initials": "R",
+        "lastName": "Sindvani"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Center for Human Genetics, Cambridge, Massachusetts, USA. jmilunsky@chginc.org."
+          }
+         ]
+        },
+        "firstName": "Jeff",
+        "fullName": "Milunsky J",
+        "initials": "J",
+        "lastName": "Milunsky"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Urology, Boston University Chobanian and Avedisian School of Medicine, Boston, Massachusetts, USA. robert.oates@bmc.org."
+          }
+         ]
+        },
+        "firstName": "Robert",
+        "fullName": "Oates R",
+        "initials": "R",
+        "lastName": "Oates"
+       }
+      ]
+     },
+     "authorString": "Sindvani R, Milunsky J, Oates R.",
+     "citedByCount": 0,
+     "dateOfCompletion": "2026-05-29",
+     "dateOfCreation": "2026-03-26",
+     "dateOfRevision": "2026-06-01",
+     "doi": "10.1007/s10815-026-03852-y",
+     "electronicPublicationDate": "2026-03-26",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-03-28",
+     "firstPublicationDate": "2026-03-26",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1007/s10815-026-03852-y"
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "N",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "N",
+     "hasReferences": "Y",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "Y",
+     "id": "41886210",
+     "inEPMC": "N",
+     "inPMC": "N",
+     "isOpenAccess": "N",
+     "journalInfo": {
+      "dateOfPublication": "2026 May",
+      "issue": "5",
+      "journal": {
+       "essn": "1573-7330",
+       "isoabbreviation": "J Assist Reprod Genet",
+       "issn": "1058-0468",
+       "medlineAbbreviation": "J Assist Reprod Genet",
+       "nlmid": "9206495",
+       "title": "Journal of assisted reproduction and genetics"
+      },
+      "journalIssueId": 4203075,
+      "monthOfPublication": 5,
+      "printPublicationDate": "2026-05-01",
+      "volume": "43",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Congenital Bilateral Absence Of The Vas Deferens",
+       "Adgrg2",
+       "Male Reproductive Ductal Development",
+       "Sperm Harvesting",
+       "X-linked Vasal Agenesis"
+      ]
+     },
+     "language": "eng",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Vas Deferens",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "AB",
+           "majorTopic_YN": "N",
+           "qualifierName": "abnormalities"
+          },
+          {
+           "abbreviation": "PA",
+           "majorTopic_YN": "N",
+           "qualifierName": "pathology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Humans",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Genetic Diseases, X-Linked",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "PA",
+           "majorTopic_YN": "N",
+           "qualifierName": "pathology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Sperm Injections, Intracytoplasmic",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Adult",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Male",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Male Urogenital Diseases",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "PA",
+           "majorTopic_YN": "N",
+           "qualifierName": "pathology"
+          }
+         ]
+        }
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "1621-1629",
+     "pmid": "41886210",
+     "pubModel": "Print-Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "Review",
+       "Journal Article",
+       "Case Reports"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "ppublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "X-linked congenital bilateral absence of the vas deferens: a truncating pathogenic variant in ADGRG2: case report, reproductive outcome, and literature review."
+    },
+    {
+     "abstractText": "Cystic fibrosis (CF) is an autosomal recessive disorder caused by pathogenic variants in the cystic fibrosis transmembrane conductance regulator (<i>CFTR</i>) gene and primarily affects the respiratory, digestive, and reproductive systems. Globally, CF is most prevalent among European ancestry, with an incidence rate of approximately 1/2500 to 1/3500. In China, the incidence is about 1/128,000. However, CF is not extremely rare in the Chinese population; rather, its prevalence is significantly underestimated. The <i>CFTR</i> mutation spectrum in China is highly unique, characterized by an extremely low frequency of p.Phe508del. Instead, region-specific mutations such as p.Gly970Asp, p.Ile1023Arg, and p.Arg553Ter predominate, alongside a high proportion of splicing variants and complex rearrangements. A significant proportion of Chinese CF patients primarily present with CF-like phenotypes within the CF-related disease spectrum (such as congenital bilateral absence of the vas deferens and pseudo-Bartter syndrome), exhibiting overlapping features with classic CF but lacking typical respiratory-dominant symptoms. This review examines how these atypical symptoms deviate from the diagnostic pathways established in Western countries. Establishing localised data and functional platforms is a prerequisite for achieving precision medicine. Achieving a transition from symptom-focused care to defect-correcting therapy will require coordinated multicenter collaboration and sustained infrastructure development.",
+     "affiliation": "School of Basic Medicine, Jiamusi University, Jiamusi 154007, China.",
+     "authMan": "N",
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "School of Basic Medicine, Jiamusi University, Jiamusi 154007, China."
+          }
+         ]
+        },
+        "firstName": "Zixin",
+        "fullName": "Wang Z",
+        "initials": "Z",
+        "lastName": "Wang"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "School of Basic Medicine, Jiamusi University, Jiamusi 154007, China."
+          }
+         ]
+        },
+        "firstName": "Guizhi",
+        "fullName": "Zuo G",
+        "initials": "G",
+        "lastName": "Zuo"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "School of Basic Medicine, Jiamusi University, Jiamusi 154007, China."
+          }
+         ]
+        },
+        "firstName": "Ye",
+        "fullName": "Shi Y",
+        "initials": "Y",
+        "lastName": "Shi"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "School of Basic Medicine, Jiamusi University, Jiamusi 154007, China."
+          }
+         ]
+        },
+        "firstName": "Yinghao",
+        "fullName": "Zhao Y",
+        "initials": "Y",
+        "lastName": "Zhao"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "School of Basic Medicine, Jiamusi University, Jiamusi 154007, China."
+          }
+         ]
+        },
+        "firstName": "Xue",
+        "fullName": "Fan X",
+        "initials": "X",
+        "lastName": "Fan"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "School of Basic Medicine, Jiamusi University, Jiamusi 154007, China."
+          }
+         ]
+        },
+        "firstName": "Xia",
+        "fullName": "Hou X",
+        "initials": "X",
+        "lastName": "Hou"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "School of Basic Medicine, Jiamusi University, Jiamusi 154007, China."
+          }
+         ]
+        },
+        "firstName": "Qingtian",
+        "fullName": "Wu Q",
+        "initials": "Q",
+        "lastName": "Wu"
+       }
+      ]
+     },
+     "authorString": "Wang Z, Zuo G, Shi Y, Zhao Y, Fan X, Hou X, Wu Q.",
+     "chemicalList": {
+      "chemical": [
+       {
+        "name": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "registryNumber": "126880-72-6"
+       },
+       {
+        "name": "CFTR protein, human",
+        "registryNumber": "0"
+       }
+      ]
+     },
+     "citedByCount": 0,
+     "dataLinksTagsList": {
+      "dataLinkstag": [
+       "supporting_data"
+      ]
+     },
+     "dateOfCompletion": "2026-07-14",
+     "dateOfCreation": "2026-03-28",
+     "dateOfRevision": "2026-08-13",
+     "doi": "10.3390/ijms27062770",
+     "electronicPublicationDate": "2026-03-18",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-03-29",
+     "firstPublicationDate": "2026-03-18",
+     "fullTextIdList": {
+      "fullTextId": [
+       "PMC13027017"
+      ]
+     },
+     "fullTextReceivedDate": "2026-03-28",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.3390/ijms27062770"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "html",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13027017"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "pdf",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13027017?pdf=render"
+       }
+      ]
+     },
+     "grantsList": {
+      "grant": [
+       {
+        "agency": "Natural Science Foundation of Heilongjiang Province, China",
+        "grantId": "No.PL2025H 006",
+        "orderIn": 0
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "Y",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "Y",
+     "hasReferences": "Y",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "Y",
+     "hasTextMinedTerms": "Y",
+     "id": "41898631",
+     "inEPMC": "Y",
+     "inPMC": "Y",
+     "isOpenAccess": "Y",
+     "journalInfo": {
+      "dateOfPublication": "2026 Mar",
+      "issue": "6",
+      "journal": {
+       "essn": "1422-0067",
+       "isoabbreviation": "Int J Mol Sci",
+       "issn": "1422-0067",
+       "medlineAbbreviation": "Int J Mol Sci",
+       "nlmid": "101092791",
+       "title": "International journal of molecular sciences"
+      },
+      "journalIssueId": 4156644,
+      "monthOfPublication": 3,
+      "printPublicationDate": "2026-03-01",
+      "volume": "27",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Chinese population",
+       "Cystic Fibrosis",
+       "Mutation Spectrum",
+       "Cftr Mutations"
+      ]
+     },
+     "language": "eng",
+     "license": "cc by",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Humans",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Cystic Fibrosis",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "DI",
+           "majorTopic_YN": "N",
+           "qualifierName": "diagnosis"
+          },
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "EP",
+           "majorTopic_YN": "N",
+           "qualifierName": "epidemiology"
+          },
+          {
+           "abbreviation": "PA",
+           "majorTopic_YN": "N",
+           "qualifierName": "pathology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Phenotype",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Mutation",
+        "majorTopic_YN": "Y"
+       },
+       {
+        "descriptorName": "China",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "EP",
+           "majorTopic_YN": "N",
+           "qualifierName": "epidemiology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "East Asian People",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          }
+         ]
+        }
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "2770",
+     "pmcid": "PMC13027017",
+     "pmid": "41898631",
+     "pubModel": "Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "review-article",
+       "Review",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "epublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Distinct CFTR Mutation Spectrum and Atypical Clinical Presentations in Chinese Patients with Cystic Fibrosis.",
+     "tmAccessionTypeList": {
+      "accessionType": [
+       "doi"
+      ]
+     }
+    },
+    {
+     "abstractText": "Chronic rhinosinusitis with nasal polyps (CRSwNP) is a relatively uncommon condition in the paediatric population, with a prevalence estimated at 0.1-0.8%, compared to approximately 4% in adults (1, 2). The early onset of CRSwNP emphasises the significant role of genetic factors in its pathophysiology (3). Approximately 20% of paediatric patients with CRSwNP are associated with systemic genetic disorders, with cystic fibrosis (CF) being the most prevalent (2). CF is characterised by a dysfunction of the CF transmembrane conductance regulator (CFTR) protein. Over 2,000 distinct CFTR variants have been identified, resulting in varying organ involvement and disease severity. In 2000, the World Health Organization introduced the term \"CFTR-related disorders\" (CFTR-RDs) to include clinical entities associated with CFTR dysfunction that do not meet the diagnostic criteria for CF (4). CFTR-RDs include congenital bilateral absence of the vas deferens (CBAVD), recurrent pancreatitis (RP), and disseminated bronchiectasis (DB). However, recent studies emphasised a significant prevalence of heterozygous CFTR pathogenic variants in paediatric and adult CRSwNP populations without CF (4-8). We assessed the prevalence of CFTR variants in a paediatric population with CRSwNP.",
+     "affiliation": "Department of Otorhinolaryngology, Bambino Gesu Children's Hospital IRCCS, Rome, Italy.",
+     "authMan": "N",
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Otorhinolaryngology, Bambino Gesu Children's Hospital IRCCS, Rome, Italy."
+          }
+         ]
+        },
+        "firstName": "S",
+        "fullName": "Santarsiero S",
+        "initials": "S",
+        "lastName": "Santarsiero"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Otorhinolaryngology, Bambino Gesu Children's Hospital IRCCS, Rome, Italy."
+          }
+         ]
+        },
+        "firstName": "E",
+        "fullName": "Sitzia E",
+        "initials": "E",
+        "lastName": "Sitzia"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Paediatric Pulmonology and Cystic Fibrosis Unit, Bambino Gesu Children's Hospital IRCCS, Rome, Italy."
+          }
+         ]
+        },
+        "firstName": "F",
+        "fullName": "Majo F",
+        "initials": "F",
+        "lastName": "Majo"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Otorhinolaryngology, Bambino Gesu Children's Hospital IRCCS, Rome, Italy."
+          }
+         ]
+        },
+        "firstName": "G",
+        "fullName": "Marini G",
+        "initials": "G",
+        "lastName": "Marini"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Genetics, Bambino Gesu Children's Hospital IRCCS, Rome, Italy."
+          }
+         ]
+        },
+        "firstName": "L",
+        "fullName": "Sinibaldi L",
+        "initials": "L",
+        "lastName": "Sinibaldi"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Otorhinolaryngology, Bambino Gesu Children's Hospital IRCCS, Rome, Italy."
+          }
+         ]
+        },
+        "firstName": "G",
+        "fullName": "Cristalli G",
+        "initials": "G",
+        "lastName": "Cristalli"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Paediatric Pulmonology and Cystic Fibrosis Unit, Bambino Gesu Children's Hospital IRCCS, Rome, Italy."
+          }
+         ]
+        },
+        "firstName": "R",
+        "fullName": "Cutrera R",
+        "initials": "R",
+        "lastName": "Cutrera"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Paediatric Allergy and Cystic Fibrosis Research Unit, Bambino Gesu Children's Hospital IRCCS, Rome, Italy."
+          }
+         ]
+        },
+        "firstName": "A G",
+        "fullName": "Fiocchi AG",
+        "initials": "AG",
+        "lastName": "Fiocchi"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Paediatric Allergy and Cystic Fibrosis Research Unit, Bambino Gesu Children's Hospital IRCCS, Rome, Italy."
+          }
+         ]
+        },
+        "firstName": "F",
+        "fullName": "Ciciriello F",
+        "initials": "F",
+        "lastName": "Ciciriello"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Paediatric Allergy and Cystic Fibrosis Research Unit, Bambino Gesu Children's Hospital IRCCS, Rome, Italy."
+          }
+         ]
+        },
+        "firstName": "M C",
+        "fullName": "Artesani MC",
+        "initials": "MC",
+        "lastName": "Artesani"
+       }
+      ]
+     },
+     "authorString": "Santarsiero S, Sitzia E, Majo F, Marini G, Sinibaldi L, Cristalli G, Cutrera R, Fiocchi AG, Ciciriello F, Artesani MC.",
+     "chemicalList": {
+      "chemical": [
+       {
+        "name": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "registryNumber": "126880-72-6"
+       },
+       {
+        "name": "CFTR protein, human",
+        "registryNumber": "0"
+       }
+      ]
+     },
+     "citedByCount": 0,
+     "dateOfCompletion": "2025-08-01",
+     "dateOfCreation": "2025-06-30",
+     "dateOfRevision": "2025-08-01",
+     "doi": "10.4193/rhin24.568",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2025-07-02",
+     "firstPublicationDate": "2025-08-01",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.4193/Rhin24.568"
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "N",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "N",
+     "hasReferences": "N",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "Y",
+     "id": "40586793",
+     "inEPMC": "N",
+     "inPMC": "N",
+     "isOpenAccess": "N",
+     "journalInfo": {
+      "dateOfPublication": "2025 Aug",
+      "issue": "4",
+      "journal": {
+       "essn": "1996-8604",
+       "isoabbreviation": "Rhinology",
+       "issn": "0300-0729",
+       "medlineAbbreviation": "Rhinology",
+       "nlmid": "0347242",
+       "title": "Rhinology"
+      },
+      "journalIssueId": 3986104,
+      "monthOfPublication": 8,
+      "printPublicationDate": "2025-08-01",
+      "volume": "63",
+      "yearOfPublication": 2025
+     },
+     "language": "eng",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Humans",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Cystic Fibrosis",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Sinusitis",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "EP",
+           "majorTopic_YN": "N",
+           "qualifierName": "epidemiology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Rhinitis",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "EP",
+           "majorTopic_YN": "N",
+           "qualifierName": "epidemiology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Nasal Polyps",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "EP",
+           "majorTopic_YN": "N",
+           "qualifierName": "epidemiology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Chronic Disease",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Prevalence",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Adolescent",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Child",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Child, Preschool",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Italy",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "EP",
+           "majorTopic_YN": "N",
+           "qualifierName": "epidemiology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Female",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Male",
+        "majorTopic_YN": "N"
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "507-509",
+     "pmid": "40586793",
+     "pubModel": "Print",
+     "pubTypeList": {
+      "pubType": [
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2025",
+     "publicationStatus": "ppublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "The CFTR gene variants in paediatric nasal polyposis: a study in the Italian population."
+    },
+    {
+     "abstractText": "<h4>Background</h4>Modern cystic fibrosis (CF) treatments, particularly CFTR modulators, have allowed males with CF (MwCF) to live longer, healthier lives and pursue parenthood. Approximately 98% of MwCF have congenital bilateral absence of the vas deferens (CBAVD). While research shows MwCF experience spermatogenic dysfunction alongside obstructive azoospermia, understanding male reproductive health in MwCF remains limited. This study retrospectively examines testicular function and intracytoplasmic sperm injection outcomes of the partners of males with CBAVD, stratified by CF mutation status (CF, CF carriers, no known mutation).<h4>Subjects and methods</h4>This multicenter, retrospective study assessed sperm retrieval outcomes and testicular function in males with CBAVD. Participants were categorized into three groups: MwCF (Group 1), CFTR gene mutation carriers (CFTR carriers, Group 2), and CBAVD males without CFTR mutations (Group 3). We collected data on genetic testing, testicular hormone levels (FSH, LH, total testosterone), sperm retrieval methods, and reproductive outcomes. Statistical analysis was used to assess intergroup differences.<h4>Results</h4>Thirty subjects were included (Group 1: 14, Group 2: 11, Group 3: 5). No significant differences in demographic, anthropometric, or reproductive characteristics were found across groups. Hormone levels (LH, FSH, and testosterone) were similar among groups. In Group 1, 42 % had elevated FSH levels. The prevalence of hypogonadism was 16.7 % in Group 1. Group 3 had a significantly lower fertilization rate (p < 0.01), but no differences were found in blastocyst formation, pregnancy, miscarriage, or live birth rates.<h4>Conclusions</h4>Our data support the presence of primary spermatogenic dysfunction in some MwCF. However, reproductive outcomes were similar across all groups.",
+     "affiliation": "Department of Clinical and Experimental Medicine, University of Catania 95123 Catania, Italy.",
+     "authMan": "N",
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Clinical and Experimental Medicine, University of Catania 95123 Catania, Italy."
+          },
+          {
+           "affiliation": "Department of Urology, Cleveland Clinic Foundation, Cleveland OH USA."
+          }
+         ]
+        },
+        "firstName": "Rossella",
+        "fullName": "Cannarella R",
+        "initials": "R",
+        "lastName": "Cannarella"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Rutgers Robert Wood Johnson Medical School, 08901 New Brunswick, NJ, USA."
+          }
+         ]
+        },
+        "firstName": "Danielle Velez",
+        "fullName": "Leitner DV",
+        "initials": "DV",
+        "lastName": "Leitner"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Division of Reproductive Endocrinology & Infertility, University of Pennsylvania 19104 Pennsylvania, PA, USA."
+          }
+         ]
+        },
+        "firstName": "Marissa",
+        "fullName": "Weiss M",
+        "initials": "M",
+        "lastName": "Weiss"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Surgery and Perioperative Care, University of Texas at Austin Dell Medical School, Austin TX USA."
+          }
+         ]
+        },
+        "firstName": "Sarah C",
+        "fullName": "Vij SC",
+        "initials": "SC",
+        "lastName": "Vij"
+       }
+      ]
+     },
+     "authorString": "Cannarella R, Leitner DV, Weiss M, Vij SC.",
+     "citedByCount": 3,
+     "dataLinksTagsList": {
+      "dataLinkstag": [
+       "altmetrics",
+       "supporting_data"
+      ]
+     },
+     "dateOfCreation": "2025-04-16",
+     "dateOfRevision": "2025-04-17",
+     "doi": "10.1016/j.jcte.2025.100388",
+     "electronicPublicationDate": "2025-03-27",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2025-04-17",
+     "firstPublicationDate": "2025-03-27",
+     "fullTextIdList": {
+      "fullTextId": [
+       "PMC11997341"
+      ]
+     },
+     "fullTextReceivedDate": "2025-11-29",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1016/j.jcte.2025.100388"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "html",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC11997341"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "pdf",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC11997341?pdf=render"
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "Y",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "Y",
+     "hasPDF": "Y",
+     "hasReferences": "Y",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "Y",
+     "hasTextMinedTerms": "Y",
+     "id": "40235519",
+     "inEPMC": "Y",
+     "inPMC": "Y",
+     "isOpenAccess": "Y",
+     "journalInfo": {
+      "dateOfPublication": "2025 Jun",
+      "journal": {
+       "essn": "2214-6237",
+       "isoabbreviation": "J Clin Transl Endocrinol",
+       "issn": "2214-6237",
+       "medlineAbbreviation": "J Clin Transl Endocrinol",
+       "nlmid": "101629335",
+       "title": "Journal of clinical & translational endocrinology"
+      },
+      "journalIssueId": 3917071,
+      "monthOfPublication": 6,
+      "printPublicationDate": "2025-06-01",
+      "volume": "40",
+      "yearOfPublication": 2025
+     },
+     "keywordList": {
+      "keyword": [
+       "Testosterone",
+       "FSH",
+       "Hypogonadism",
+       "Cystic Fibrosis",
+       "Cftr",
+       "Sperm Retrieval",
+       "Cbavd",
+       "Cf Carriers"
+      ]
+     },
+     "language": "eng",
+     "license": "cc by-nc-nd",
+     "nihAuthMan": "N",
+     "pageInfo": "100388",
+     "pmcid": "PMC11997341",
+     "pmid": "40235519",
+     "pubModel": "Electronic-eCollection",
+     "pubTypeList": {
+      "pubType": [
+       "research-article",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2025",
+     "publicationStatus": "epublish",
+     "source": "MED",
+     "title": "Testicular function and fertility outcomes in males with CF: A multi center retrospective study of men with congenital bilateral absence of the vas deferens based on CFTR mutation status.",
+     "tmAccessionTypeList": {
+      "accessionType": [
+       "doi"
+      ]
+     }
+    },
+    {
+     "abstractText": "<b>Background/Objectives</b>: Male infertility is a prevalent and often underrecognized manifestation of cystic fibrosis (CF), primarily caused by congenital bilateral absence of the vas deferens (CBAVD) due to CFTR gene mutations. With improved life expectancy in CF patients, reproductive counseling and fertility management have gained clinical relevance. <b>Methods</b>: This narrative review synthesizes current evidence on the genetic underpinnings, diagnostic evaluation, and reproductive management of male infertility in CF and CFTR-related disorders. It also highlights recent advances in assisted reproductive technologies (ART), the role of CFTR modulators, and emerging molecular research. <b>Results</b>: Most men with CF or CBAVD have intact spermatogenesis but present with obstructive azoospermia. Diagnosis relies on clinical examination, semen analysis, genetic testing, and imaging. Sperm retrieval combined with in vitro fertilization (IVF) and intracytoplasmic sperm injection (ICSI) achieves high success rates. Genetic counseling is essential to assess reproductive risks and guide partner screening. New therapies-particularly CFTR modulators-have improved systemic health and fertility potential. Future directions include gene therapy, microfluidics-based sperm selection, and personalized molecular strategies. <b>Conclusions</b>: Male infertility in CF represents a treatable consequence of a systemic disease. Advances in reproductive medicine and precision genetics now offer affected men viable paths to biological parenthood while also emphasizing the broader health implications of male infertility.",
+     "affiliation": "Third Department of Urology, Attikon University Hospital, School of Medicine, National and Kapodistrian University of Athens, 12462 Athens, Greece.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0003-4651-312X"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Third Department of Urology, Attikon University Hospital, School of Medicine, National and Kapodistrian University of Athens, 12462 Athens, Greece."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0003-4651-312X"
+        },
+        "firstName": "Aris",
+        "fullName": "Kaltsas A",
+        "initials": "A",
+        "lastName": "Kaltsas"
+       }
+      ]
+     },
+     "authorString": "Kaltsas A.",
+     "chemicalList": {
+      "chemical": [
+       {
+        "name": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "registryNumber": "126880-72-6"
+       },
+       {
+        "name": "CFTR protein, human",
+        "registryNumber": "0"
+       }
+      ]
+     },
+     "citedByCount": 4,
+     "dataLinksTagsList": {
+      "dataLinkstag": [
+       "supporting_data"
+      ]
+     },
+     "dateOfCompletion": "2025-09-27",
+     "dateOfCreation": "2025-09-27",
+     "dateOfRevision": "2025-09-30",
+     "doi": "10.3390/genes16090994",
+     "electronicPublicationDate": "2025-08-25",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2025-09-28",
+     "firstPublicationDate": "2025-08-25",
+     "fullTextIdList": {
+      "fullTextId": [
+       "PMC12469938"
+      ]
+     },
+     "fullTextReceivedDate": "2025-11-19",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.3390/genes16090994"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "html",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC12469938"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "pdf",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC12469938?pdf=render"
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "Y",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "Y",
+     "hasReferences": "Y",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "Y",
+     "hasTextMinedTerms": "Y",
+     "id": "41009940",
+     "inEPMC": "Y",
+     "inPMC": "Y",
+     "isOpenAccess": "Y",
+     "journalInfo": {
+      "dateOfPublication": "2025 Aug",
+      "issue": "9",
+      "journal": {
+       "essn": "2073-4425",
+       "isoabbreviation": "Genes (Basel)",
+       "issn": "2073-4425",
+       "medlineAbbreviation": "Genes (Basel)",
+       "nlmid": "101551097",
+       "title": "Genes"
+      },
+      "journalIssueId": 4012927,
+      "monthOfPublication": 8,
+      "printPublicationDate": "2025-08-01",
+      "volume": "16",
+      "yearOfPublication": 2025
+     },
+     "keywordList": {
+      "keyword": [
+       "Assisted reproduction",
+       "Male infertility",
+       "ICSI",
+       "Cystic Fibrosis",
+       "Genetic Counseling",
+       "Obstructive Azoospermia",
+       "Sperm Retrieval",
+       "Cftr Mutations",
+       "Cbavd",
+       "Cftr Modulators"
+      ]
+     },
+     "language": "eng",
+     "license": "cc by",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Vas Deferens",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "AB",
+           "majorTopic_YN": "N",
+           "qualifierName": "abnormalities"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Humans",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Cystic Fibrosis",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "CO",
+           "majorTopic_YN": "N",
+           "qualifierName": "complications"
+          },
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "TH",
+           "majorTopic_YN": "N",
+           "qualifierName": "therapy"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Infertility, Male",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "DI",
+           "majorTopic_YN": "N",
+           "qualifierName": "diagnosis"
+          },
+          {
+           "abbreviation": "ET",
+           "majorTopic_YN": "N",
+           "qualifierName": "etiology"
+          },
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "TH",
+           "majorTopic_YN": "N",
+           "qualifierName": "therapy"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Reproductive Techniques, Assisted",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "TD",
+           "majorTopic_YN": "N",
+           "qualifierName": "trends"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Mutation",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Male",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Male Urogenital Diseases",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Genetic Testing",
+        "majorTopic_YN": "N"
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "994",
+     "pmcid": "PMC12469938",
+     "pmid": "41009940",
+     "pubModel": "Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "review-article",
+       "Review",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2025",
+     "publicationStatus": "epublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Cystic Fibrosis and Male Infertility: From Genetics to Future Perspectives in Assisted Reproductive Technologies.",
+     "tmAccessionTypeList": {
+      "accessionType": [
+       "doi"
+      ]
+     }
+    }
+   ]
+  },
+  "version": "6.9"
+ },
+ "headers": {
+  "content-type": "application/json;charset=UTF-8"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": {
+   "format": "json",
+   "pageSize": 8,
+   "query": "(TITLE_ABS:\"CFTR\" AND TITLE_ABS:\"Congenital bilateral absence of the vas deferens\") AND SRC:MED",
+   "resultType": "core",
+   "synonym": "false"
+  },
+  "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
+ },
+ "retrieved_at": "2026-09-17T19:41:43+00:00",
+ "status": 200,
+ "text": null
+}

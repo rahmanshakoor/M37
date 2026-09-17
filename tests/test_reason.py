@@ -42,6 +42,7 @@ FIXTURES = Path(__file__).parent / "fixtures"
 EVIDENCE = FIXTURES / "agents" / "evidence"
 REASON = FIXTURES / "reason"
 LITERATURE = FIXTURES / "literature"
+HPO_FIXTURES = FIXTURES / "hpo"
 
 CFTR = "7:117559590:ATCT:A"
 CFTR_GNOMAD = "gnomad:7-117559590-ATCT-A"
@@ -58,12 +59,21 @@ SEARCH_TOP = "pmid:42616613"       # first result of the recorded search
 FAKE_PMID = "pmid:99999999"        # Europe PMC answers hitCount 0 (fixture fetch_99999999)
 FAKE_CLINVAR = "clinvar:VCV999999999"
 HPO = ["HP:0002205", "HP:0006528", "HP:0012236"]
+HPO_IDS = [f"hpo:{t}" for t in HPO]
+HPO_LINE = ("case HPO: HP:0002205 Recurrent respiratory infections [hpo:HP:0002205]; "
+            "HP:0006528 Chronic lung disease [hpo:HP:0006528]; HP:0012236 Elevated sweat chloride [hpo:HP:0012236]")
+N_SEEDED_HPO = 5                   # tests/fixtures/hpo/records: the public case's five terms
+PUBLIC_HPO = ["HP:0001738", "HP:0002110", "HP:0002205", "HP:0006528", "HP:0012236"]
 
 
 # ------------------------------------------------------------------------ fixtures
 
 def fixture(name: str) -> dict:
     return json.loads((LITERATURE / f"{name}.json").read_text())
+
+
+def hpo_fixture(hpo_id: str) -> dict:
+    return json.loads((HPO_FIXTURES / "requests" / f"term_{hpo_id.replace(':', '_')}.json").read_text())
 
 
 class StubHttp:
@@ -113,6 +123,8 @@ def run_dir(tmp_path: Path) -> Path:
         url="https://www.ncbi.nlm.nih.gov/gene/1080", retrieved_at="2026-09-12T00:00:00+00:00",
         payload={"ranking": {"rank": 1, "gene_symbol": "CFTR", "moi": "AR", "exomiser_score": 0.97}, "citation": "Exomiser"}))
     rank_store.write_index()
+    # the case terms as hpo: records, so stage 5 serves them from its store and fetches nothing
+    shutil.copytree(HPO_FIXTURES / "records", run / "05_reason" / "evidence", dirs_exist_ok=True)
     return run
 
 
@@ -197,7 +209,7 @@ def test_dry_run_writes_bundles_and_the_exact_prompt_without_a_model(run_dir: Pa
     assert sorted(p.name for p in (out / "bundles").iterdir()) == ["CFTR:hom.json", "TP53:het_single.json"]
     assert sorted(p.name for p in (out / "prompts").iterdir()) == ["CFTR:hom.json", "CFTR:hom.md", "TP53:het_single.json", "TP53:het_single.md"]
     assert not (out / "chains").exists() and not (out / "transcripts").exists() and not (out / "evidence_chain.md").exists()
-    assert read(out / "evidence" / "index.json") == {}
+    assert sorted(read(out / "evidence" / "index.json")) == sorted(f"hpo:{t}" for t in PUBLIC_HPO)  # the seeded terms, nothing fetched
 
     prompt = read(out / "prompts" / "CFTR:hom.json")
     bundle = read(out / "bundles" / "CFTR:hom.json")
@@ -214,10 +226,14 @@ def test_dry_run_writes_bundles_and_the_exact_prompt_without_a_model(run_dir: Pa
     assert "classification" not in variant_schema  # the engine's, never asked of the model
     assert variant_schema["key"]["enum"] == [CFTR]  # the API itself refuses a respelled or foreign variant
     assert "PVS1" in prompt["output_schema"]["$defs"]["Criterion"]["properties"]["code"]["enum"]
-    # the model sees the case HPO terms, the stage-4 record and every citable id
-    assert "case HPO: HP:0002205, HP:0006528, HP:0012236" in bundle["text"]
+    # the model sees the case HPO terms with the label each hpo: record spells, the stage-4 record and every citable id
+    assert HPO_LINE + "\n" in bundle["text"] and HPO_LINE in prompt["user"]
+    assert ("HPO definitions: HP:0002205 — An increased susceptibility to respiratory infections as manifested by a history of "
+            "recurrent respiratory infections.; HP:0006528 — According to the definitions") in bundle["text"]
     assert "exomiser: rank 1 · combined 0.97 · phenotype 0.91 · variant 0.95 · moi AR [exomiser:CFTR]" in bundle["text"]
-    assert bundle["record_ids"] == [CFTR_CLINVAR, "exomiser:CFTR", CFTR_GNOMAD, CFTR_VEP]
+    assert bundle["record_ids"] == [CFTR_CLINVAR, "exomiser:CFTR", CFTR_GNOMAD, *HPO_IDS, CFTR_VEP]
+    assert [t["record_id"] for t in bundle["hpo_terms"]] == HPO_IDS and bundle["hpo_terms"][2]["payload"]["name"] == "Elevated sweat chloride"
+    assert bundle["hpo_terms"][2]["url"] == "https://hpo.jax.org/browse/term/HP:0012236" and bundle["hpo_terms"][2]["source"] == "hpo"
     md = (out / "prompts" / "CFTR:hom.md").read_text()
     assert md.startswith("# Prompt — CFTR:hom\n") and "## System\n" in md and "## User\n" in md and bundle["text"] in md
     assert ac.FINAL_INSTRUCTION in md and ac.TOOL_BUDGET_ERROR in md
@@ -231,17 +247,20 @@ def test_dry_run_writes_bundles_and_the_exact_prompt_without_a_model(run_dir: Pa
     assert m["params"]["evidence_stages"] == ["02_retrieve", "04_rank", "05_reason"]
     assert m["params"]["literature"]["abstract_chars"] == 6000 and "5+ digits" in m["params"]["literature"]["coordinates_in_queries"]
     assert m["params"]["hpo"] == HPO and m["params"]["hpo_source"] == "04_rank/joined.json"
+    assert m["params"]["hpo_terms"] == {"source": "JAX ontology API https://ontology.jax.org/api/hp/terms/<id>",
+                                        "store": "05_reason/evidence/hpo", "served": HPO_IDS, "fetched": [], "missing": [],
+                                        "version_note": "the JAX API exposes no HPO release; records are dated by retrieved_at only"}
     validator = m["params"]["validator"]
     assert validator["thresholds"] == {"ba1_min_af": 0.05, "bs1_min_af": 0.01, "pm2_max_af": 0.0001} and validator["af_field"] == "gnomad_af"
     assert validator["rules"]["PM2"].startswith("met iff af < 0.0001, or the gnomAD record says") and validator["rules"]["BA1"] == "met iff af > 0.05"
     assert set(validator["rules"]) >= {"af_field", "fallback", "PM2", "BS1", "BA1", "unverified", "strength_cap"}
     assert m["params"]["disclosure"].startswith("Anthropic API, model claude-opus-5, effort high;")
     assert m["counts"] == {"candidates_total": 3, "candidates_selected": 2, "candidates_reasoned": 0, "chains_written": 0,
-                           "evidence_records": 0, "evidence_records_added": 0}
+                           "hpo_terms": 3, "hpo_records": 3, "evidence_records": N_SEEDED_HPO, "evidence_records_added": 0}
     assert set(m["inputs"]) == {"candidates", "retrieve_evidence_index", "rank_joined", "rank_evidence_index"}
     assert all(v["sha256"] for v in m["inputs"].values())
     assert m["tools"]["anthropic-sdk"]
-    assert any(n.startswith("dry run:") for n in m["notes"])
+    assert any(n.startswith("dry run:") and n.endswith("the case HPO terms were served or fetched (see params.hpo_terms).") for n in m["notes"])
 
     # deterministic: the same run directory gives the same bytes
     before = {p.name: p.read_bytes() for d in ("bundles", "prompts") for p in (out / d).iterdir()}
@@ -254,8 +273,13 @@ def test_prompt_states_the_rules_the_validator_enforces():
                    "Do not state a classification", "PP4, PM3, PS2, PM6, PS4, PP1, BS4, BP2, BP5",
                    "Never put a genomic coordinate in a search query", "PM2 at supporting",
                    "A bare accession in prose", "cites no `pmid:` record is deleted", "`get_record` serves only",
-                   "Never use numbered references", "lowered, never raised", "PP3 and BP4 at most strong"):
+                   "Never use numbered references", "lowered, never raised", "PP3 and BP4 at most strong",
+                   "the case HPO terms with the label and definition each `hpo:` record carries",
+                   "`HP:nnnnnnn <label> [hpo:HP:nnnnnnn]`", "never attach a label from memory",
+                   "redacts an HP: id no `hpo:` record in the bundle carries", "never by an HP: id",
+                   "use the HPO terms *with their labels*"):
         assert phrase in SYSTEM_PROMPT, phrase
+    assert PROMPT_VERSION == "2026-09-17.1"
     assert "2026-" not in SYSTEM_PROMPT  # no clock, so the cached prefix is stable across runs
 
 
@@ -311,7 +335,7 @@ def test_end_to_end_chain_validated_classified_and_rendered(run_dir: Path):
     assert v.criteria[1].met is False and v.criteria[1].justification.startswith("[DISPUTED — PM2 recomputed from gnomad:7-117559590-ATCT-A: af=0.0119")
     assert v.criteria[3].met is False and v.criteria[3].justification.startswith("[RETIRED — PP5 is retired")  # ClinVar is concordance, not a criterion
     assert v.criteria[5].met is False and v.criteria[5].justification.startswith("[DISPUTED — PP3 recomputed from vep:7:117559590:ATCT:A: CADD 17.55")
-    assert v.criteria[5].justification.endswith("CADD 17.55; see also PMID [citation removed: no such record]")
+    assert v.criteria[5].justification.endswith("CADD 17.55; see also [^1]")  # the marker, not "PMID [citation removed…]"
     assert chain.literature == [SEARCH_TOP, ZELICHA, FROSST]
     assert FAKE_CLINVAR not in chain.model_dump_json() and "99999999" not in chain.model_dump_json()
     tp53 = EvidenceChain.model_validate(read(out / "chains" / "TP53:het_single.json"))
@@ -333,7 +357,9 @@ def test_end_to_end_chain_validated_classified_and_rendered(run_dir: Path):
     assert m["counts"]["classifications"] == {"CFTR:hom": {CFTR: "likely_pathogenic"}, "TP53:het_single": {TP53: "vus"}}
     assert m["counts"]["validation"]["CFTR:hom"]["items_dropped"] == 1 and m["counts"]["validation"]["CFTR:hom"]["criteria_kept"] == 6
     assert m["counts"]["usage"]["tool_calls"] == 14 and m["counts"]["usage"]["tool_errors"] == 7 and m["counts"]["usage"]["api_calls"] == 0
-    assert m["counts"]["evidence_records_added"] == 7 and m["counts"]["evidence_records"] == 7
+    assert m["counts"]["evidence_records_added"] == 7 and m["counts"]["evidence_records"] == 7 + N_SEEDED_HPO
+    assert m["params"]["hpo_terms"]["served"] == HPO_IDS and m["params"]["hpo_terms"]["fetched"] == []
+    assert m["counts"]["validation"]["CFTR:hom"]["hp_ids_checked"] == 0  # the scripted chain writes no HP: id
     assert f"CFTR:hom: rejected variants[0].criteria[5]: unknown evidence id(s): {FAKE_CLINVAR}" in m["notes"]
     assert any(n.startswith("CFTR:hom: disputed variants[0].criteria[1]: PM2 recomputed") for n in m["notes"])
     assert any("the model said 'pathogenic'; replaced by the engine's 'likely_pathogenic'" in n for n in m["notes"])
@@ -371,7 +397,11 @@ def test_end_to_end_chain_validated_classified_and_rendered(run_dir: Path):
     assert "- [exomiser:CFTR] — https://www.ncbi.nlm.nih.gov/gene/1080" in refs
     assert f"- [{CFTR_GNOMAD}] — https://gnomad.broadinstitute.org/variant/7-117559590-ATCT-A?dataset=gnomad_r4" in refs
     assert f"[{ZELICHA}] Zelicha" in md.split("## Literature")[1]
-    assert "VCV999999999" not in md and "99999999" not in md
+    # nothing fabricated stands in the prose; a redacted citation is a footnote naming what was removed
+    prose = "\n".join(line for line in md.splitlines() if not line.startswith("[^"))
+    assert "VCV999999999" not in prose and "99999999" not in prose
+    assert md.count("99999999") == 1 and "VCV999999999" not in md
+    assert "[^1-1]: citation removed by the validator: inline PMID not in the store: pmid:99999999" in md
     assert md.count("_FakeClient (scripted, no API call), model fake-model, effort low_") == 2
     assert "2026-" not in md  # no clock in the report
 
@@ -384,6 +414,7 @@ def test_end_to_end_chain_validated_classified_and_rendered(run_dir: Path):
     assert snapshot(out) == before
     fresh = run_dir.parent / "fresh"
     shutil.copytree(run_dir, fresh, ignore=shutil.ignore_patterns("05_reason"))
+    shutil.copytree(HPO_FIXTURES / "records", fresh / "05_reason" / "evidence")  # the case terms, as the fixture seeds them
     rr.run_reason(fresh, 2, fake_client(), "fake-model", "low", False, http=stub_http())
     assert snapshot(fresh / "05_reason") == before
     m2 = read(fresh / "05_reason" / "manifest.json")
@@ -444,7 +475,10 @@ def test_a_citation_outside_the_candidates_scope_is_rejected_even_when_the_recor
     assert not any("12345678" in n and "out of scope" in n for n in m["notes"])
     assert "06_medicine" not in json.dumps(m["inputs"]) and "06_medicine" not in m["params"]["evidence_stages"]
     md = (run_dir / "05_reason" / "evidence_chain.md").read_text()
-    assert "planted by stage 6" not in md and "left by an earlier run" not in md and "12345678" not in md and "11111111" not in md
+    prose = "\n".join(line for line in md.splitlines() if not line.startswith("[^"))
+    assert "planted by stage 6" not in md and "left by an earlier run" not in md
+    assert "12345678" not in prose and "11111111" not in prose  # only a footnote says they were removed
+    assert "[^1-1]: citation removed by the validator: inline citation to a record not in the store: pmid:11111111" in md
     # the same paper, retrieved here, is citable — the scope is what this conversation returned, not the run
     fake = fake_client([answer], turns=[ac.FakeTurn([("get_paper", {"pmid": "7647779"})])])
     m = read(rr.run_reason(run_dir, 1, fake, "fake-model", "low", False, http=stub_http()))
@@ -498,7 +532,7 @@ def test_a_run_replaces_earlier_outputs_but_keeps_the_evidence_store(run_dir: Pa
     assert (out / "evidence_chain.md").read_text().count("# Evidence chain — ") == 1
     # the store is a store: the first run's papers are still there, and this run added none
     assert sum(1 for r in EvidenceStore(out / "evidence").iter("pmid")) == 6
-    assert m["counts"]["evidence_records"] == 7 and m["counts"]["evidence_records_added"] == 0
+    assert m["counts"]["evidence_records"] == 7 + N_SEEDED_HPO and m["counts"]["evidence_records_added"] == 0
     # a dry run is a run too
     rr.run_reason(run_dir, 1, dry_run=True)
     assert not (out / "chains").exists() and not (out / "evidence_chain.md").exists() and (out / "evidence" / "index.json").exists()
@@ -521,14 +555,95 @@ def test_hpo_comes_from_the_case_file_or_an_explicit_list_before_stage_4(run_dir
     case.write_text("proband_id: DEMO\nvcf: demo.vcf.gz\nhpo: [HP:0012236]\n")
     m = read(rr.run_reason(run_dir, 1, dry_run=True, case_path=case))
     assert m["params"]["hpo"] == ["HP:0012236"] and m["params"]["hpo_source"].startswith("case file")
-    assert "case HPO: HP:0012236\n" in read(run_dir / "05_reason" / "bundles" / "CFTR:hom.json")["text"]
+    assert "case HPO: HP:0012236 Elevated sweat chloride [hpo:HP:0012236]\n" in read(run_dir / "05_reason" / "bundles" / "CFTR:hom.json")["text"]
+    assert m["params"]["hpo_terms"]["served"] == ["hpo:HP:0012236"] and m["counts"]["hpo_records"] == 1
     m = read(rr.run_reason(run_dir, 1, dry_run=True, case_hpo=["HP:0006528"]))
     assert m["params"]["hpo"] == ["HP:0006528"] and m["params"]["hpo_source"] == "argument"
     (run_dir / "04_rank" / "joined.json").unlink()
     m = read(rr.run_reason(run_dir, 1, dry_run=True))
     assert m["params"]["hpo"] == [] and m["params"]["hpo_source"] == "none" and "rank_joined" not in m["inputs"]
+    assert m["params"]["hpo_terms"]["served"] == [] and m["counts"] ["hpo_terms"] == 0
+    assert "case HPO: none given\n" in read(run_dir / "05_reason" / "bundles" / "CFTR:hom.json")["text"]
     with pytest.raises(ValueError, match="HPO"):
         rr.run_reason(run_dir, 1, dry_run=True, case_hpo=["HP:12"])
+
+
+def test_stage_5_fetches_only_the_case_terms_the_stores_lack(run_dir: Path):
+    """Two of the three case terms are seeded; the third is fetched from the recorded
+    JAX answer, written into the stage store and served on the next run."""
+    store = EvidenceStore(run_dir / "05_reason" / "evidence")
+    store.path_for("hpo:HP:0012236").unlink()
+    http = StubHttp(hpo_fixture("HP:0012236"))
+    m = read(rr.run_reason(run_dir, 1, dry_run=True, http=http))
+    assert http.calls == [("GET", "https://ontology.jax.org/api/hp/terms/HP:0012236", None)]
+    assert m["params"]["hpo_terms"]["fetched"] == ["hpo:HP:0012236"] and m["params"]["hpo_terms"]["missing"] == []
+    assert m["params"]["hpo_terms"]["served"] == ["hpo:HP:0002205", "hpo:HP:0006528"]
+    assert m["counts"]["hpo_terms"] == 3 and m["counts"]["hpo_records"] == 3
+    assert m["counts"]["evidence_records_added"] == 1 and m["counts"]["evidence_records"] == N_SEEDED_HPO
+    rec = store.get("hpo:HP:0012236")
+    assert rec is not None and rec.source == "hpo" and rec.payload["name"] == "Elevated sweat chloride"
+    # the fetched record is byte-identical to the fixture the same answer produced
+    assert store.path_for("hpo:HP:0012236").read_bytes() == (HPO_FIXTURES / "records" / "hpo" / store.path_for("hpo:HP:0012236").name).read_bytes()
+    assert rec.query == {"id": "HP:0012236", "api": "https://ontology.jax.org/api/hp/terms/HP:0012236"}
+    assert rec.retrieved_at == hpo_fixture("HP:0012236")["retrieved_at"] and read(run_dir / "05_reason" / "evidence" / "index.json")["hpo:HP:0012236"]
+    bundle = read(run_dir / "05_reason" / "bundles" / "CFTR:hom.json")
+    assert HPO_LINE + "\n" in bundle["text"] and set(HPO_IDS) <= set(bundle["record_ids"])
+    # the next run serves it: no request, same bundle bytes
+    before = (run_dir / "05_reason" / "bundles" / "CFTR:hom.json").read_bytes()
+    m = read(rr.run_reason(run_dir, 1, dry_run=True, http=StubHttp()))
+    assert m["params"]["hpo_terms"]["fetched"] == [] and m["params"]["hpo_terms"]["served"] == HPO_IDS
+    assert (run_dir / "05_reason" / "bundles" / "CFTR:hom.json").read_bytes() == before
+    # a term the API has no record for is a note and a bare id in the bundle, never an error
+    store.path_for("hpo:HP:0012236").unlink()
+    m = read(rr.run_reason(run_dir, 1, dry_run=True, case_hpo=["HP:9999999", "HP:0012236"],
+                           http=StubHttp(hpo_fixture("HP:9999999"), hpo_fixture("HP:0012236"))))
+    assert m["params"]["hpo_terms"]["missing"] == ["HP:9999999"] and m["params"]["hpo_terms"]["fetched"] == ["hpo:HP:0012236"]
+    assert "HPO term HP:9999999 has no record at the JAX API (404); it is shown bare in the bundle and is not citable" in m["notes"]
+    text = read(run_dir / "05_reason" / "bundles" / "CFTR:hom.json")["text"]
+    assert "case HPO: HP:0012236 Elevated sweat chloride [hpo:HP:0012236]; HP:9999999 (no hpo: record in the store; label unknown)\n" in text
+    assert m["counts"]["hpo_terms"] == 2 and m["counts"]["hpo_records"] == 1
+
+
+def test_a_label_that_is_not_the_records_is_disputed_and_a_non_case_hp_id_is_redacted(run_dir: Path):
+    """The model labels HP:0012236 from memory (wrongly), labels HP:0002205 as the record
+    does, and names a phenotype the case does not list by its HP: id."""
+    answer = cftr_bundle_only_answer()
+    answer["variants"][0]["summary"] = (f"Homozygous p.Phe508del [{CFTR_VEP}]; the case lists HP:0012236 Sweat chloride elevation "
+                                        "[hpo:HP:0012236] and HP:0002205 Recurrent respiratory infections [hpo:HP:0002205].")
+    answer["limits"] = ["The case lists no HP:0000252 microcephaly term.", "See also [HP:0000252]; hearing loss (HP:0000365) is absent."]
+    fake = fake_client([answer], turns=[])
+    m = read(rr.run_reason(run_dir, 1, fake, "fake-model", "low", False, http=stub_http()))
+    chain = EvidenceChain.model_validate(read(run_dir / "05_reason" / "chains" / "CFTR:hom.json"))
+    mark = ('[DISPUTED — hpo:HP:0012236 names this term "Elevated sweat chloride"; the adjacent text "Sweat chloride elevation" '
+            "is not its label or a synonym]")
+    assert chain.variants[0].summary == (f"Homozygous p.Phe508del [{CFTR_VEP}]; the case lists HP:0012236{mark} Sweat chloride elevation "
+                                         "[hpo:HP:0012236] and HP:0002205 Recurrent respiratory infections [hpo:HP:0002205].")
+    assert chain.limits == ["The case lists no [^1] microcephaly term.", "See also [^2]; hearing loss ([^3]) is absent."]
+    v = read(run_dir / "05_reason" / "validation" / "CFTR:hom.json")
+    assert [(r["path"], r["reason"]) for r in v["rejections"]] == [
+        ("limits[0]", "HP id not carried by any hpo: record in scope: HP:0000252"),
+        ("limits[1]", "HP id not carried by any hpo: record in scope: HP:0000252"),
+        ("limits[1]", "HP id not carried by any hpo: record in scope: HP:0000365"),
+    ]
+    reason = ('the text "Sweat chloride elevation" attached to HP:0012236 is not the label of hpo:HP:0012236 '
+              '("Elevated sweat chloride") or one of its synonyms')
+    assert [d for d in v["disputes"] if d["code"] == "HPO"] == [{"path": "variants[0].summary", "code": "HPO", "record_id": "hpo:HP:0012236",
+                                                                 "claimed_met": True, "recomputed_met": False, "af": None, "reason": reason}]
+    assert {k: v["counts"][k] for k in ("hp_ids_checked", "hp_ids_redacted", "hp_labels_checked", "hp_labels_disputed")} == \
+        {"hp_ids_checked": 5, "hp_ids_redacted": 3, "hp_labels_checked": 2, "hp_labels_disputed": 1}
+    assert v["counts"]["redactions"] >= 3 and m["counts"]["rejections"] >= 3
+    assert "CFTR:hom: rejected limits[0]: HP id not carried by any hpo: record in scope: HP:0000252" in m["notes"]
+    assert f"CFTR:hom: disputed variants[0].summary: {reason}" in m["notes"]
+    assert any(n.startswith("CFTR:hom: variants[0].summary: HP:0012236 label disputed; the record spells it \"Elevated sweat chloride\"") for n in m["notes"])
+    assert m["counts"]["validation"]["CFTR:hom"]["hp_labels_disputed"] == 1
+    # the report: the wrong label never stands unmarked, the absent-term ids are gone, the hpo: citations resolve
+    md = (run_dir / "05_reason" / "evidence_chain.md").read_text()
+    assert f"HP:0012236{mark} Sweat chloride elevation [hpo:HP:0012236]" in md and md.count("Sweat chloride elevation") == 2
+    prose = "\n".join(line for line in md.splitlines() if not line.startswith("[^"))
+    assert "HP:0000252" not in prose and "HP:0000365" not in prose and "microcephaly" in prose
+    assert "[^1-1]: citation removed by the validator: HP id not carried by any hpo: record in scope: HP:0000252" in md
+    assert "- [hpo:HP:0012236] — https://hpo.jax.org/browse/term/HP:0012236" in md.split("## References")[1]
+    assert "- [hpo:HP:0002205] — https://hpo.jax.org/browse/term/HP:0002205" in md.split("## References")[1]
 
 
 # ------------------------------------------------------------------ after the model
@@ -590,12 +705,11 @@ def test_bare_accessions_in_prose_must_be_carried_by_a_citable_record(run_dir: P
     fake = fake_client([answer], turns=[ac.FakeTurn([("get_paper", {"pmid": "7647779"})])])
     m = read(rr.run_reason(run_dir, 1, fake, "fake-model", "low", False, http=stub_http()))
     chain = EvidenceChain.model_validate(read(run_dir / "05_reason" / "chains" / "CFTR:hom.json"))
-    gone = "[citation removed: no such record]"
-    assert chain.variants[0].summary == (f"Reported as {gone} and {gone} (see {gone}, {gone}, Smith et al. 2019, {gone}, {gone}, {gone}, "
-                                         f"{gone}). Listed as VCV000007105 — rs113993960 [{CFTR_VEP}] — at "
+    assert chain.variants[0].summary == ("Reported as [^1] and [^2] (see [^3], [^4], Smith et al. 2019, [^5], [^6], [^7], "
+                                         f"[^8]). Listed as VCV000007105 — rs113993960 [{CFTR_VEP}] — at "
                                          "https://www.ncbi.nlm.nih.gov/clinvar/variation/7105/.")
-    assert chain.variants[0].criteria[1].justification == f"in-frame deletion [VCV7105]; cf. {gone} and {gone}."
-    assert chain.phase_statement == f"Phase per gnomAD rs113993960; a {gone} claim and https://pubmed.ncbi.nlm.nih.gov/7647779/."
+    assert chain.variants[0].criteria[1].justification == "in-frame deletion [VCV7105]; cf. [^9] and [^10]."
+    assert chain.phase_statement == "Phase per gnomAD rs113993960; a [^11] claim and https://pubmed.ncbi.nlm.nih.gov/7647779/."
     assert chain.limits == ["No assay; DOI 10.1038/ng0595-111 covers MTHFR, not CFTR."]  # the Frosst paper was retrieved here
     assert [c.code for c in chain.variants[0].criteria] == ["PM2", "PM4", "PP5", "PP4"]  # redaction never drops a criterion
     v = read(run_dir / "05_reason" / "validation" / "CFTR:hom.json")
@@ -607,8 +721,11 @@ def test_bare_accessions_in_prose_must_be_carried_by_a_citable_record(run_dir: P
     assert ("phase_statement", "bare accession not carried by any citable record: PubMed ID 12345") in reasons
     assert v["counts"]["redactions"] == 11 and m["counts"]["rejections"] == 11  # 8 in the summary, 2 in a justification, 1 in the phase
     md = (run_dir / "05_reason" / "evidence_chain.md").read_text()
+    prose = "\n".join(line for line in md.splitlines() if not line.startswith("[^"))
     for token in ("VCV999999999", "SCV000012345", "ng9999-999", "PMC9999999", "rs199826652", "NCT99999999", "87654321", "11111111", "12345 "):
-        assert token not in md, token
+        assert token not in prose, token  # the prose carries markers; the footnotes name what each hole was
+    assert "[^1-1]: citation removed by the validator: bare accession not carried by any citable record: VCV999999999" in md
+    assert md.count("[^1-11]: citation removed by the validator: ") == 1  # eleven holes, eleven footnotes, one document
     assert "rs113993960" in md and "ng0595-111" in md and "VCV000007105" in md and "Smith et al. 2019" in md
 
 
@@ -625,8 +742,9 @@ def test_stage_checks_resolve_accessions_against_the_candidates_records_and_need
     chain.variants[0].criteria.append(EvidenceChain.model_validate(cftr_answer()).variants[0].criteria[0].model_copy(update={"evidence_ids": [CFTR_VEP]}))
     chain.variants[0].criteria.append(EvidenceChain.model_validate(cftr_answer()).variants[0].criteria[0].model_copy(update={"code": "BS3", "evidence_ids": []}))
     out = stage_checks(chain, resolver)
-    assert out.chain.phase_statement == text.replace("PMC0000000", "[citation removed: no such record]")
-    assert [(r.path, r.reason) for r in out.redacted] == [("phase_statement", "bare accession not carried by any citable record: PMC0000000")]
+    assert out.chain.phase_statement == text.replace("PMC0000000", "[^1]")
+    assert [(r.path, r.reason, r.marker) for r in out.redacted] == \
+        [("phase_statement", "bare accession not carried by any citable record: PMC0000000", 1)]
     assert [(r.path, r.reason) for r in out.dropped] == [
         ("variants[0].criteria[4]", "PS3 asserts a functional study but cites no paper record (pmid:)"),
         ("variants[0].criteria[5]", "BS3 asserts a functional study but cites no paper record (pmid:)"),
@@ -762,12 +880,16 @@ def test_tools_refuse_bad_arguments_before_any_request(run_dir: Path):
 
 
 def test_get_record_serves_only_the_candidates_records_and_the_papers_the_tools_returned(run_dir: Path):
-    bundle = build_bundle("CFTR:hom", run_dir, HPO)
     index = EvidenceIndex.from_run(run_dir)
+    bundle = build_bundle("CFTR:hom", run_dir, HPO, hpo_records=[index.get(rid) for rid in HPO_IDS])
     tools = ReasonTools(index, EvidenceStore(run_dir / "05_reason" / "evidence"), rr._literature(stub_http(), None, False),
                         citable=bundle.record_ids)
     assert tools.get_record({"record_id": CFTR_GNOMAD})["record_id"] == CFTR_GNOMAD
     assert tools.get_record({"record_id": "exomiser:CFTR"})["source"] == "exomiser"
+    # the case terms are the bundle's records too: the model can read the full payload
+    term = tools.get_record({"record_id": "hpo:HP:0012236"})
+    assert term["record_id"] == "hpo:HP:0012236" and term["payload"]["name"] == "Elevated sweat chloride"
+    assert term["payload"]["synonyms"] == ["Elevated sweat Cl", "Elevated sweat Cl-", "Elevated sweat chloride"]
     for foreign in (TP53_VEP, TP53_CLINVAR, "nct:NCT01807923", FROSST):  # all real, none this candidate's
         with pytest.raises(KeyError, match="bundle or among this conversation"):
             tools.get_record({"record_id": foreign})
@@ -775,7 +897,8 @@ def test_get_record_serves_only_the_candidates_records_and_the_papers_the_tools_
     tools.get_paper({"pmid": "7647779"})  # retrieved here → readable and citable from now on
     assert tools.get_record({"record_id": FROSST})["record_id"] == FROSST
     assert tools.citable_ids() == sorted(bundle.record_ids + [FROSST])
-    assert tools.log.records_read == [CFTR_GNOMAD, "exomiser:CFTR", FROSST] and tools.log.ids() == [FROSST, CFTR_GNOMAD, "exomiser:CFTR"]
+    assert tools.log.records_read == [CFTR_GNOMAD, "exomiser:CFTR", "hpo:HP:0012236", FROSST]
+    assert tools.log.ids() == [FROSST, CFTR_GNOMAD, "exomiser:CFTR", "hpo:HP:0012236"]
 
 
 # ------------------------------------------------------------------------------ cli

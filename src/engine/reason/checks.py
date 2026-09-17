@@ -12,8 +12,10 @@ nothing supports. This module holds every such form to one rule, ahead of the
 validator: an accession may stand in prose only if a citable record carries it — as
 the record's id (``clinvar:VCV000007105``, ``nct:NCT01807923``, ``pmid:7647779``), its
 URL, or in its payload (rsIDs in VEP and gnomAD payloads; DOIs and PMC ids in Europe
-PMC payloads) — otherwise it is redacted exactly as an unresolvable ``[id]`` is, and
-the redaction is a rejection in the validation report. The forms the validator also
+PMC payloads) — otherwise it is redacted exactly as an unresolvable ``[id]`` is — a
+footnote marker ``[^k]`` in the prose (:mod:`engine.agents.redaction`), numbered from 1
+per chain, the validator continuing the count — and the redaction is a rejection in
+the validation report carrying its marker. The forms the validator also
 knows are handled here first for the same reason they are handled at all: the
 stage's rule is stricter and one mark should mean one thing.
 
@@ -38,12 +40,11 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Iterable
 
+from engine.agents.redaction import Redactions, unwrap
 from engine.agents.schema import EvidenceChain
 from engine.agents.validator import Rejection
 from engine.retrieve.store import EvidenceRecord
 
-REDACTED = "[citation removed: no such record]"
-"""The validator's own mark, so a reader sees one kind of hole."""
 PAPER_BACKED_CODES = ("PS3", "BS3")
 """Criteria that assert a functional study — a claim only a paper record can carry."""
 
@@ -99,29 +100,33 @@ class StageChecks:
     chain: EvidenceChain
     dropped: list[Rejection] = field(default_factory=list)
     redacted: list[Rejection] = field(default_factory=list)
+    """The redactions, with their markers — the counter's own list."""
 
 
-def stage_checks(chain: EvidenceChain, resolver: AccessionResolver) -> StageChecks:
+def stage_checks(chain: EvidenceChain, resolver: AccessionResolver, redactions: Redactions | None = None) -> StageChecks:
     """Redact every unresolvable accession and drop every paper-less PS3/BS3. The
-    classification is left for the validator to compute."""
+    classification is left for the validator to compute. ``redactions`` is the
+    chain's marker counter; without one the count continues from the markers the
+    chain already carries (the validator does the same, so it needs no argument)."""
     data = chain.model_dump()
-    out = StageChecks(chain)
+    redactions = redactions or Redactions.continuing(data)
+    out = StageChecks(chain, redacted=redactions.rejections)
     for i, v in enumerate(data["variants"]):
         vpath = f"variants[{i}]"
-        v["summary"] = _redact(v["summary"], f"{vpath}.summary", resolver, out.redacted)
+        v["summary"] = _redact(v["summary"], f"{vpath}.summary", resolver, redactions)
         kept = []
         for j, c in enumerate(v["criteria"]):
             cpath = f"{vpath}.criteria[{j}]"
             if c["code"] in PAPER_BACKED_CODES and not any(str(x).lower().startswith("pmid:") for x in c["evidence_ids"]):
                 out.dropped.append(Rejection(cpath, f"{c['code']} asserts a functional study but cites no paper record (pmid:)"))
                 continue
-            c["justification"] = _redact(c["justification"], f"{cpath}.justification", resolver, out.redacted)
+            c["justification"] = _redact(c["justification"], f"{cpath}.justification", resolver, redactions)
             kept.append(c)
         v["criteria"] = kept
     for name in ("phase_statement", "mechanism_hypothesis"):
-        data[name] = _redact(data[name], name, resolver, out.redacted)
+        data[name] = _redact(data[name], name, resolver, redactions)
     for name in ("limits", "what_would_change_the_call"):
-        data[name] = [_redact(x, f"{name}[{k}]", resolver, out.redacted) for k, x in enumerate(data[name])]
+        data[name] = [_redact(x, f"{name}[{k}]", resolver, redactions) for k, x in enumerate(data[name])]
     out.chain = EvidenceChain.model_validate(data)
     return out
 
@@ -131,11 +136,10 @@ def accession_tokens(text: str) -> list[str]:
     return [m.group(0) for m in _ACCESSION.finditer(text)]
 
 
-def _redact(text: Any, path: str, resolver: AccessionResolver, rejections: list[Rejection]) -> str:
+def _redact(text: Any, path: str, resolver: AccessionResolver, redactions: Redactions) -> str:
     def repl(m: re.Match[str]) -> str:
         if resolver.resolves(m):
             return m.group(0)
-        rejections.append(Rejection(path, f"bare accession not carried by any citable record: {m.group(0).rstrip(_TRAIL)}"))
-        return REDACTED + (m.group(0)[len(m.group(0).rstrip(_TRAIL)):])  # keep the sentence's punctuation
-    out = _ACCESSION.sub(repl, str(text))
-    return out.replace(f"[{REDACTED}]", REDACTED)  # an accession the model bracketed on its own
+        marker = redactions.redact(path, f"bare accession not carried by any citable record: {m.group(0).rstrip(_TRAIL)}")
+        return marker + (m.group(0)[len(m.group(0).rstrip(_TRAIL)):])  # keep the sentence's punctuation
+    return unwrap(_ACCESSION.sub(repl, str(text)))  # an accession the model bracketed on its own keeps one pair

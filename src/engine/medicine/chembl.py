@@ -45,6 +45,25 @@ ChEMBL_37 states what a drug treats (``indication_class`` is gone from the molec
 Absence is a result: MTHFR is not a ChEMBL target and BUB1B has a target but no
 curated mechanism; both come back without error.
 
+How a mechanism or a disease becomes drugs without a gene (:meth:`ChemblRetriever.
+search_mechanisms`, :meth:`ChemblRetriever.search_indications`). Stage 6's ladder
+asks for interventions that act on the *consequence* of a defect, not on the gene
+symbol, so two text searches are offered: the curated mechanism table filtered on
+``mechanism_of_action__icontains`` (``conductance regulator`` → 13 rows; ``CFTR`` → 0,
+a real answer) and the drug-indication table on ``mesh_heading__icontains`` (``cystic
+fibrosis`` → 135 rows), verified live 2026-09-17 against ChEMBL_37. One page only,
+``limit`` 1–:data:`MAX_CHEMBL_SEARCH`, ordered by the primary key; the page's rows
+become the same ``chembl:mechanism:`` / ``chembl:indication:`` records the gene route
+makes, each row's molecule (and its parent when different) is fetched so a candidate
+has a record that names the drug and states ``max_phase`` / ``first_approval``, and a
+``chembl-search:<sha256>`` record holds what was asked, the server's ``total_count``
+and the ids returned — the reason a row was on the table. Because an unknown filter
+name is silently ignored and the whole table comes back (``mechanism_of_actionx__
+icontains`` → 7561 rows, HTTP 200), every row must contain the needle,
+case-insensitively, in the filtered field, or the answer is refused. A needle is text
+the model wrote: :func:`engine.reason.tools.check_query` refuses a genomic position in
+it before any request, and it must be at least :data:`MIN_NEEDLE_CHARS` long.
+
 What the live API does that this module defends against (probed 2026-09-12/13
 against ChEMBL_37): list filters are case-sensitive exact matches that silently drop
 a lower-case or padded id, so ids are upper-cased and validated before any request; a
@@ -93,11 +112,14 @@ drugs at most, each GET is its own cache entry, and so :meth:`molecule` and
 
 from __future__ import annotations
 
+import hashlib
+import json
 import logging
 import re
 import urllib.parse
 from typing import Any, Iterator
 
+from engine.reason.tools import check_query
 from engine.retrieve.http import Http, Response
 from engine.retrieve.store import EvidenceRecord
 
@@ -127,6 +149,18 @@ ORDER_BY = {"mechanism": "mec_id", "drug_indication": "drugind_id", "drug_warnin
 """Primary key each list endpoint is walked by, so a page boundary is the same on
 every rerun and a repeated key is detectable."""
 FAMILY_FILTER = "parent_molecule_chembl_id"
+SEARCH_SOURCE = "chembl-search"
+SEARCH_FIELDS = {"mechanism": "mechanism_of_action__icontains", "drug_indication": "mesh_heading__icontains"}
+"""The one text filter each search endpoint takes: a substring match, case-insensitive
+on the server (``icontains``), checked again on every row here."""
+SEARCH_KEYS = {"mechanism": "mechanisms", "drug_indication": "drug_indications"}
+DEFAULT_CHEMBL_SEARCH = 10
+MAX_CHEMBL_SEARCH = 25
+"""Rows one text search returns (one page): enough to name the curated drugs for a
+mechanism phrase or an indication; the record carries the server's total so the
+report can say how many were left out."""
+MIN_NEEDLE_CHARS = 3
+"""A shorter needle matches most of a table by accident and names nothing."""
 
 COLUMNS = (
     "chembl_id",
@@ -225,6 +259,10 @@ class ChemblRetriever:
             "per_second": per_second,
             "release_scoped_record_ids": ["chembl:mechanism:<mec_id>", "chembl:indication:<drugind_id>",
                                           "chembl:warning:<warning_id>"],
+            "search_fields": dict(SEARCH_FIELDS),
+            "search_default_limit": DEFAULT_CHEMBL_SEARCH,
+            "search_max_limit": MAX_CHEMBL_SEARCH,
+            "search_min_needle_chars": MIN_NEEDLE_CHARS,
         }
 
     # ------------------------------------------------------------------ molecules
@@ -349,6 +387,73 @@ class ChemblRetriever:
         return (targets + mechanisms + [molecules[cid] for cid in sorted(molecules)]
                 + sorted(indications, key=lambda r: r.payload["drugind_id"])
                 + sorted(warnings, key=lambda r: r.payload["warning_id"]))
+
+    # ------------------------------------------------------------------ text searches
+
+    def search_mechanisms(self, text: str, *, limit: int = DEFAULT_CHEMBL_SEARCH) -> tuple[list[EvidenceRecord], int]:
+        """Curated mechanism rows whose ``mechanism_of_action`` contains ``text``
+        (case-insensitively), one page of at most ``limit`` in ``mec_id`` order, and the
+        server's total. Returns ``([search record, *rows, *molecules], total_count)``:
+        the ``chembl-search:`` record first, the rows as ``chembl:mechanism:<mec_id>``,
+        then each row's molecule and its parent when different, sorted by id."""
+        return self._search("mechanism", text, limit)
+
+    def search_indications(self, text: str, *, limit: int = DEFAULT_CHEMBL_SEARCH) -> tuple[list[EvidenceRecord], int]:
+        """Drug-indication rows whose MeSH heading contains ``text``, one page of at
+        most ``limit`` in ``drugind_id`` order, and the server's total — shaped as
+        :meth:`search_mechanisms` (rows as ``chembl:indication:<drugind_id>``)."""
+        return self._search("drug_indication", text, limit)
+
+    def _search(self, endpoint: str, text: str, limit: int) -> tuple[list[EvidenceRecord], int]:
+        needle = valid_needle(text)
+        if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= MAX_CHEMBL_SEARCH:
+            raise ValueError(f"limit must be an int between 1 and {MAX_CHEMBL_SEARCH}, got {limit!r}")
+        field, key, pk = SEARCH_FIELDS[endpoint], SEARCH_KEYS[endpoint], ORDER_BY[endpoint]
+        self.version()
+        url = f"{self.base_url}{endpoint}.json"
+        params: dict[str, Any] = {field: needle, "limit": limit, "order_by": pk}
+        resp = self.http.get(url, params=params)
+        body = self._json(resp)
+        rows, meta = body.get(key), body.get("page_meta")
+        if not isinstance(rows, list) or not isinstance(meta, dict):
+            raise ChemblError(f"{endpoint}.json returned no {key!r}/page_meta: {resp.text[:200]!r}")
+        total = _int_field(meta, "total_count")
+        if len(rows) > limit:
+            raise ChemblError(f"{endpoint}.json served {len(rows)} rows for limit {limit}: the page cannot be cited")
+        ids: set[Any] = set()
+        records: list[EvidenceRecord] = []
+        for row in rows:
+            if not isinstance(row, dict):
+                raise ChemblError(f"{endpoint}.json row is not an object: {str(row)[:100]!r}")
+            if needle.lower() not in str(row.get(field.removesuffix("__icontains")) or "").lower():
+                raise ChemblError(f"{endpoint}.json ignored the {field} filter: a row does not contain the needle")
+            if row.get(pk) is None or row[pk] in ids:
+                raise ChemblError(f"{endpoint}.json served {pk}={row.get(pk)!r} twice (or without it): the page cannot be cited")
+            ids.add(row[pk])
+            if endpoint == "mechanism":
+                records.append(self._mechanism(row, resp))
+            else:
+                did = _int_field(row, "drugind_id")
+                records.append(self._record(f"indication:{did}", "drug_indication", str(did),
+                                            COMPOUND_URL.format(id=_id_field(row, "molecule_chembl_id")), row, resp))
+        molecules: dict[str, EvidenceRecord] = {}
+        for row in rows:
+            for name in ("molecule_chembl_id", FAMILY_FILTER):
+                cid = row.get(name)
+                if cid and cid not in molecules:
+                    molecules[valid_chembl_id(str(cid))] = self._named_molecule(valid_chembl_id(str(cid)))
+        sent = {"endpoint": endpoint, "field": field, "needle": needle, "limit": limit}
+        search = EvidenceRecord(
+            record_id=f"{SEARCH_SOURCE}:{_digest(sent)}",
+            source=SEARCH_SOURCE,
+            source_version=self.version(),
+            query={**sent, "api": url + "?" + urllib.parse.urlencode(params)},
+            url=url + "?" + urllib.parse.urlencode(params),
+            retrieved_at=resp.retrieved_at,
+            payload={"sent": sent, "total_count": total, "ids": [r.record_id for r in records]},
+        )
+        log.info("chembl: %s search matched %d row(s) in all, %d returned, %d molecule(s)", endpoint, total, len(records), len(molecules))
+        return [search, *records, *(molecules[c] for c in sorted(molecules))], total
 
     # ------------------------------------------------------------------ internals
 
@@ -585,6 +690,21 @@ def valid_symbol(symbol: str) -> str:
         raise ValueError(f"not a gene symbol: {len(s)} character(s) after stripping, "
                          "expected letters/digits then letters, digits, '.', '_', '@' or '-'")
     return s
+
+
+def valid_needle(text: Any) -> str:
+    """The search text stripped, at least :data:`MIN_NEEDLE_CHARS` long and free of a
+    genomic position (:func:`~engine.reason.tools.check_query`) — or ``ValueError``
+    before any request. The error never echoes the text."""
+    s = str(text if text is not None else "").strip()
+    if len(s) < MIN_NEEDLE_CHARS:
+        raise ValueError(f"a ChEMBL search needs at least {MIN_NEEDLE_CHARS} characters of text")
+    check_query(s)
+    return s
+
+
+def _digest(obj: Any) -> str:
+    return hashlib.sha256(json.dumps(obj, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
 def _phase(value: Any) -> float:

@@ -144,6 +144,7 @@ def run_summary(run_dir: Path) -> dict[str, Any]:
         "vcf": {"path": vcf.get("path"), "bytes": vcf.get("bytes"), "sha256": vcf.get("sha256")} if vcf else None,
         "hpo": hpo,
         "hpo_source": hpo_source,
+        "hpo_terms": hpo_terms(run_dir, hpo),
         "stages": stages,
         "stages_present": [s["dir"] for s in stages if s["present"]],
         "engine_versions": sorted({s["engine_version"] for s in stages if s.get("engine_version")}),
@@ -208,6 +209,25 @@ def _headline(name: str, params: dict[str, Any], counts: dict[str, Any]) -> list
         return [("candidate", params.get("candidate")), ("reports written", counts.get("reports_written")),
                 ("model", params.get("model") if not params.get("dry_run") else "dry run")]
     return []
+
+
+def hpo_terms(run_dir: Path, terms: list[str]) -> list[dict[str, Any]]:
+    """``[{id, label, record_id, url}]`` per case term: the label is the one the term's
+    own ``hpo:`` record carries (stage 5 fetched it), empty for a term no store of the
+    run holds — an id in this report is never labelled from anywhere else."""
+    run_dir = Path(run_dir)
+    index = evidence_index(run_dir)
+    out = []
+    for term in terms:
+        rid = f"hpo:{term}"
+        entry = index.get(rid)
+        payload = {}
+        if entry and entry.get("path"):
+            record = read_json(run_dir / entry["stage"] / "evidence" / str(entry["path"]))
+            payload = (record or {}).get("payload") or {}
+        out.append({"id": term, "label": str(payload.get("name") or ""),
+                    "record_id": rid if entry else None, "url": (entry or {}).get("url")})
+    return out
 
 
 def _hpo(run_dir: Path) -> tuple[list[str], str | None]:
@@ -582,12 +602,16 @@ def _validation(doc: Any) -> dict[str, Any] | None:
 # ---------------------------------------------------------------------- medicine
 
 def medicine_view(run_dir: Path) -> dict[str, Any]:
-    """Stage 6 in the rubric's order — mechanism, pathway targets, drug candidates
-    with their counter-arguments, follow-up experiments, limits — every evidence and
-    trial id resolved to its URL, plus the validator's report and the stage-5 verdict
-    the report was written against (from the stage-6 bundle). A dry run has a bundle
-    and a prompt but no report; that is said, not hidden — as is a live run that
-    failed on the model (``failures``, see :func:`failures`)."""
+    """Stage 6 in the rubric's order — the patient context as records, the variant
+    mechanism, the cellular and disease consequence, the intervention classes searched
+    (with every search record resolved), the drug candidates with their
+    counter-arguments and paediatric-safety argument, what was considered and
+    rejected, surveillance, follow-up experiments, limits, the run's secondary
+    findings — every evidence, trial and search id resolved to its URL, plus the
+    validator's report and the stage-5 verdict the report was written against (from
+    the stage-6 bundle). A dry run has a bundle and a prompt but no report; that is
+    said, not hidden — as is a live run that failed on the model (``failures``, see
+    :func:`failures`)."""
     run_dir = Path(run_dir)
     stage = run_dir / "06_medicine"
     m = manifest(run_dir, "06_medicine")
@@ -630,32 +654,78 @@ def medicine_view(run_dir: Path) -> dict[str, Any]:
         drugs.append({
             "n": i, "name": d.get("name"), "chembl_id": d.get("chembl_id"),
             "chembl": resolve([f"chembl:{d['chembl_id']}"], index)[0] if d.get("chembl_id") and f"chembl:{d['chembl_id']}" in index else None,
+            "intervention_class": d.get("intervention_class", ""),
             "mechanism_of_action": d.get("mechanism_of_action", ""), "approval_status": d.get("approval_status", ""),
+            "approved_indication": d.get("approved_indication", ""),
             "rationale": d.get("rationale", ""), "counter_arguments": list(d.get("counter_arguments") or []),
+            "paediatric_safety": d.get("paediatric_safety", ""),
             "evidence": resolve(list(d.get("evidence_ids") or []), index), "trials": resolve(list(d.get("trial_ids") or []), index),
         })
-        texts += [d.get("rationale", ""), d.get("mechanism_of_action", ""), d.get("approval_status", "")] + list(d.get("counter_arguments") or [])
+        texts += [d.get("rationale", ""), d.get("mechanism_of_action", ""), d.get("approval_status", ""),
+                  d.get("approved_indication", ""), d.get("paediatric_safety", "")] + list(d.get("counter_arguments") or [])
+    classes = []
+    for c in report.get("intervention_classes") or []:
+        classes.append({
+            "name": c.get("name", ""), "acts_on": c.get("acts_on", ""), "targets": list(c.get("targets") or []),
+            "verdict": c.get("verdict", ""), "rejection_reason": c.get("rejection_reason", ""),
+            "searched": resolve(list(c.get("searched") or []), index),
+            "evidence": resolve(list(c.get("evidence_ids") or []), index),
+        })
+        texts += [c.get("acts_on", ""), c.get("rejection_reason", "")]
+    rejected = []
+    for r in report.get("considered_and_rejected") or []:
+        rejected.append({"name": r.get("name", ""), "intervention_class": r.get("intervention_class", ""),
+                         "reason": r.get("reason", ""), "evidence": resolve(list(r.get("evidence_ids") or []), index)})
+        texts.append(r.get("reason", ""))
+    context = report.get("patient_context") or {}
+    patient = {
+        "source": context.get("source", ""),
+        "hpo": [{"id": t.get("id", ""), "label": t.get("label", ""),
+                 "record": resolve([t["record_id"]], index)[0] if t.get("record_id") else None}
+                for t in context.get("hpo") or []],
+        "disease": [{"id": d.get("id", ""), "name": d.get("name", ""), "description": d.get("description", ""),
+                     "record": resolve([d["record_id"]], index)[0] if d.get("record_id") else None}
+                    for d in context.get("disease") or []],
+    }
+    findings = [{"candidate_id": f.get("candidate_id", ""), "gene_symbol": f.get("gene_symbol", ""),
+                 "model": f.get("model", ""), "classifications": dict(f.get("classifications") or {}),
+                 "note": f.get("note", "")} for f in report.get("secondary_findings") or []]
     mechanism = claims(report.get("mechanism"))
+    consequence = claims(report.get("consequence"))
     pathway = claims(report.get("pathway_targets"))
-    texts += [c["statement"] for c in mechanism + pathway]
+    surveillance = claims(report.get("surveillance"))
+    texts += [c["statement"] for c in mechanism + consequence + pathway + surveillance]
     texts += list(report.get("follow_up_experiments") or []) + list(report.get("limits") or [])
     cited = cited_in(texts, index)
-    for group in (mechanism, pathway):
+    for group in (mechanism, consequence, pathway, surveillance):
         for c in group:
             cited += [e["id"] for e in c["evidence"] if e["id"] not in cited]
     for d in drugs:
         cited += [e["id"] for e in d["evidence"] + d["trials"] if e["id"] not in cited]
         if d["chembl"] and d["chembl"]["id"] not in cited:
             cited.append(d["chembl"]["id"])
+    for c in classes:
+        cited += [e["id"] for e in c["searched"] + c["evidence"] if e["id"] not in cited]
+    for r in rejected:
+        cited += [e["id"] for e in r["evidence"] if e["id"] not in cited]
+    for entry in patient["hpo"] + patient["disease"]:
+        if entry["record"] and entry["record"]["id"] not in cited:
+            cited.append(entry["record"]["id"])
     cited += [str(r) for r in report.get("literature") or [] if str(r) not in cited]
     out["report"] = {
         "candidate_id": report.get("candidate_id"),
         "gene_symbol": report.get("gene_symbol"),
+        "patient_context": patient,
         "mechanism": mechanism,
+        "consequence": consequence,
+        "intervention_classes": classes,
         "pathway_targets": pathway,
         "candidates": drugs,
+        "considered_and_rejected": rejected,
+        "surveillance": surveillance,
         "follow_up_experiments": list(report.get("follow_up_experiments") or []),
         "limits": list(report.get("limits") or []),
+        "secondary_findings": findings,
         "literature": resolve(list(report.get("literature") or []), index),
         "references": resolve(sorted(dict.fromkeys(cited)), index),
     }

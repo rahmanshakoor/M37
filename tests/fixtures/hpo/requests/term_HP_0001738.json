@@ -1,0 +1,76 @@
+{
+ "body": {
+  "comment": "",
+  "definition": "Impaired function of the exocrine pancreas associated with a reduced ability to digest foods because of lack of digestive enzymes.",
+  "descendantCount": 0,
+  "id": "HP:0001738",
+  "name": "Exocrine pancreatic insufficiency",
+  "publicationReferences": [],
+  "synonyms": [
+   "Inability to properly digest food due to lack of pancreatic digestive enzymes",
+   "Pancreatic insufficiency"
+  ],
+  "translations": [
+   {
+    "definition": "",
+    "language": "FR",
+    "name": "Insuffisance pancréatique exocrine",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "",
+    "language": "JA",
+    "name": "外分泌性膵不全",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "",
+    "language": "NL",
+    "name": "Pancreasinsufficiëntie",
+    "status": "CANDIDATE"
+   },
+   {
+    "definition": "",
+    "language": "ES",
+    "name": "Insuficiencia pancreática exocrina",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "",
+    "language": "ZH",
+    "name": "胰腺外分泌功能不全",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "Zhoršená funkce exokrinní slinivky břišní spojená se sníženou schopností trávit potravu kvůli nedostatku trávicích enzymů.",
+    "language": "CS",
+    "name": "Insuficience exokrinní pankreatické funkce",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "Sindirim enzimlerinin eksikliği nedeniyle gıdaları sindirme yeteneğini azalmasına bağlı olarak ekzokrin pankreasın bozulmuş fonksiyonu",
+    "language": "TR",
+    "name": "Pankreasın ekzokrin yetersizliği",
+    "status": "OFFICIAL"
+   }
+  ],
+  "xrefs": [
+   "SNOMEDCT_US:37992001",
+   "SNOMEDCT_US:47367009",
+   "UMLS:C0030293",
+   "UMLS:C0267963"
+  ]
+ },
+ "headers": {
+  "content-type": "application/json"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": null,
+  "url": "https://ontology.jax.org/api/hp/terms/HP:0001738"
+ },
+ "retrieved_at": "2026-09-17T19:39:23+00:00",
+ "status": 200,
+ "text": null
+}

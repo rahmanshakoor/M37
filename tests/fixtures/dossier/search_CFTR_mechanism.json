@@ -1,0 +1,2795 @@
+{
+ "body": {
+  "hitCount": 1657,
+  "nextCursorMark": "AoIIQIhzWSg1NTQ4NjU1OA==",
+  "nextPageUrl": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=(TITLE_ABS:\"CFTR\" AND (TITLE_ABS:\"loss of function\" OR TITLE_ABS:\"mechanism\" OR TITLE_ABS:\"pathogenic variants\")) AND SRC:MED&cursorMark=AoIIQIhzWSg1NTQ4NjU1OA==&resultType=core&pageSize=8&format=json",
+  "request": {
+   "cursorMark": "*",
+   "pageSize": 8,
+   "queryString": "(TITLE_ABS:\"CFTR\" AND (TITLE_ABS:\"loss of function\" OR TITLE_ABS:\"mechanism\" OR TITLE_ABS:\"pathogenic variants\")) AND SRC:MED",
+   "resultType": "core",
+   "sort": "",
+   "synonym": false
+  },
+  "resultList": {
+   "result": [
+    {
+     "abstractText": "Cystic fibrosis (CF) is one of the most common rare genetic diseases. It is caused by pathogenic variants of the cystic fibrosis transmembrane conductance regulator (CFTR) gene. More than 2200 variants have been identified in the <i>CFTR</i> gene that need detailed knowledge and functional characterization in order to develop specific therapeutic strategies. The traditional therapy for CF relied on addressing symptoms through mucolytic and antibiotic treatments, respiratory physiotherapy and aerosol therapy. However, in the last few years, the development of small new molecules targeting and restoring the underlying CFTR channel defect marked an important step in CF treatment. In addition, the implementation of patient-specific cellular models allowed the evaluation of pharmacological responses, leading to therapeutic advances in the direction of personalized treatment. The focus of this review is to describe and discuss the strategies for restoring the CFTR functional defects depending on the specific <i>CFTR</i> pathogenic variants. In particular, the review highlights the possible application of experimental and clinical drugs to CF treatment, which may allow improvements in patients' quality of life and life expectancy. The in vitro testing of therapeutic drugs (theratyping) is performed nowadays through the use of several cellular models, especially those derived from patient-specific tissues. This topic is a hot point in CF research and the review also aims to provide an overview of the state of the art in theratyping. The novelty of this review is the integrated view of the most recent achievements in precision diagnostics and therapy of CF at the molecular, cellular and clinical level, which are able to change the natural history of this disease.",
+     "affiliation": "Department of Experimental Medicine, Sapienza University of Rome, 00161 Rome, Italy.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0001-6129-4071"
+       },
+       {
+        "type": "ORCID",
+        "value": "0000-0002-5538-2494"
+       },
+       {
+        "type": "ORCID",
+        "value": "0000-0003-1955-820X"
+       },
+       {
+        "type": "ORCID",
+        "value": "0009-0007-1432-1226"
+       },
+       {
+        "type": "ORCID",
+        "value": "0009-0009-0435-0765"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Experimental Medicine, Sapienza University of Rome, 00161 Rome, Italy."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0009-0007-1432-1226"
+        },
+        "firstName": "Sara",
+        "fullName": "Allushi S",
+        "initials": "S",
+        "lastName": "Allushi"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Experimental Medicine, Sapienza University of Rome, 00161 Rome, Italy."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0009-0009-0435-0765"
+        },
+        "firstName": "Mariarita",
+        "fullName": "Virgulti M",
+        "initials": "M",
+        "lastName": "Virgulti"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Experimental Medicine, Sapienza University of Rome, 00161 Rome, Italy."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0003-1955-820X"
+        },
+        "firstName": "Giovanna",
+        "fullName": "Blaconà G",
+        "initials": "G",
+        "lastName": "Blaconà"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Experimental Medicine, Sapienza University of Rome, 00161 Rome, Italy."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0001-6129-4071"
+        },
+        "firstName": "Giampiero",
+        "fullName": "Ferraguti G",
+        "initials": "G",
+        "lastName": "Ferraguti"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Oncology and Molecular Medicine, Italian Institute of Health, 00161 Rome, Italy."
+          }
+         ]
+        },
+        "firstName": "Adriana",
+        "fullName": "Eramo A",
+        "initials": "A",
+        "lastName": "Eramo"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Experimental Medicine, Sapienza University of Rome, 00161 Rome, Italy."
+          },
+          {
+           "affiliation": "Pasteur Institute Cenci Bolognetti Foundation, Sapienza University of Rome, 00161 Rome, Italy."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-5538-2494"
+        },
+        "firstName": "Marco",
+        "fullName": "Lucarelli M",
+        "initials": "M",
+        "lastName": "Lucarelli"
+       }
+      ]
+     },
+     "authorString": "Allushi S, Virgulti M, Blaconà G, Ferraguti G, Eramo A, Lucarelli M.",
+     "chemicalList": {
+      "chemical": [
+       {
+        "name": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "registryNumber": "126880-72-6"
+       },
+       {
+        "name": "CFTR protein, human",
+        "registryNumber": "0"
+       }
+      ]
+     },
+     "citedByCount": 0,
+     "dataLinksTagsList": {
+      "dataLinkstag": [
+       "supporting_data"
+      ]
+     },
+     "dateOfCompletion": "2026-08-13",
+     "dateOfCreation": "2026-08-13",
+     "dateOfRevision": "2026-08-15",
+     "doi": "10.3390/ijms27156919",
+     "electronicPublicationDate": "2026-08-01",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-08-15",
+     "firstPublicationDate": "2026-08-01",
+     "fullTextIdList": {
+      "fullTextId": [
+       "PMC13467090"
+      ]
+     },
+     "fullTextReceivedDate": "2026-09-09",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.3390/ijms27156919"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "html",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13467090"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "pdf",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13467090?pdf=render"
+       }
+      ]
+     },
+     "grantsList": {
+      "grant": [
+       {
+        "agency": "Ministero dell'università e della ricerca",
+        "grantId": "PRIN 2022 (project 2022FRSS2H, B53D23020270006)",
+        "orderIn": 0
+       },
+       {
+        "agency": "Sapienza University of Rome",
+        "grantId": "Research Projects 2021",
+        "orderIn": 0
+       },
+       {
+        "agency": "Istituto Pasteur",
+        "grantId": "Project 2022-2023 Anna Tramontano (call 2020)",
+        "orderIn": 0
+       },
+       {
+        "agency": "Italian Cystic Fibrosis Research Foundation",
+        "grantId": "Project FFC#8/2021",
+        "orderIn": 0
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "Y",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "Y",
+     "hasReferences": "Y",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "Y",
+     "hasTextMinedTerms": "Y",
+     "id": "42589573",
+     "inEPMC": "Y",
+     "inPMC": "Y",
+     "isOpenAccess": "Y",
+     "journalInfo": {
+      "dateOfPublication": "2026 Aug",
+      "issue": "15",
+      "journal": {
+       "essn": "1422-0067",
+       "isoabbreviation": "Int J Mol Sci",
+       "issn": "1422-0067",
+       "medlineAbbreviation": "Int J Mol Sci",
+       "nlmid": "101092791",
+       "title": "International journal of molecular sciences"
+      },
+      "journalIssueId": 4239985,
+      "monthOfPublication": 8,
+      "printPublicationDate": "2026-08-01",
+      "volume": "27",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Epigenetics",
+       "Cystic Fibrosis",
+       "Targeted Therapy",
+       "Modulators",
+       "Cftr"
+      ]
+     },
+     "language": "eng",
+     "license": "cc by",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Animals",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Humans",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Cystic Fibrosis",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "DT",
+           "majorTopic_YN": "N",
+           "qualifierName": "drug therapy"
+          },
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          },
+          {
+           "abbreviation": "TH",
+           "majorTopic_YN": "N",
+           "qualifierName": "therapy"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Mutation",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Molecular Targeted Therapy",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "MT",
+           "majorTopic_YN": "N",
+           "qualifierName": "methods"
+          }
+         ]
+        }
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "6919",
+     "pmcid": "PMC13467090",
+     "pmid": "42589573",
+     "pubModel": "Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "review-article",
+       "Review",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "epublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Targeted Therapy for Restoring CFTR Activity: From Experimental to Clinical Features.",
+     "tmAccessionTypeList": {
+      "accessionType": [
+       "gen",
+       "nct",
+       "doi"
+      ]
+     }
+    },
+    {
+     "abstractText": "Cystic fibrosis (CF) is caused by pathogenic variants of the Cystic Fibrosis Transmembrane Conductance Regulator (CFTR) gene. CF in the airways is associated with dehydrated and hyperconcentrated mucus, impaired mucociliary transport, and inflammation. Although CF is a genetic disorder, CFTR sequence variations alone may not fully explain its phenotypic variation. Additionally, while pharmacological CFTR modulators that correct CFTR protein function greatly improve clinical outcomes, people with CF treated with modulators can still exhibit abnormal mucus and persistent inflammation compared to non-CF individuals. As such, understanding the regulation of mucus and inflammation remains crucial to full characterization and management of CF. We suggest that non-DNA-sequence-based mechanisms that regulate CFTR, mucus, and inflammation contribute to CF pathogenesis. This review highlights three features of transcriptional regulation known to modify gene expression (DNA methylation, histone modifications, and three-dimensional chromatin organization) and their role in CF airways. For each feature, we discuss current knowledge of their role in regulating CFTR, gel-forming mucin genes, and inflammation in CF contexts. We also highlight exploratory efforts to target epigenetic mechanisms as CF treatment strategies and suggest that epigenetics and chromatin organization offer a rich space for future CF research.",
+     "affiliation": "Marsico Lung Institute and Cystic Fibrosis Center, University of North Carolina at Chapel Hill, NC, USA.",
+     "authMan": "Y",
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Marsico Lung Institute and Cystic Fibrosis Center, University of North Carolina at Chapel Hill, NC, USA."
+          }
+         ]
+        },
+        "firstName": "Agustín",
+        "fullName": "De Ganzó A",
+        "initials": "A",
+        "lastName": "De Ganzó"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Thomas Lord Department of Mechanical Engineering and Materials Science, Duke University, Durham, NC, USA. Electronic address: brian.chan@duke.edu."
+          }
+         ]
+        },
+        "firstName": "Brian",
+        "fullName": "Chan B",
+        "initials": "B",
+        "lastName": "Chan"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Marsico Lung Institute and Cystic Fibrosis Center, University of North Carolina at Chapel Hill, NC, USA; Thomas Lord Department of Mechanical Engineering and Materials Science, Duke University, Durham, NC, USA; Departments of Biomedical Engineering, Chemistry, and Physics, Duke University, Durham, NC, USA; Institute for Chemical Reaction Design and Discovery (WPI-ICReDD), Hokkaido University, Sapporo, Japan."
+          }
+         ]
+        },
+        "firstName": "Michael",
+        "fullName": "Rubinstein M",
+        "initials": "M",
+        "lastName": "Rubinstein"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Marsico Lung Institute and Cystic Fibrosis Center, University of North Carolina at Chapel Hill, NC, USA; Department of Medicine, University of North Carolina at Chapel Hill, NC, USA."
+          }
+         ]
+        },
+        "firstName": "Kenichi",
+        "fullName": "Okuda K",
+        "initials": "K",
+        "lastName": "Okuda"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Marsico Lung Institute and Cystic Fibrosis Center, University of North Carolina at Chapel Hill, NC, USA; Department of Medicine, University of North Carolina at Chapel Hill, NC, USA; Department of Cell Biology and Physiology, University of North Carolina at Chapel Hill, NC, USA."
+          }
+         ]
+        },
+        "firstName": "Carla M P",
+        "fullName": "Ribeiro CMP",
+        "initials": "CMP",
+        "lastName": "Ribeiro"
+       }
+      ]
+     },
+     "authorString": "De Ganzó A, Chan B, Rubinstein M, Okuda K, Ribeiro CMP.",
+     "citedByCount": 0,
+     "dateOfCreation": "2026-09-15",
+     "dateOfRevision": "2026-09-15",
+     "doi": "10.1016/j.jcf.2026.08.013",
+     "electronicPublicationDate": "2026-09-15",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-09-16",
+     "firstPublicationDate": "2026-09-15",
+     "fullTextIdList": {
+      "fullTextId": [
+       "PMC13578995"
+      ]
+     },
+     "fullTextReceivedDate": "2026-09-17",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1016/j.jcf.2026.08.013"
+       },
+       {
+        "availability": "Free",
+        "availabilityCode": "F",
+        "documentStyle": "html",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13578995"
+       },
+       {
+        "availability": "Free",
+        "availabilityCode": "F",
+        "documentStyle": "pdf",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13578995?pdf=render"
+       },
+       {
+        "availability": "Free",
+        "availabilityCode": "F",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1016/j.jcf.2026.08.013"
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "N",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "Y",
+     "hasReferences": "N",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "Y",
+     "id": "42744679",
+     "inEPMC": "Y",
+     "inPMC": "Y",
+     "isOpenAccess": "N",
+     "journalInfo": {
+      "dateOfPublication": "2026 Sep",
+      "journal": {
+       "essn": "1873-5010",
+       "isoabbreviation": "J Cyst Fibros",
+       "issn": "1569-1993",
+       "medlineAbbreviation": "J Cyst Fibros",
+       "nlmid": "101128966",
+       "title": "Journal of cystic fibrosis : official journal of the European Cystic Fibrosis Society"
+      },
+      "journalIssueId": 4257687,
+      "monthOfPublication": 9,
+      "printPublicationDate": "2026-09-01",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Inflammation",
+       "Chromatin organization",
+       "Epigenetics",
+       "Mucus Hyperconcentration"
+      ]
+     },
+     "language": "eng",
+     "manuscriptId": "NIHMS2207695",
+     "nihAuthMan": "Y",
+     "pageInfo": "S1569-1993(26)03733-1",
+     "pmcid": "PMC13578995",
+     "pmid": "42744679",
+     "pubModel": "Print-Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "research-article",
+       "Review",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "aheadofprint",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Epigenetic regulation and chromatin organization in cystic fibrosis airways."
+    },
+    {
+     "abstractText": "Cystic fibrosis (CF) is a life-limiting autosomal recessive disorder caused by pathogenic variants in the CF transmembrane conductance regulator (CFTR) gene that impair epithelial chloride ion transport, leading to progressive lung dysfunction among other systemic manifestations. Small molecule CFTR modulators have dramatically improved outcomes for people with CF (pwCF) by promoting the trafficking of defective CFTR protein to the cell surface and enhancing its activity. However, a substantial proportion of pwCF harbor genotypes which remain refractory to CFTR modulators and thus lack approved disease-modifying treatments, most commonly nonsense and splicing variants that disrupt CFTR expression at the transcript or translation level. This review delineates the molecular mechanisms underlying modulator-refractory CFTR genotypes, focusing on premature termination codons, nonsense-mediated mRNA decay (NMD), and aberrant pre-mRNA splicing. We examine how these biological phenomena determine and constrain modulator efficacy while simultaneously defining therapeutic entry points. We evaluate emerging DNA-targeted strategies, such as gene replacement and gene editing, alongside RNA-directed approaches, including mRNA replacement, antisense oligonucleotides, CFTR amplifiers, translational readthrough agents and NMD inhibition. Variant-specific sensitivity, reported clinical and preclinical evidence, and practical considerations for implementation are critically assessed. By aligning molecular defect with therapeutic modality, this framework enables rational prioritization of intervention strategies for modulator-refractory CFTR genotypes.",
+     "affiliation": "BioISI-Biosystems and Integrative Sciences Institute, Faculty of Sciences, University of Lisboa, Campo Grande, Lisboa 1749-016, Portugal.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0002-3121-2319"
+       },
+       {
+        "type": "ORCID",
+        "value": "0000-0002-5467-1710"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "BioISI-Biosystems and Integrative Sciences Institute, Faculty of Sciences, University of Lisboa, Campo Grande, Lisboa 1749-016, Portugal."
+          },
+          {
+           "affiliation": "Advanced Disease Modelling, Targeted Drug Discovery and Gene Therapy (ADVANTAGE), Department of Pharmacological and Pharmaceutical Sciences, Faculty of Medicine, KU Leuven, 3001 Leuven, Belgium."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-3121-2319"
+        },
+        "firstName": "Mark D",
+        "fullName": "Leahy MD",
+        "initials": "MD",
+        "lastName": "Leahy"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "BioISI-Biosystems and Integrative Sciences Institute, Faculty of Sciences, University of Lisboa, Campo Grande, Lisboa 1749-016, Portugal."
+          }
+         ]
+        },
+        "firstName": "Immacolata",
+        "fullName": "Zollo I",
+        "initials": "I",
+        "lastName": "Zollo"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "BioISI-Biosystems and Integrative Sciences Institute, Faculty of Sciences, University of Lisboa, Campo Grande, Lisboa 1749-016, Portugal."
+          }
+         ]
+        },
+        "firstName": "Luka A",
+        "fullName": "Clarke LA",
+        "initials": "LA",
+        "lastName": "Clarke"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "BioISI-Biosystems and Integrative Sciences Institute, Faculty of Sciences, University of Lisboa, Campo Grande, Lisboa 1749-016, Portugal."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-5467-1710"
+        },
+        "firstName": "Carlos M",
+        "fullName": "Farinha CM",
+        "initials": "CM",
+        "lastName": "Farinha"
+       }
+      ]
+     },
+     "authorString": "Leahy MD, Zollo I, Clarke LA, Farinha CM.",
+     "chemicalList": {
+      "chemical": [
+       {
+        "name": "Oligonucleotides, Antisense",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "registryNumber": "126880-72-6"
+       },
+       {
+        "name": "Codon, Nonsense",
+        "registryNumber": "0"
+       },
+       {
+        "name": "CFTR protein, human",
+        "registryNumber": "0"
+       }
+      ]
+     },
+     "citedByCount": 0,
+     "dateOfCompletion": "2026-06-27",
+     "dateOfCreation": "2026-06-26",
+     "dateOfRevision": "2026-06-27",
+     "doi": "10.1093/hmg/ddag058",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-06-27",
+     "firstPublicationDate": "2026-06-01",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1093/hmg/ddag058"
+       }
+      ]
+     },
+     "grantsList": {
+      "grant": [
+       {
+        "agency": "Cystic Fibrosis Foundation",
+        "grantId": "FARINH24G0",
+        "orderIn": 0
+       },
+       {
+        "agency": "ORGESTRA Doctoral Network",
+        "orderIn": 0
+       },
+       {
+        "agency": "Fondazione Fibrosi Cistica Ricerca",
+        "grantId": "FFC#2/2023",
+        "orderIn": 0
+       },
+       {
+        "agency": "Cystic Fibrosis Trust",
+        "grantId": "SRC-2024-026",
+        "orderIn": 0
+       },
+       {
+        "agency": "European Union's Horizon Europe programme",
+        "grantId": "101120108",
+        "orderIn": 0
+       },
+       {
+        "agency": "Marie Skłodowska-Curie Actions",
+        "orderIn": 0
+       },
+       {
+        "agency": "Fundação para a Ciência e a Tecnologia",
+        "grantId": "UID/04046/2025",
+        "orderIn": 0
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "N",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "N",
+     "hasReferences": "N",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "Y",
+     "id": "42361321",
+     "inEPMC": "N",
+     "inPMC": "N",
+     "isOpenAccess": "N",
+     "journalInfo": {
+      "dateOfPublication": "2026 Jun",
+      "issue": "13",
+      "journal": {
+       "essn": "1460-2083",
+       "isoabbreviation": "Hum Mol Genet",
+       "issn": "0964-6906",
+       "medlineAbbreviation": "Hum Mol Genet",
+       "nlmid": "9208958",
+       "title": "Human molecular genetics"
+      },
+      "journalIssueId": 4222117,
+      "monthOfPublication": 6,
+      "printPublicationDate": "2026-06-01",
+      "volume": "35",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Gene therapy",
+       "Antisense oligonucleotides",
+       "Cystic Fibrosis",
+       "Rna Therapeutics",
+       "Premature Termination Codon",
+       "Mrna Splicing"
+      ]
+     },
+     "language": "eng",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Animals",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Humans",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Cystic Fibrosis",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "PA",
+           "majorTopic_YN": "N",
+           "qualifierName": "pathology"
+          },
+          {
+           "abbreviation": "TH",
+           "majorTopic_YN": "N",
+           "qualifierName": "therapy"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Oligonucleotides, Antisense",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "TU",
+           "majorTopic_YN": "N",
+           "qualifierName": "therapeutic use"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Codon, Nonsense",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "RNA Splicing",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Nonsense Mediated mRNA Decay",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Genetic Therapy",
+        "majorTopic_YN": "N"
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "ddag058",
+     "pmid": "42361321",
+     "pubModel": "Print",
+     "pubTypeList": {
+      "pubType": [
+       "Review",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "ppublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Nucleic acid-based therapeutic strategies for modulator-refractory cystic fibrosis-causing variants."
+    },
+    {
+     "abstractText": "The assessment of cystic fibrosis transmembrane conductance regulator (CFTR) activity is essential to both diagnose and evaluate the efficacy of treatments in cystic fibrosis (CF). In particular, the prompt evaluation of genotype-specific responses to CFTR modulators might lead to more precise therapeutic approaches. In this study, a flexible electrochemical sensor modified with silver nanoparticles was developed and applied for the electrochemical quantification of chloride ions in CF epithelial cell models. The sensing platform exhibited a linear analytical response toward chloride in both aqueous solutions and chloride-free buffer, with limits of detection in the submillimolar range, enabling the discrimination of chloride concentrations under various conditions. Chloride ions were detected in apical surface liquids obtained from epithelial cultures carrying different CFTR pathogenic variants: the effect of the elexacaftor/tezacaftor/ivacaftor (ETI) treatment, as a CFTR modulator, was differentiated from untreated samples. Chloride concentrations were determined by differential pulse voltammetry using the standard addition method, and results were further normalized to express chloride secretion considering the final apical fluid volume. ETI treatment induced genotype-dependent increases in chloride secretion, with the largest functional recovery observed in responsive genotypes such as F508del/F508del and L1077P/L1077P. A strong correlation was found between chloride levels and normalized secretion rates, confirming how direct electrochemical measurements reliably reflect CFTR functional changes. Overall, this work demonstrates that portable sensors provide a rapid, cost-effective, and scalable approach for functional CFTR evaluation, supporting their potential application in the personalized assessment of CFTR modulator efficacy, namely theratyping.",
+     "affiliation": "Department of Public Health, University Federico II of Naples, 80138 Naples, Italy.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0002-7531-1159"
+       },
+       {
+        "type": "ORCID",
+        "value": "0000-0002-8274-7452"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Public Health, University Federico II of Naples, 80138 Naples, Italy."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-7531-1159"
+        },
+        "firstName": "Antonella",
+        "fullName": "Miglione A",
+        "initials": "A",
+        "lastName": "Miglione"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Experimental Medicine, Sapienza University of Rome, 00161 Rome, Italy."
+          }
+         ]
+        },
+        "firstName": "Giovanna",
+        "fullName": "Blaconà G",
+        "initials": "G",
+        "lastName": "Blaconà"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pharmacy, University of Naples Federico II, Via D. Montesano 49, 80131 Naples, Italy."
+          }
+         ]
+        },
+        "firstName": "Sima",
+        "fullName": "Singh S",
+        "initials": "S",
+        "lastName": "Singh"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Oncology and Molecular Medicine, Istituto Superiore di Sanità, 00161 Rome, Italy."
+          }
+         ]
+        },
+        "firstName": "Stefania Lo",
+        "fullName": "Cicero SL",
+        "initials": "SL",
+        "lastName": "Cicero"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Experimental Medicine, Sapienza University of Rome, 00161 Rome, Italy."
+          },
+          {
+           "affiliation": "CRiN, Center for Research in Neurobiology, Sapienza University of Rome, 00185 Rome, Italy."
+          }
+         ]
+        },
+        "firstName": "Andrea",
+        "fullName": "Fuso A",
+        "initials": "A",
+        "lastName": "Fuso"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Cystic Fibrosis Centre, AOU Policlinico Umberto 1, 00161 Rome, Italy."
+          }
+         ]
+        },
+        "firstName": "Giuseppe",
+        "fullName": "Cimino G",
+        "initials": "G",
+        "lastName": "Cimino"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Oncology and Molecular Medicine, Istituto Superiore di Sanità, 00161 Rome, Italy."
+          }
+         ]
+        },
+        "firstName": "Adriana",
+        "fullName": "Eramo A",
+        "initials": "A",
+        "lastName": "Eramo"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Public Health, University Federico II of Naples, 80138 Naples, Italy."
+          }
+         ]
+        },
+        "firstName": "Umberto",
+        "fullName": "Malapelle U",
+        "initials": "U",
+        "lastName": "Malapelle"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Experimental Medicine, Sapienza University of Rome, 00161 Rome, Italy."
+          },
+          {
+           "affiliation": "Pasteur Institute Cenci Bolognetti Foundation, Sapienza University of Rome, 00185 Rome, Italy."
+          }
+         ]
+        },
+        "firstName": "Marco",
+        "fullName": "Lucarelli M",
+        "initials": "M",
+        "lastName": "Lucarelli"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pharmacy, University of Naples Federico II, Via D. Montesano 49, 80131 Naples, Italy."
+          },
+          {
+           "affiliation": "Bioelectronics Task Force at University of Naples Federico II, Via Cinthia 21, 80126 Naples, Italy."
+          },
+          {
+           "affiliation": "Sbarro Institute for Cancer Research and Molecular Medicine, Center for Biotechnology, College of Science and Technology, Temple University, Philadelphia, Pennsylvania 19122, United States."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-8274-7452"
+        },
+        "firstName": "Stefano",
+        "fullName": "Cinti S",
+        "initials": "S",
+        "lastName": "Cinti"
+       }
+      ]
+     },
+     "authorString": "Miglione A, Blaconà G, Singh S, Cicero SL, Fuso A, Cimino G, Eramo A, Malapelle U, Lucarelli M, Cinti S.",
+     "chemicalList": {
+      "chemical": [
+       {
+        "name": "Chlorides",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Pyridines",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Indoles",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Quinolines",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Drug Combinations",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Pyrazoles",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Aminophenols",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "registryNumber": "126880-72-6"
+       },
+       {
+        "name": "CFTR protein, human",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Benzodioxoles",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Silver",
+        "registryNumber": "3M4G523W1G"
+       },
+       {
+        "name": "elexacaftor, ivacaftor, tezacaftor drug combination",
+        "registryNumber": "0"
+       }
+      ]
+     },
+     "citedByCount": 1,
+     "dataLinksTagsList": {
+      "dataLinkstag": [
+       "supporting_data"
+      ]
+     },
+     "dateOfCompletion": "2026-06-18",
+     "dateOfCreation": "2026-06-04",
+     "dateOfRevision": "2026-08-13",
+     "doi": "10.1021/acs.analchem.6c00392",
+     "electronicPublicationDate": "2026-06-04",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-06-06",
+     "firstPublicationDate": "2026-06-04",
+     "fullTextIdList": {
+      "fullTextId": [
+       "PMC13276835"
+      ]
+     },
+     "fullTextReceivedDate": "2026-06-24",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1021/acs.analchem.6c00392"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "html",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13276835"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "pdf",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13276835?pdf=render"
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "Y",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "Y",
+     "hasReferences": "Y",
+     "hasSuppl": "Y",
+     "hasTMAccessionNumbers": "Y",
+     "hasTextMinedTerms": "Y",
+     "id": "42240701",
+     "inEPMC": "Y",
+     "inPMC": "Y",
+     "isOpenAccess": "Y",
+     "journalInfo": {
+      "dateOfPublication": "2026 Jun",
+      "issue": "23",
+      "journal": {
+       "essn": "1520-6882",
+       "isoabbreviation": "Anal Chem",
+       "issn": "0003-2700",
+       "medlineAbbreviation": "Anal Chem",
+       "nlmid": "0370536",
+       "title": "Analytical chemistry"
+      },
+      "journalIssueId": 4218018,
+      "monthOfPublication": 6,
+      "printPublicationDate": "2026-06-01",
+      "volume": "98",
+      "yearOfPublication": 2026
+     },
+     "language": "eng",
+     "license": "cc by",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Epithelial Cells",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Cystic Fibrosis",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Chlorides",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "AN",
+           "majorTopic_YN": "N",
+           "qualifierName": "analysis"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Silver",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "CH",
+           "majorTopic_YN": "N",
+           "qualifierName": "chemistry"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Aminophenols",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "PD",
+           "majorTopic_YN": "N",
+           "qualifierName": "pharmacology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Pyrazoles",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "PD",
+           "majorTopic_YN": "N",
+           "qualifierName": "pharmacology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Pyridines",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "PD",
+           "majorTopic_YN": "N",
+           "qualifierName": "pharmacology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Indoles",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "PD",
+           "majorTopic_YN": "N",
+           "qualifierName": "pharmacology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Quinolines",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "PD",
+           "majorTopic_YN": "N",
+           "qualifierName": "pharmacology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Drug Combinations",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Benzodioxoles",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "PD",
+           "majorTopic_YN": "N",
+           "qualifierName": "pharmacology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Metal Nanoparticles",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "CH",
+           "majorTopic_YN": "N",
+           "qualifierName": "chemistry"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Electrochemical Techniques",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "MT",
+           "majorTopic_YN": "N",
+           "qualifierName": "methods"
+          }
+         ]
+        }
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "16805-16812",
+     "pmcid": "PMC13276835",
+     "pmid": "42240701",
+     "pubModel": "Print-Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "brief-report",
+       "Research Support, Non-U.S. Gov't",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "ppublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Toward Precision Electrochemical Sensing of CFTR Function in Cystic Fibrosis Models.",
+     "tmAccessionTypeList": {
+      "accessionType": [
+       "doi"
+      ]
+     }
+    },
+    {
+     "abstractText": "Congenital absence of the vas deferens (CAVD) is a major cause of obstructive azoospermia and male infertility, with its genetic etiology primarily associated with CFTR (autosomal recessive) and ADGRG2 (X-linked) mutations. However, the genetic spectrum and classification of variants in isolated congenital absence of the vas deferens (iCAVD), as well as the risk of CFTR variant carriage in affected couples, remain incompletely understood. In this cross-sectional study, we enrolled 199 Chinese iCAVD patients and 148 female partners between 2012 and 2024. CFTR and ADGRG2 variants were identified in 74.87% of iCAVD patients, with CFTR being the predominant pathogenic gene. Notably, 10.14% of couples carried shared pathogenic or likely pathogenic CFTR variants, highlighting the potential reproductive risks. The most common pathogenic variants were CFTR c.1210-12T (Yu et al., 2012) (5T) and c.4056G > C (p.Gln1352His), whereas c.1666A > G (p.Ile556Val) was classified as likely benign. The c.4056G > C variant exhibited significant regional ethnic characteristics. Furthermore, genotype-phenotype correlation analysis revealed significant differences in semen volume, pH, and fructose levels among different variant subgroups in CBAVD patients. Collectively, these findings provide a comprehensive overview of the genotype-phenotype landscape in a large iCAVD cohort, emphasizing variant classification and reproductive risks associated with CFTR and ADGRG2. This study offers valuable insights for genetic counseling and reproductive planning in affected couples.",
+     "affiliation": "IVF Center, Department of Obstetrics and Gynecology, Sun Yat-Sen Memorial Hospital, Sun Yat-Sen University, Guangzhou, China, sysu.edu.cn.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0001-5367-8753"
+       },
+       {
+        "type": "ORCID",
+        "value": "0000-0001-5539-4471"
+       },
+       {
+        "type": "ORCID",
+        "value": "0000-0002-3709-6494"
+       },
+       {
+        "type": "ORCID",
+        "value": "0000-0002-7729-4508"
+       },
+       {
+        "type": "ORCID",
+        "value": "0000-0003-3181-8772"
+       },
+       {
+        "type": "ORCID",
+        "value": "0009-0000-1746-5849"
+       },
+       {
+        "type": "ORCID",
+        "value": "0009-0000-5045-7189"
+       },
+       {
+        "type": "ORCID",
+        "value": "0009-0001-1046-3661"
+       },
+       {
+        "type": "ORCID",
+        "value": "0009-0003-1485-4795"
+       },
+       {
+        "type": "ORCID",
+        "value": "0009-0005-9243-2365"
+       },
+       {
+        "type": "ORCID",
+        "value": "0009-0007-9039-4507"
+       },
+       {
+        "type": "ORCID",
+        "value": "0009-0009-7580-9721"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "IVF Center, Department of Obstetrics and Gynecology, Sun Yat-Sen Memorial Hospital, Sun Yat-Sen University, Guangzhou, China, sysu.edu.cn."
+          },
+          {
+           "affiliation": "Guangdong Provincial Clinical Research Center for Obstetrical and Gynecological Diseases, Guangzhou, China."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0001-5367-8753"
+        },
+        "firstName": "Ping",
+        "fullName": "Yuan P",
+        "initials": "P",
+        "lastName": "Yuan"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "IVF Center, Department of Obstetrics and Gynecology, Sun Yat-Sen Memorial Hospital, Sun Yat-Sen University, Guangzhou, China, sysu.edu.cn."
+          },
+          {
+           "affiliation": "Guangdong Provincial Clinical Research Center for Obstetrical and Gynecological Diseases, Guangzhou, China."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0009-0009-7580-9721"
+        },
+        "firstName": "Zhongkun",
+        "fullName": "Liang Z",
+        "initials": "Z",
+        "lastName": "Liang"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "IVF Center, Department of Obstetrics and Gynecology, Sun Yat-Sen Memorial Hospital, Sun Yat-Sen University, Guangzhou, China, sysu.edu.cn."
+          },
+          {
+           "affiliation": "Guangdong Provincial Clinical Research Center for Obstetrical and Gynecological Diseases, Guangzhou, China."
+          },
+          {
+           "affiliation": "The Department of Obstetrics and Gynecology, The Third Affiliated Hospital of Guangzhou Medical University, Guangzhou, China, gzhmc.edu.cn."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0009-0003-1485-4795"
+        },
+        "firstName": "Ling",
+        "fullName": "Zhou L",
+        "initials": "L",
+        "lastName": "Zhou"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "IVF Center, Department of Obstetrics and Gynecology, Sun Yat-Sen Memorial Hospital, Sun Yat-Sen University, Guangzhou, China, sysu.edu.cn."
+          },
+          {
+           "affiliation": "Guangdong Provincial Clinical Research Center for Obstetrical and Gynecological Diseases, Guangzhou, China."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0009-0007-9039-4507"
+        },
+        "firstName": "Xiaohui",
+        "fullName": "Ji X",
+        "initials": "X",
+        "lastName": "Ji"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "IVF Center, Department of Obstetrics and Gynecology, Sun Yat-Sen Memorial Hospital, Sun Yat-Sen University, Guangzhou, China, sysu.edu.cn."
+          },
+          {
+           "affiliation": "Guangdong Provincial Clinical Research Center for Obstetrical and Gynecological Diseases, Guangzhou, China."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0001-5539-4471"
+        },
+        "firstName": "Shengran",
+        "fullName": "Wang S",
+        "initials": "S",
+        "lastName": "Wang"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "The Reproductive Medicine Research Center, The Sixth Affiliated Hospital, Sun Yat-Sen University, Guangzhou, China, sysu.edu.cn."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-7729-4508"
+        },
+        "firstName": "Jing",
+        "fullName": "Zhang J",
+        "initials": "J",
+        "lastName": "Zhang"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "IVF Center, Department of Obstetrics and Gynecology, Sun Yat-Sen Memorial Hospital, Sun Yat-Sen University, Guangzhou, China, sysu.edu.cn."
+          },
+          {
+           "affiliation": "Guangdong Provincial Clinical Research Center for Obstetrical and Gynecological Diseases, Guangzhou, China."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0003-3181-8772"
+        },
+        "firstName": "Jin",
+        "fullName": "Li J",
+        "initials": "J",
+        "lastName": "Li"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "IVF Center, Department of Obstetrics and Gynecology, Sun Yat-Sen Memorial Hospital, Sun Yat-Sen University, Guangzhou, China, sysu.edu.cn."
+          },
+          {
+           "affiliation": "Guangdong Provincial Clinical Research Center for Obstetrical and Gynecological Diseases, Guangzhou, China."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0009-0000-5045-7189"
+        },
+        "firstName": "Shuoshuo",
+        "fullName": "Xie S",
+        "initials": "S",
+        "lastName": "Xie"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "IVF Center, Department of Obstetrics and Gynecology, Sun Yat-Sen Memorial Hospital, Sun Yat-Sen University, Guangzhou, China, sysu.edu.cn."
+          },
+          {
+           "affiliation": "Guangdong Provincial Clinical Research Center for Obstetrical and Gynecological Diseases, Guangzhou, China."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0009-0000-1746-5849"
+        },
+        "firstName": "Yingshi",
+        "fullName": "Li Y",
+        "initials": "Y",
+        "lastName": "Li"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "IVF Center, The First People's Hospital of Kashi Prefecture, Kashi, China."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0009-0005-9243-2365"
+        },
+        "firstName": "Tuerxunayi",
+        "fullName": "Yalikun T",
+        "initials": "T",
+        "lastName": "Yalikun"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Organ Transplantation, The Affiliated Guangdong Second Provincial General Hospital of Jinan University, Guangzhou, China."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0009-0001-1046-3661"
+        },
+        "firstName": "Qipeng",
+        "fullName": "Sun Q",
+        "initials": "Q",
+        "lastName": "Sun"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "IVF Center, Department of Obstetrics and Gynecology, Sun Yat-Sen Memorial Hospital, Sun Yat-Sen University, Guangzhou, China, sysu.edu.cn."
+          },
+          {
+           "affiliation": "Guangdong Provincial Clinical Research Center for Obstetrical and Gynecological Diseases, Guangzhou, China."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-3709-6494"
+        },
+        "firstName": "Hui",
+        "fullName": "Chen H",
+        "initials": "H",
+        "lastName": "Chen"
+       }
+      ]
+     },
+     "authorString": "Yuan P, Liang Z, Zhou L, Ji X, Wang S, Zhang J, Li J, Xie S, Li Y, Yalikun T, Sun Q, Chen H.",
+     "chemicalList": {
+      "chemical": [
+       {
+        "name": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "registryNumber": "126880-72-6"
+       },
+       {
+        "name": "Receptors, G-Protein-Coupled",
+        "registryNumber": "0"
+       },
+       {
+        "name": "CFTR protein, human",
+        "registryNumber": "0"
+       },
+       {
+        "name": "ADGRG2 protein, human",
+        "registryNumber": "0"
+       }
+      ]
+     },
+     "citedByCount": 1,
+     "dataLinksTagsList": {
+      "dataLinkstag": [
+       "altmetrics",
+       "supporting_data"
+      ]
+     },
+     "dateOfCompletion": "2026-05-27",
+     "dateOfCreation": "2026-05-27",
+     "dateOfRevision": "2026-08-13",
+     "doi": "10.1155/humu/5588277",
+     "electronicPublicationDate": "2026-05-25",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-05-28",
+     "firstPublicationDate": "2026-05-25",
+     "fullTextIdList": {
+      "fullTextId": [
+       "PMC13199994"
+      ]
+     },
+     "fullTextReceivedDate": "2026-05-27",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1155/humu/5588277"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "html",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13199994"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "pdf",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13199994?pdf=render"
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "Y",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "Y",
+     "hasPDF": "Y",
+     "hasReferences": "Y",
+     "hasSuppl": "Y",
+     "hasTMAccessionNumbers": "Y",
+     "hasTextMinedTerms": "Y",
+     "id": "42199298",
+     "inEPMC": "Y",
+     "inPMC": "Y",
+     "isOpenAccess": "Y",
+     "journalInfo": {
+      "dateOfPublication": "2026 ",
+      "journal": {
+       "essn": "1098-1004",
+       "isoabbreviation": "Hum Mutat",
+       "issn": "1059-7794",
+       "medlineAbbreviation": "Hum Mutat",
+       "nlmid": "9215429",
+       "title": "Human mutation"
+      },
+      "journalIssueId": 4085011,
+      "monthOfPublication": 0,
+      "printPublicationDate": "2026-01-01",
+      "volume": "2026",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Genetic Variants",
+       "Cftr",
+       "Genotype–phenotype Correlation",
+       "Cavd",
+       "Adgrg2",
+       "Carrier Risk"
+      ]
+     },
+     "language": "eng",
+     "license": "cc by",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Vas Deferens",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "AB",
+           "majorTopic_YN": "N",
+           "qualifierName": "abnormalities"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Humans",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Infertility, Male",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Genetic Predisposition to Disease",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Receptors, G-Protein-Coupled",
+        "majorTopic_YN": "Y"
+       },
+       {
+        "descriptorName": "Risk Assessment",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Cohort Studies",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Cross-Sectional Studies",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Mutation",
+        "majorTopic_YN": "Y"
+       },
+       {
+        "descriptorName": "Adult",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "China",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Female",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Male",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Male Urogenital Diseases",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Genetic Association Studies",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "East Asian People",
+        "majorTopic_YN": "N"
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "5588277",
+     "pmcid": "PMC13199994",
+     "pmid": "42199298",
+     "pubModel": "Electronic-eCollection",
+     "pubTypeList": {
+      "pubType": [
+       "research-article",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "epublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Spectrum and Classification of CFTR and ADGRG2 Variants in Chinese Patients With Isolated CAVD: A Large Cohort Study and Risk Assessment of CFTR Variant Carriage in Couples.",
+     "tmAccessionTypeList": {
+      "accessionType": [
+       "omim",
+       "refseq",
+       "uniprot",
+       "doi"
+      ]
+     }
+    },
+    {
+     "abstractText": "The CFTR chloride channel is essential for airway surface hydration and mucociliary clearance, and its activity is controlled by cAMP-dependent phosphorylation. We previously observed that pharmacological activation of the TRPV4 calcium channel stimulates CFTR, but the underlying mechanism remained unresolved. Here, we show that TRPV4 and CFTR are expressed in distinct epithelial cell types, indicating that TRPV4-induced CFTR activation occurs through a paracrine mechanism. Using a luciferase-based assay, we demonstrate that TRPV4 activation triggers ATP release at the apical surface. Pharmacological inhibition reveals that extracellular ATP activates CFTR through both P2Y2 purinergic and A2B adenosine receptors and that blocking these receptors nearly abolishes the response. These findings identify a TRPV4-ATP/adenosine-CFTR signaling axis that links mechanical and chemical stimuli to the control of airway surface hydration, with potential implications for mucociliary clearance and airway disease.",
+     "affiliation": "Telethon Institute of Genetics and Medicine (TIGEM), Pozzuoli, NA, Italy.",
+     "authMan": "N",
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Telethon Institute of Genetics and Medicine (TIGEM), Pozzuoli, NA, Italy."
+          }
+         ]
+        },
+        "firstName": "Michele",
+        "fullName": "Genovese M",
+        "initials": "M",
+        "lastName": "Genovese"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Telethon Institute of Genetics and Medicine (TIGEM), Pozzuoli, NA, Italy."
+          }
+         ]
+        },
+        "firstName": "Martina",
+        "fullName": "De Santis M",
+        "initials": "M",
+        "lastName": "De Santis"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Telethon Institute of Genetics and Medicine (TIGEM), Pozzuoli, NA, Italy."
+          }
+         ]
+        },
+        "firstName": "Alessandro",
+        "fullName": "Giordano A",
+        "initials": "A",
+        "lastName": "Giordano"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Institute of Biochemistry and Cell Biology, National Research Council of Italy, Naples, Italy."
+          }
+         ]
+        },
+        "firstName": "Pina",
+        "fullName": "Marotta P",
+        "initials": "P",
+        "lastName": "Marotta"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Telethon Institute of Genetics and Medicine (TIGEM), Pozzuoli, NA, Italy."
+          },
+          {
+           "affiliation": "Department of Translational Medical Sciences (DISMET), University of Naples \"Federico II\", Naples, Italy."
+          }
+         ]
+        },
+        "firstName": "Luis J V",
+        "fullName": "Galietta LJV",
+        "initials": "LJV",
+        "lastName": "Galietta"
+       }
+      ]
+     },
+     "authorString": "Genovese M, De Santis M, Giordano A, Marotta P, Galietta LJV.",
+     "citedByCount": 0,
+     "dataLinksTagsList": {
+      "dataLinkstag": [
+       "supporting_data"
+      ]
+     },
+     "dateOfCompletion": "2026-09-08",
+     "dateOfCreation": "2026-09-08",
+     "dateOfRevision": "2026-09-09",
+     "doi": "10.1016/j.isci.2026.117304",
+     "electronicPublicationDate": "2026-08-27",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-09-09",
+     "firstPublicationDate": "2026-08-27",
+     "fullTextIdList": {
+      "fullTextId": [
+       "PMC13546915"
+      ]
+     },
+     "fullTextReceivedDate": "2026-09-13",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1016/j.isci.2026.117304"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "html",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13546915"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "pdf",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13546915?pdf=render"
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "Y",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "Y",
+     "hasReferences": "Y",
+     "hasSuppl": "Y",
+     "hasTMAccessionNumbers": "Y",
+     "hasTextMinedTerms": "Y",
+     "id": "42707181",
+     "inEPMC": "Y",
+     "inPMC": "Y",
+     "isOpenAccess": "Y",
+     "journalInfo": {
+      "dateOfPublication": "2026 Sep",
+      "issue": "9",
+      "journal": {
+       "essn": "2589-0042",
+       "isoabbreviation": "iScience",
+       "issn": "2589-0042",
+       "medlineAbbreviation": "iScience",
+       "nlmid": "101724038",
+       "title": "iScience"
+      },
+      "journalIssueId": 4246031,
+      "monthOfPublication": 9,
+      "printPublicationDate": "2026-09-01",
+      "volume": "29",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Mucociliary clearance",
+       "Purinergic Signaling",
+       "airway epithelium",
+       "Cftr",
+       "Trpv4",
+       "Atp Release",
+       "Adenosine A2b Receptor",
+       "Pannexin-1",
+       "P2y2 Receptor",
+       "Prostaglandin Signaling"
+      ]
+     },
+     "language": "eng",
+     "license": "cc by-nc-nd",
+     "nihAuthMan": "N",
+     "pageInfo": "117304",
+     "pmcid": "PMC13546915",
+     "pmid": "42707181",
+     "pubModel": "Electronic-eCollection",
+     "pubTypeList": {
+      "pubType": [
+       "research-article",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "epublish",
+     "source": "MED",
+     "title": "TRPV4-driven ATP release activates CFTR through ADORA2B and P2RY2 receptors in the airway epithelium.",
+     "tmAccessionTypeList": {
+      "accessionType": [
+       "geo",
+       "gen",
+       "refseq",
+       "doi"
+      ]
+     }
+    },
+    {
+     "abstractText": "Cystic fibrosis (CF) is an autosomal recessive disorder caused by pathogenic variants in the cystic fibrosis transmembrane conductance regulator (CFTR) gene. It is increasingly understood through a genomics-informed framework linking variant architecture to phenotype, diagnosis, and therapeutic eligibility. This review summarizes current evidence on CFTR structure, variant interpretation, genotype-phenotype heterogeneity, diagnostic workflows, and modern management. We highlight how full-gene sequencing, curated disease-liability databases, functional testing, and organoid-informed theratyping refine diagnosis and treatment selection; how disrupted chloride and bicarbonate transport drives muco-obstructive airway disease and multisystem complications; and why modulator therapy must still be integrated with respiratory, nutritional, endocrine, hepatobiliary, reproductive, and psychosocial care. We also outline unresolved challenges in rare variants, residual organ damage, ancestry-related diagnostic gaps, and mutation-agnostic therapeutic development.",
+     "affiliation": "Children's Hospital, Zhejiang University School of Medicine, National Clinical Research Center for Children and Adolescents' Health and Diseases, Hangzhou 310052, China.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0002-5072-5849"
+       },
+       {
+        "type": "ORCID",
+        "value": "0009-0003-2185-2122"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Children's Hospital, Zhejiang University School of Medicine, National Clinical Research Center for Children and Adolescents' Health and Diseases, Hangzhou 310052, China."
+          }
+         ]
+        },
+        "firstName": "Liqin",
+        "fullName": "Ke L",
+        "initials": "L",
+        "lastName": "Ke"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Children's Hospital, Zhejiang University School of Medicine, National Clinical Research Center for Children and Adolescents' Health and Diseases, Hangzhou 310052, China."
+          }
+         ]
+        },
+        "firstName": "Lijun",
+        "fullName": "Guan L",
+        "initials": "L",
+        "lastName": "Guan"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Children's Hospital, Zhejiang University School of Medicine, National Clinical Research Center for Children and Adolescents' Health and Diseases, Hangzhou 310052, China."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0009-0003-2185-2122"
+        },
+        "firstName": "Yiyao",
+        "fullName": "Bao Y",
+        "initials": "Y",
+        "lastName": "Bao"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Children's Hospital, Zhejiang University School of Medicine, National Clinical Research Center for Children and Adolescents' Health and Diseases, Hangzhou 310052, China."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-5072-5849"
+        },
+        "firstName": "Chao",
+        "fullName": "Tang C",
+        "initials": "C",
+        "lastName": "Tang"
+       }
+      ]
+     },
+     "authorString": "Ke L, Guan L, Bao Y, Tang C.",
+     "chemicalList": {
+      "chemical": [
+       {
+        "name": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "registryNumber": "126880-72-6"
+       },
+       {
+        "name": "CFTR protein, human",
+        "registryNumber": "0"
+       }
+      ]
+     },
+     "citedByCount": 0,
+     "dataLinksTagsList": {
+      "dataLinkstag": [
+       "supporting_data"
+      ]
+     },
+     "dateOfCompletion": "2026-07-29",
+     "dateOfCreation": "2026-07-28",
+     "dateOfRevision": "2026-08-16",
+     "doi": "10.3390/genes17070743",
+     "electronicPublicationDate": "2026-06-27",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-07-30",
+     "firstPublicationDate": "2026-06-27",
+     "fullTextIdList": {
+      "fullTextId": [
+       "PMC13408614"
+      ]
+     },
+     "fullTextReceivedDate": "2026-09-04",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.3390/genes17070743"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "html",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13408614"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "pdf",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13408614?pdf=render"
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "Y",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "Y",
+     "hasReferences": "Y",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "Y",
+     "hasTextMinedTerms": "Y",
+     "id": "42510783",
+     "inEPMC": "Y",
+     "inPMC": "Y",
+     "isOpenAccess": "Y",
+     "journalInfo": {
+      "dateOfPublication": "2026 Jun",
+      "issue": "7",
+      "journal": {
+       "essn": "2073-4425",
+       "isoabbreviation": "Genes (Basel)",
+       "issn": "2073-4425",
+       "medlineAbbreviation": "Genes (Basel)",
+       "nlmid": "101551097",
+       "title": "Genes"
+      },
+      "journalIssueId": 4234402,
+      "monthOfPublication": 6,
+      "printPublicationDate": "2026-06-01",
+      "volume": "17",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Cystic Fibrosis",
+       "Cftr",
+       "Precision Medicine",
+       "Genotype–phenotype Correlation",
+       "Cftr Modulators",
+       "Variant Interpretation",
+       "Genomic Diagnostics"
+      ]
+     },
+     "language": "eng",
+     "license": "cc by",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Humans",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Cystic Fibrosis",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "DI",
+           "majorTopic_YN": "N",
+           "qualifierName": "diagnosis"
+          },
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "TH",
+           "majorTopic_YN": "N",
+           "qualifierName": "therapy"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Phenotype",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Mutation",
+        "majorTopic_YN": "N"
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "743",
+     "pmcid": "PMC13408614",
+     "pmid": "42510783",
+     "pubModel": "Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "review-article",
+       "Review",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "epublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Cystic Fibrosis: Modern Diagnostic and Therapeutic Advances from Molecular Pathogenesis to Multidisciplinary Management.",
+     "tmAccessionTypeList": {
+      "accessionType": [
+       "doi"
+      ]
+     }
+    },
+    {
+     "abstractText": "Mutations in the cystic fibrosis transmembrane conductance regulator (CFTR) cause cystic fibrosis (CF), an autosomal recessive multiorgan disorder. In addition to respiratory, digestive, and reproductive pathologies, patients with CF also exhibit higher rates of enamel defects. CFTR is an anion channel expressed in maturation-stage ameloblasts and is known for its role in chloride and bicarbonate conductance, a function thought to promote enamel mineralization through the neutralization of protons released during hydroxyapatite formation. Previous studies of CFTR global knockout mice have shown hypomineralization and acidification of the maturation-stage enamel matrix. However, the systemic nature of CF and the contribution of extrinsic factors may contribute to these findings. To determine how CFTR specifically contributes to amelogenesis, we generated a conditional knockout mouse in which CFTR loss-of-function is driven by Cre expression under the promoter of the maturation-stage ameloblast marker, Odam. CFTR loss-of-function resulted in the formation of hypomineralized enamel. The enamel matrix was acidified, and loss of matrix pH cycling coincided with arrested ameloblast modulation as indicated by failed re-localization of tight/ gap junctions and ion transporters to the ameloblast distal membrane. Amelogenin hydrolysis was reduced and retained in the maturing enamel matrix, which was associated with reduced Klk4 expression and activity. Transcriptional analyses of incisor ameloblasts showed reduced expression of acid-base regulators, consistent with dysregulation of both intracellular and extracellular pH. Together, these findings show multiple functions of CFTR in incisor enamel maturation, including regulation of intra/ extracellular pH, ameloblast modulation, and extracellular matrix remodeling.",
+     "affiliation": "Department of Orofacial Sciences, School of Dentistry, University of California, San Francisco, San Francisco, USA.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0002-2107-6229"
+       },
+       {
+        "type": "ORCID",
+        "value": "0000-0002-2373-1696"
+       },
+       {
+        "type": "ORCID",
+        "value": "0009-0003-3548-4148"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Orofacial Sciences, School of Dentistry, University of California, San Francisco, San Francisco, USA."
+          },
+          {
+           "affiliation": "Oral and Craniofacial Sciences Graduate Program, School of Dentistry, University of California, San Francisco, San Francisco, USA."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0009-0003-3548-4148"
+        },
+        "firstName": "Jake",
+        "fullName": "Ngu J",
+        "initials": "J",
+        "lastName": "Ngu"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "School of Dentistry, University of California, San Francisco, San Francisco, USA."
+          }
+         ]
+        },
+        "firstName": "Charles M",
+        "fullName": "Met CM",
+        "initials": "CM",
+        "lastName": "Met"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "School of Dentistry, University of California, San Francisco, San Francisco, USA."
+          }
+         ]
+        },
+        "firstName": "Atoosa",
+        "fullName": "Heidari Bigvand A",
+        "initials": "A",
+        "lastName": "Heidari Bigvand"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Orofacial Sciences, School of Dentistry, University of California, San Francisco, San Francisco, USA."
+          },
+          {
+           "affiliation": "Center for Oral Health Research, University of California, San Francisco, San Francisco, USA."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-2373-1696"
+        },
+        "firstName": "Yan",
+        "fullName": "Zhang Y",
+        "initials": "Y",
+        "lastName": "Zhang"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Orofacial Sciences, School of Dentistry, University of California, San Francisco, San Francisco, USA. pamela.denbesten@ucsf.edu."
+          },
+          {
+           "affiliation": "Center for Oral Health Research, University of California, San Francisco, San Francisco, USA. pamela.denbesten@ucsf.edu."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-2107-6229"
+        },
+        "firstName": "Pamela K",
+        "fullName": "Den Besten PK",
+        "initials": "PK",
+        "lastName": "Den Besten"
+       }
+      ]
+     },
+     "authorString": "Ngu J, Met CM, Heidari Bigvand A, Zhang Y, Den Besten PK.",
+     "chemicalList": {
+      "chemical": [
+       {
+        "name": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "registryNumber": "126880-72-6"
+       },
+       {
+        "name": "Cftr protein, mouse",
+        "registryNumber": "0"
+       }
+      ]
+     },
+     "citedByCount": 0,
+     "dataLinksTagsList": {
+      "dataLinkstag": [
+       "altmetrics",
+       "related_data",
+       "supporting_data"
+      ]
+     },
+     "dateOfCompletion": "2026-07-16",
+     "dateOfCreation": "2026-05-04",
+     "dateOfRevision": "2026-08-13",
+     "doi": "10.1007/s00223-026-01539-1",
+     "electronicPublicationDate": "2026-05-04",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-05-13",
+     "firstPublicationDate": "2026-05-04",
+     "fullTextIdList": {
+      "fullTextId": [
+       "PMC13139227"
+      ]
+     },
+     "fullTextReceivedDate": "2026-05-20",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1007/s00223-026-01539-1"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "html",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13139227"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "pdf",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13139227?pdf=render"
+       }
+      ]
+     },
+     "grantsList": {
+      "grant": [
+       {
+        "acronym": "DE",
+        "agency": "NIDCR NIH HHS",
+        "grantId": "R01 DE027971",
+        "orderIn": 0
+       },
+       {
+        "acronym": "DE",
+        "agency": "NIDCR NIH HHS",
+        "grantId": "R21 DE033833",
+        "orderIn": 0
+       },
+       {
+        "acronym": "DE",
+        "agency": "NIDCR NIH HHS",
+        "grantId": "R21DE033833",
+        "orderIn": 0
+       },
+       {
+        "acronym": "DE",
+        "agency": "NIDCR NIH HHS",
+        "grantId": "T32DE007306",
+        "orderIn": 0
+       },
+       {
+        "acronym": "DE",
+        "agency": "NIDCR NIH HHS",
+        "grantId": "R01DE027971",
+        "orderIn": 0
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "Y",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "Y",
+     "hasPDF": "Y",
+     "hasReferences": "Y",
+     "hasSuppl": "Y",
+     "hasTMAccessionNumbers": "Y",
+     "hasTextMinedTerms": "Y",
+     "id": "42080975",
+     "inEPMC": "Y",
+     "inPMC": "Y",
+     "isOpenAccess": "Y",
+     "journalInfo": {
+      "dateOfPublication": "2026 May",
+      "issue": "1",
+      "journal": {
+       "essn": "1432-0827",
+       "isoabbreviation": "Calcif Tissue Int",
+       "issn": "0171-967X",
+       "medlineAbbreviation": "Calcif Tissue Int",
+       "nlmid": "7905481",
+       "title": "Calcified tissue international"
+      },
+      "journalIssueId": 4187976,
+      "monthOfPublication": 5,
+      "printPublicationDate": "2026-05-01",
+      "volume": "117",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "pH",
+       "Enamel",
+       "Modulation",
+       "Cystic Fibrosis",
+       "Ameloblasts",
+       "Cftr"
+      ]
+     },
+     "language": "eng",
+     "license": "cc by",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Ameloblasts",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Dental Enamel",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Animals",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Mice, Knockout",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Humans",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Mice",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Cystic Fibrosis",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Amelogenesis",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "PH",
+           "majorTopic_YN": "N",
+           "qualifierName": "physiology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Hydrogen-Ion Concentration",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Dental Enamel Hypomineralization",
+        "majorTopic_YN": "N"
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "76",
+     "pmcid": "PMC13139227",
+     "pmid": "42080975",
+     "pubModel": "Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "research-article",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "epublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "The Role of the Cystic Fibrosis Transmembrane Conductance Regulator (CFTR) in Enamel Formation.",
+     "tmAccessionTypeList": {
+      "accessionType": [
+       "refseq",
+       "doi"
+      ]
+     }
+    }
+   ]
+  },
+  "version": "6.9"
+ },
+ "headers": {
+  "content-type": "application/json;charset=UTF-8"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": {
+   "format": "json",
+   "pageSize": 8,
+   "query": "(TITLE_ABS:\"CFTR\" AND (TITLE_ABS:\"loss of function\" OR TITLE_ABS:\"mechanism\" OR TITLE_ABS:\"pathogenic variants\")) AND SRC:MED",
+   "resultType": "core",
+   "synonym": "false"
+  },
+  "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
+ },
+ "retrieved_at": "2026-09-17T19:41:44+00:00",
+ "status": 200,
+ "text": null
+}

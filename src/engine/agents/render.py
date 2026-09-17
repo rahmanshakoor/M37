@@ -11,8 +11,14 @@ the index is consulted for URLs and paper titles, never for new facts.
 The evidence chain prints the classification the validator computed from the
 surviving criteria (never one the model asserted), and a disputed or unverified
 criterion prints with the validator's ``[DISPUTED …]`` / ``[UNVERIFIED …]`` mark
-intact. The medicine report follows the rubric's order: mechanism → candidates with
-counter-arguments → follow-up → limits.
+intact. A redaction is a footnote: the ``[^k]`` marker the validator left in the prose
+stays where it is and every ``##`` section ends with the ``[^k]: citation removed by
+the validator: <reason>`` lines for the markers it printed, reasons from the
+``rejections`` the caller hands in (a marker no rejection carries prints the reason
+as unknown); ``footnote_prefix`` keeps the references unique when several documents
+share one file. The medicine report follows the rubric's order: mechanism →
+candidates with counter-arguments → follow-up → limits (the legacy renderer;
+``engine.medicine.render`` writes stage 6's ``report.md``).
 """
 
 from __future__ import annotations
@@ -22,6 +28,7 @@ from typing import Any, Iterable
 
 from pydantic import BaseModel
 
+from engine.agents.redaction import footnotes, prefixed
 from engine.agents.schema import Criterion, DrugCandidate, EvidenceChain, MedicineReport, VariantChain
 from engine.agents.validator import KNOWN_SOURCES, EvidenceIndex, citation_tokens
 
@@ -31,14 +38,16 @@ _WS = re.compile(r"\s+")
 # ------------------------------------------------------------------- evidence chain
 
 def render_evidence_chain(chain: EvidenceChain, index: EvidenceIndex | None = None, *,
-                          disclosure: str | None = None) -> str:
+                          disclosure: str | None = None, rejections: Iterable[Any] = (),
+                          footnote_prefix: str = "") -> str:
+    notes = _Footnotes(rejections, footnote_prefix)
     out = [f"# Evidence chain — {chain.candidate_id}", ""]
     for v in chain.variants:
-        out.extend(_variant_section(v))
-    out.extend(["## Phase", "", _para(chain.phase_statement), ""])
-    out.extend(["## Mechanism hypothesis", "", _para(chain.mechanism_hypothesis), ""])
-    out.extend(_bullets("Limits", chain.limits))
-    out.extend(_bullets("What would change the call", chain.what_would_change_the_call))
+        out.extend(notes.section(_variant_section(v)))
+    out.extend(notes.section(["## Phase", "", _para(chain.phase_statement), ""]))
+    out.extend(notes.section(["## Mechanism hypothesis", "", _para(chain.mechanism_hypothesis), ""]))
+    out.extend(notes.section(_bullets("Limits", chain.limits)))
+    out.extend(notes.section(_bullets("What would change the call", chain.what_would_change_the_call)))
     out.extend(_literature(chain.literature, index))
     out.extend(_references(cited_ids(chain, index), index))
     out.extend(_footer(disclosure))
@@ -73,17 +82,20 @@ def _criterion_line(c: Criterion) -> str:
 # ------------------------------------------------------------------ medicine report
 
 def render_medicine_report(report: MedicineReport, index: EvidenceIndex | None = None, *,
-                           disclosure: str | None = None) -> str:
+                           disclosure: str | None = None, rejections: Iterable[Any] = (),
+                           footnote_prefix: str = "") -> str:
+    notes = _Footnotes(rejections, footnote_prefix)
     out = [f"# Medicine report — {report.gene_symbol} ({report.candidate_id})", ""]
-    out.extend(_claims("Mechanism", report.mechanism))
-    out.extend(_claims("Pathway targets", report.pathway_targets))
-    out.extend(["## Drug candidates", ""])
+    out.extend(notes.section(_claims("Mechanism", report.mechanism)))
+    out.extend(notes.section(_claims("Pathway targets", report.pathway_targets)))
+    drugs = ["## Drug candidates", ""]
     if not report.candidates:
-        out.extend(["- none survived validation", ""])
+        drugs.extend(["- No candidate proposed (the legacy renderer; see 06_medicine/report.md for the classes searched)", ""])
     for i, d in enumerate(report.candidates, 1):
-        out.extend(_drug_section(i, d))
-    out.extend(_bullets("Follow-up experiments", report.follow_up_experiments))
-    out.extend(_bullets("Limits", report.limits))
+        drugs.extend(_drug_section(i, d))
+    out.extend(notes.section(drugs))
+    out.extend(notes.section(_bullets("Follow-up experiments", report.follow_up_experiments)))
+    out.extend(notes.section(_bullets("Limits", report.limits)))
     out.extend(_literature(report.literature, index))
     out.extend(_references(cited_ids(report, index), index))
     out.extend(_footer(disclosure))
@@ -116,6 +128,25 @@ def _drug_section(i: int, d: DrugCandidate) -> list[str]:
 
 
 # ------------------------------------------------------------------------- shared
+
+class _Footnotes:
+    """The footnotes of one document: the reasons behind every ``[^k]`` marker, and
+    the prefix that keeps the references unique when several documents share a file."""
+
+    def __init__(self, rejections: Iterable[Any], prefix: str):
+        self.rejections = list(rejections)
+        self.prefix = prefix
+
+    def section(self, lines: list[str]) -> list[str]:
+        """One ``##`` section's lines (ending with its blank line) with every marker
+        prefixed and the section's footnotes appended before that blank line."""
+        notes = footnotes(lines, self.rejections, prefix=self.prefix)
+        body = [prefixed(line, self.prefix) for line in lines]
+        if not notes:
+            return body
+        end = len(body) - 1 if body and body[-1] == "" else len(body)
+        return body[:end] + [""] + notes + [""]
+
 
 def cited_ids(obj: BaseModel | dict[str, Any] | list[Any] | str, index: EvidenceIndex | None = None) -> list[str]:
     """Every record id the object cites, sorted: ``evidence_ids``, ``trial_ids``,
@@ -204,7 +235,8 @@ def _cite(ids: list[str], after: str = "") -> str:
 
 
 def _para(text: str) -> str:
-    """One line: whitespace collapsed so a justification never breaks a list item."""
+    """One line: whitespace collapsed so a justification never breaks a list item; a
+    ``[^k]`` marker is text like any other and passes through."""
     return _WS.sub(" ", str(text)).strip()
 
 

@@ -89,11 +89,23 @@ are exercised end to end without a key. `PUBLIC_LIVE_MODEL=1` (with
 the chain the model produced. `tests/test_public_case.py` checks the chain against the
 recorded store and runs the stage-6 dry run on it without the network.
 
+## `05_reason/evidence/hpo/` — recorded HPO term records
+
+`05_reason/evidence/hpo/` — the `hpo:` records stage 5 fetches for the case terms,
+recorded 2026-09-17 from `https://ontology.jax.org/api/hp/terms/<id>` (the five terms
+of `case.yaml`; payload the JAX term object verbatim, `index.json` written by
+`EvidenceStore.write_index`). `tests/test_public_case.py` copies this directory into
+`<run>/05_reason/evidence/` before `run_reason`, so the stage serves every term from
+the store and the tests never touch the network; without it stage 5 would fetch the
+five public terms (cache-backed, `--offline` honoured). The same records, without the
+index, are `tests/fixtures/hpo/records/`.
+
 ## Files
 
 - `public.vcf` — the readable source; `public.vcf.gz` + `.tbi` — `bgzip -c public.vcf`
   and `tabix -p vcf`, what `case.yaml` points at.
 - `05_reason/chain_CFTR_comphet.json` — the recorded stage-5 chain above.
+- `05_reason/evidence/hpo/*.json` + `05_reason/evidence/index.json` — the recorded `hpo:` records above.
 - `.gitignore` (this directory) — the repository ignores `*.vcf`, `*.vcf.gz`,
   `*.vcf.gz.tbi` and `case.yaml` everywhere by design (patient data must never be
   committed); this nested file re-includes exactly the four public files above and

@@ -29,9 +29,10 @@ from pathlib import Path
 
 import pytest
 
-from engine.medicine.chembl import (ACCEPTED_RELATIONSHIPS, API_URL, COLUMNS, MAX_PAGE_SIZE, MAX_TARGETS_PER_SYMBOL,
+from engine.medicine.chembl import (ACCEPTED_RELATIONSHIPS, API_URL, COLUMNS, DEFAULT_CHEMBL_SEARCH, MAX_CHEMBL_SEARCH,
+                                    MAX_PAGE_SIZE, MAX_TARGETS_PER_SYMBOL, MIN_NEEDLE_CHARS, SEARCH_FIELDS,
                                     ChemblError, ChemblRetriever, drug_rows, gene_symbols, parent_id, phase_label,
-                                    symbol_relationships, valid_chembl_id, valid_symbol, warning_summary)
+                                    symbol_relationships, valid_chembl_id, valid_needle, valid_symbol, warning_summary)
 from engine.retrieve.http import Http, HttpCache, HttpError, RateLimiter, Response
 from engine.retrieve.store import EvidenceRecord, EvidenceStore
 
@@ -46,6 +47,12 @@ CFTR_MOLECULES = ["CHEMBL2010601", "CHEMBL2103870", "CHEMBL2108184", "CHEMBL3544
                   "CHEMBL4297392", "CHEMBL4297603", "CHEMBL4297649", "CHEMBL4297849", "CHEMBL4298128",
                   "CHEMBL4650318", "CHEMBL4802150", "CHEMBL5314934"]
 CFTR_FAMILIES = [c for c in CFTR_MOLECULES if c != DEUTIVACAFTOR]  # deutivacaftor is filed under ivacaftor
+MECHANISM_SEARCH = "search_mechanism_conductance_regulator_limit3"
+INDICATION_SEARCH = "search_indication_cystic_fibrosis_limit3"
+"""The two text searches recorded live on 2026-09-17 (``limit=3``): the curated
+mechanism table for ``conductance regulator`` (13 rows in all) and the drug-indication
+table for ``cystic fibrosis`` (135), with the molecules their rows name."""
+ATALUREN, LIPROTAMASE = "CHEMBL256997", "CHEMBL2108703"
 CFTR_INDICATION_IDS = [25197, 26648, 28071, 54198, 56193, 56194, 56195, 56375, 116606, 121645, 125577, 137003, 137004,
                        137105, 141838, 142771, 142780, 142818, 143021, 143203, 143501, 143643, 147820, 148245, 149451,
                        155729, 156570]
@@ -216,6 +223,8 @@ def test_params_name_every_setting_for_the_manifest():
         "order_by": {"mechanism": "mec_id", "drug_indication": "drugind_id", "drug_warning": "warning_id", "target": "target_chembl_id"},
         "family_filter": "parent_molecule_chembl_id", "per_second": 3.0,
         "release_scoped_record_ids": ["chembl:mechanism:<mec_id>", "chembl:indication:<drugind_id>", "chembl:warning:<warning_id>"],
+        "search_fields": {"mechanism": "mechanism_of_action__icontains", "drug_indication": "mesh_heading__icontains"},
+        "search_default_limit": 10, "search_max_limit": 25, "search_min_needle_chars": 3,
     }
     assert json.loads(json.dumps(r.params, sort_keys=True)) == r.params  # manifest-ready
     assert stub.calls == []  # a property: no request; the version is asked separately
@@ -836,6 +845,126 @@ def test_drug_rows_phase_is_the_molecule_s_unless_null_then_the_mechanism_s():
     assert drug_rows([mech, unknown])[0]["max_phase"] == "-1"  # ChEMBL's explicit "unknown" is kept as said
 
 
+# ---------------------------------------------------------------- text searches
+
+
+def test_search_mechanisms_by_text_returns_the_rows_their_molecules_and_the_search_record():
+    """The mechanism table filtered on words of the mechanism itself — how stage 6
+    finds a class of intervention without a gene symbol."""
+    stub = _stub(MECHANISM_SEARCH, "molecule_CHEMBL2010601", "molecule_CHEMBL2103870", "molecule_CHEMBL2108184")
+    records, total = ChemblRetriever(stub).search_mechanisms("conductance regulator", limit=3)
+    fx = fixture(MECHANISM_SEARCH)
+    assert _call(stub, "mechanism.json")["params"] == fx["request"]["params"] == {
+        "mechanism_of_action__icontains": "conductance regulator", "limit": 3, "order_by": "mec_id"}
+    assert total == json.loads(fx["text"])["page_meta"]["total_count"] == 13  # 3 of 13: the record says so
+    search, *rest = records
+    assert search.record_id.startswith("chembl-search:") and search.source == "chembl-search"
+    assert search.source_version == VERSION and search.retrieved_at == fx["retrieved_at"]
+    assert search.query == {"endpoint": "mechanism", "field": "mechanism_of_action__icontains",
+                            "needle": "conductance regulator", "limit": 3,
+                            "api": search.url}
+    assert search.url == (API_URL + "mechanism.json?mechanism_of_action__icontains=conductance+regulator"
+                          "&limit=3&order_by=mec_id")
+    assert search.payload == {"sent": search.query["endpoint"] and {"endpoint": "mechanism",
+                                                                    "field": "mechanism_of_action__icontains",
+                                                                    "needle": "conductance regulator", "limit": 3},
+                              "total_count": 13,
+                              "ids": ["chembl:mechanism:964", "chembl:mechanism:965", "chembl:mechanism:2346"]}
+    rows = [r for r in rest if r.query["endpoint"] == "mechanism"]
+    molecules = [r for r in rest if r.query["endpoint"] == "molecule"]
+    assert [r.record_id for r in rows] == ["chembl:mechanism:964", "chembl:mechanism:965", "chembl:mechanism:2346"]
+    assert [r.record_id for r in molecules] == [f"chembl:{c}" for c in (IVACAFTOR, LUMACAFTOR, CROFELEMER)]  # sorted by id
+    assert all("conductance regulator" in r.payload["mechanism_of_action"].lower() for r in rows)
+    # each row is the same record the gene route makes, with the same detail URL
+    (by_gene,) = [r for r in ChemblRetriever(_cftr_stub()).mechanisms_for_target(CFTR_TARGET) if r.record_id == "chembl:mechanism:965"]
+    assert by_gene.query == rows[1].query and by_gene.payload == rows[1].payload
+    assert rows[1].url == "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL2010601"
+    # a search record identifies its request: same needle, same limit, same id
+    again, _ = ChemblRetriever(_stub(MECHANISM_SEARCH, "molecule_CHEMBL2010601", "molecule_CHEMBL2103870",
+                                     "molecule_CHEMBL2108184")).search_mechanisms("conductance regulator", limit=3)
+    assert again[0].record_id == search.record_id and [r.to_json() for r in again] == [r.to_json() for r in records]
+
+
+def test_search_indications_by_disease_name():
+    stub = _stub(INDICATION_SEARCH, "molecule_CHEMBL2010601", f"molecule_{ATALUREN}", f"molecule_{LIPROTAMASE}")
+    records, total = ChemblRetriever(stub).search_indications("cystic fibrosis", limit=3)
+    fx = fixture(INDICATION_SEARCH)
+    assert _call(stub, "drug_indication.json")["params"] == fx["request"]["params"] == {
+        "mesh_heading__icontains": "cystic fibrosis", "limit": 3, "order_by": "drugind_id"}
+    assert total == 135
+    search, *rest = records
+    assert search.payload["total_count"] == 135 and search.payload["sent"]["field"] == "mesh_heading__icontains"
+    rows = [r for r in rest if r.query["endpoint"] == "drug_indication"]
+    assert [r.record_id for r in rows] == ["chembl:indication:136867", "chembl:indication:136913", "chembl:indication:137003"]
+    assert all(r.payload["mesh_heading"].lower() == "cystic fibrosis" for r in rows)
+    molecules = {r.payload["molecule_chembl_id"]: r for r in rest if r.query["endpoint"] == "molecule"}
+    assert set(molecules) == {ATALUREN, LIPROTAMASE, IVACAFTOR}
+    assert molecules[ATALUREN].payload["pref_name"] == "ATALUREN" and phase_label(molecules[ATALUREN].payload["max_phase"]) == "4"
+    assert rows[0].url == f"https://www.ebi.ac.uk/chembl/explore/compound/{ATALUREN}"
+
+
+def test_a_row_without_the_needle_means_the_filter_was_ignored_and_is_refused():
+    """An unknown filter name is silently ignored and the whole table comes back with
+    HTTP 200 (``mechanism_of_actionx__icontains`` → 7561 rows live), so every row must
+    contain the needle in the filtered field or nothing here can be cited."""
+    fx = fixture(MECHANISM_SEARCH)
+    body = json.loads(fx["text"])
+    body["mechanisms"][1]["mechanism_of_action"] = "Sodium channel blocker"  # a row from another part of the table
+    stub = _stub("molecule_CHEMBL2010601", "molecule_CHEMBL2103870", "molecule_CHEMBL2108184")
+    stub.add(served(fx, body=body))
+    with pytest.raises(ChemblError, match="ignored the mechanism_of_action__icontains filter"):
+        ChemblRetriever(stub).search_mechanisms("conductance regulator", limit=3)
+    # the needle matches case-insensitively, as the server's own icontains does: the same
+    # rows answer a mixed-case needle (served here under its own request key, as the cache would)
+    mixed = copy.deepcopy(fx)
+    mixed["request"]["params"] = {**fx["request"]["params"], "mechanism_of_action__icontains": "CONDUCTANCE Regulator"}
+    stub = _stub("molecule_CHEMBL2010601", "molecule_CHEMBL2103870", "molecule_CHEMBL2108184")
+    stub.add(mixed)
+    records, _ = ChemblRetriever(stub).search_mechanisms("CONDUCTANCE Regulator", limit=3)
+    assert len(records) == 7 and records[0].payload["sent"]["needle"] == "CONDUCTANCE Regulator"
+
+
+def test_a_short_needle_a_coordinate_or_a_bad_limit_is_refused_before_any_request():
+    stub = _stub(MECHANISM_SEARCH)
+    r = ChemblRetriever(stub)
+    assert valid_needle("  conductance regulator ") == "conductance regulator" and MIN_NEEDLE_CHARS == 3
+    for bad in ("", "  ", "cf", None):
+        with pytest.raises(ValueError, match="at least 3 characters"):
+            r.search_mechanisms(bad)  # type: ignore[arg-type]
+    for coordinate in ("cystic fibrosis 7:117559590", "chr7-117559590", "g.117559590", "117559590"):
+        with pytest.raises(ValueError, match="genomic coordinate|five or more digits"):
+            r.search_indications(coordinate)
+    for limit in (0, -1, 26, 5.0, True, "5"):
+        with pytest.raises(ValueError, match="between 1 and 25"):
+            r.search_mechanisms("conductance regulator", limit=limit)  # type: ignore[arg-type]
+    assert _paths(stub) == []  # nothing was sent
+    assert (DEFAULT_CHEMBL_SEARCH, MAX_CHEMBL_SEARCH) == (10, 25)
+
+
+def test_a_page_longer_than_the_limit_or_a_repeated_key_is_refused():
+    fx = fixture(MECHANISM_SEARCH)
+    body = json.loads(fx["text"])
+    stub = _stub("molecule_CHEMBL2010601", "molecule_CHEMBL2103870", "molecule_CHEMBL2108184")
+    stub.add(served(fx, body={**body, "mechanisms": body["mechanisms"] + [body["mechanisms"][0]]}))
+    with pytest.raises(ChemblError, match="served 4 rows for limit 3"):
+        ChemblRetriever(stub).search_mechanisms("conductance regulator", limit=3)
+    twice = {**body, "mechanisms": [body["mechanisms"][0], body["mechanisms"][0], body["mechanisms"][1]]}
+    stub = _stub("molecule_CHEMBL2010601", "molecule_CHEMBL2103870", "molecule_CHEMBL2108184")
+    stub.add(served(fx, body=twice))
+    with pytest.raises(ChemblError, match="served mec_id=964 twice"):
+        ChemblRetriever(stub).search_mechanisms("conductance regulator", limit=3)
+
+
+def test_search_fixtures_replay_offline_through_the_real_client(tmp_path: Path):
+    cache = _cache_from_fixtures(tmp_path / "cache")
+    r = ChemblRetriever(Http(cache, offline=True))
+    records, total = r.search_mechanisms("conductance regulator", limit=3)
+    assert total == 13 and [x.record_id for x in records][:2] == [records[0].record_id, "chembl:mechanism:964"]
+    indications, total = r.search_indications("cystic fibrosis", limit=3)
+    assert total == 135 and len(indications) == 7
+    assert SEARCH_FIELDS == {"mechanism": "mechanism_of_action__icontains", "drug_indication": "mesh_heading__icontains"}
+
+
 def test_phase_label_unifies_the_three_spellings():
     assert phase_label("4.0") == phase_label(4) == phase_label(4.0) == "4"
     assert phase_label("0.5") == "0.5" and phase_label("-1.0") == "-1" and phase_label(2) == "2"
@@ -870,6 +999,13 @@ def test_live_public_entities(tmp_path: Path):
     (mech,) = r.mechanisms(PHENTERMINE_HCL)
     (row,) = drug_rows([mech, r.molecule(PHENTERMINE_HCL), r.molecule(PHENTERMINE), *r.indications(PHENTERMINE), *r.warnings(PHENTERMINE)])
     assert row["withdrawn"] == "Y" and row["warnings"].startswith("Withdrawn 1981") and "A08AA01" in row["atc_codes"]
+    # the text searches (public terms only)
+    mechanisms, total = r.search_mechanisms("conductance regulator", limit=3)
+    assert total >= 13 and len(mechanisms) >= 4
+    assert all("conductance regulator" in m.payload["mechanism_of_action"].lower()
+               for m in mechanisms if m.query["endpoint"] == "mechanism")
+    indications, total = r.search_indications("cystic fibrosis", limit=3)
+    assert total >= 100 and any(i.query["endpoint"] == "molecule" for i in indications)
     # a rerun with the warm cache is byte-identical and needs nothing from outside
     again = ChemblRetriever(Http(HttpCache(tmp_path / "cache"), offline=True)).drugs_for_target_symbol("CFTR")
     assert [x.to_json() for x in again] == [x.to_json() for x in recs]

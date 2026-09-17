@@ -1,0 +1,85 @@
+{
+ "payload": {
+  "comment": "",
+  "definition": "An increased susceptibility to respiratory infections as manifested by a history of recurrent respiratory infections.",
+  "descendantCount": 16,
+  "id": "HP:0002205",
+  "name": "Recurrent respiratory infections",
+  "publicationReferences": [],
+  "synonyms": [
+   "Frequent respiratory infections",
+   "Multiple respiratory infections",
+   "Recurrent respiratory infections",
+   "Susceptibility to respiratory infections",
+   "respiratory infections, recurrent"
+  ],
+  "translations": [
+   {
+    "definition": "",
+    "language": "FR",
+    "name": "Infections respiratoires récurrentes",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "",
+    "language": "JA",
+    "name": "反復性呼吸器感染症",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "",
+    "language": "NL",
+    "name": "Recidiverende respiratoire infecties",
+    "status": "CANDIDATE"
+   },
+   {
+    "definition": "",
+    "language": "DE",
+    "name": "Wiederkehrende Infektionen der Atemwege",
+    "status": "CANDIDATE"
+   },
+   {
+    "definition": "",
+    "language": "ES",
+    "name": "Infecciones respiratorias recurrentes",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "",
+    "language": "ZH",
+    "name": "反复呼吸道感染",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "Zvýšená náchylnost k respiračním infekcím projevující se opakovanými respiračními infekcemi v anamnéze",
+    "language": "CS",
+    "name": "Recidivující infekce dýchacích cest",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "",
+    "language": "IT",
+    "name": "Infezioni respiratorie ricorrenti",
+    "status": "CANDIDATE"
+   },
+   {
+    "definition": "Tekrarlayan solunum yolu enfeksiyonları öyküsü ile kendini gösteren solunum yolu enfeksiyonlarına artmış bir duyarlılık",
+    "language": "TR",
+    "name": "Rekürren respiratuar enfeksiyonlar",
+    "status": "OFFICIAL"
+   }
+  ],
+  "xrefs": [
+   "UMLS:C3806482"
+  ]
+ },
+ "query": {
+  "api": "https://ontology.jax.org/api/hp/terms/HP:0002205",
+  "id": "HP:0002205"
+ },
+ "record_id": "hpo:HP:0002205",
+ "retrieved_at": "2026-09-17T19:39:24+00:00",
+ "source": "hpo",
+ "source_version": "JAX ontology API hp (the service exposes no release identifier)",
+ "url": "https://hpo.jax.org/browse/term/HP:0002205"
+}

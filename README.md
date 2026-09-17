@@ -18,8 +18,9 @@ came from.
 | 2 | `engine retrieve` | Fetch citable records: Ensembl VEP (with SpliceAI, CADD, REVEL, AlphaMissense), gnomAD, ClinVar (Europe PMC literature is fetched by stage 5's tools) | ✅ built |
 | 3 | `engine filter` | Rule-based biallelic shortlist with a recorded reason per variant; genotypes the sample's sex cannot carry are refused | ✅ built |
 | 4 | `engine rank` | Blind phenotype ranking (Exomiser in Docker), no gene prior | ✅ built |
-| 5 | `engine reason` | ACMG/AMP evidence chain, every criterion tied to a record id; verdict by ClinGen SVI points, PP3/BP4 recomputed at the SVI calibration, PP5/BP6 retired | ✅ built |
-| 6 | `engine medicine` | Mechanism → pathway → drug candidates with counter-arguments | ✅ built |
+| 5 | `engine reason` | ACMG/AMP evidence chain, every criterion tied to a record id; verdict by ClinGen SVI points, PP3/BP4 recomputed at the SVI calibration, PP5/BP6 retired; the case HPO terms are fetched as `hpo:` records, so every phenotype term in the prompt and the chain carries the ontology's own label | ✅ built |
+| 5 | `engine dossier` | A step inside stage 5, on one candidate: the gene's UniProt entry and three fixed searches → a validated gene dossier (protein, mechanism of disease, each variant's residue and region as the engine computes them, region knowledge, genotype patterns, a functional test), appended to `evidence_chain.md` | ✅ built |
+| 6 | `engine medicine` | The disease-mechanism ladder: variant mechanism → cellular and disease consequence → the classes of intervention that act on it, each searched and cited → drug candidates with counter-arguments, an approved indication as recorded and a paediatric-safety argument, plus the ones rejected on a record → surveillance and follow-up | ✅ built |
 | — | `engine report` | One self-contained HTML document over whatever stages a run holds | ✅ built |
 | — | `engine ui` | Live mode: a local web app that browses runs and launches stages | ✅ built |
 | 7 | `engine bench` | Replay on known-answer cases; recovery@k and F-max | planned (P7) |

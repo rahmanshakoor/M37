@@ -48,7 +48,7 @@ from engine.ui.cli import commands, ui, ui_command
 from engine.ui.jobs import JobRunner, RunnerConfig, TranscriptWatcher, check_args, build_argv
 from engine.ui.server import HOST, STATIC_DIR, App, make_server, serve_in_thread
 from tests.test_medicine import retrievers, stub_http
-from tests.test_public_case import CFTR_PAIR_IDS, FIX, make_run_from_recorded_stage2
+from tests.test_public_case import CFTR_PAIR_IDS, FIX, make_run_from_recorded_stage2, seed_hpo_records
 from tests.test_rank import FakeDocker, make_data_dir
 from tests.test_report import scripted_chain, scripted_report
 
@@ -68,6 +68,7 @@ def demo_run(tmp_path_factory: pytest.TempPathFactory) -> Path:
     cfg = ExomiserConfig.load(DEFAULT_CONFIG)
     run_rank(run, CASE, make_data_dir(tmp, cfg), run=FakeDocker(cfg.image_digest))
     reader = ac.FakeClient(scripted_chain(), turns=[ac.FakeTurn([("get_record", {"record_id": rid}) for rid in CFTR_PAIR_IDS], text="reading")])
+    seed_hpo_records(run)  # the case terms' hpo: records, so no stage of the demo asks the JAX API
     run_reason(run, 1, reader, "fake-model", "low", False, http=stub_http(), case_path=CASE)
     writer = ac.FakeClient(scripted_report(), turns=[ac.FakeTurn([("drugs_for_gene", {"gene": "CFTR"})], text="drugs"),
                                                      ac.FakeTurn([("search_trials", {"condition": "cystic fibrosis", "intervention": "ivacaftor",

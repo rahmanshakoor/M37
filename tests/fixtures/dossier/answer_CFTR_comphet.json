@@ -1,0 +1,103 @@
+{
+ "candidate_id": "CFTR",
+ "functional_test": [
+  {
+   "evidence_ids": [
+    "pmid:42589573"
+   ],
+   "statement": "An intestinal-organoid forskolin-induced swelling assay on the proband's cells would show residual CFTR function [pmid:42589573]"
+  }
+ ],
+ "gene_symbol": "cftr",
+ "genotype_patterns": [
+  {
+   "evidence_ids": [
+    "pmid:42687801"
+   ],
+   "statement": "Null/null genotypes give pancreatic insufficiency earlier than null/residual-function ones [pmid:42687801]"
+  }
+ ],
+ "limits": [
+  "The feature map is numbered on the canonical isoform [uniprot:P13569]",
+  "A remembered PF99999 domain id the entry does not carry"
+ ],
+ "literature": [
+  "pmid:42687801",
+  "pmid:42589573",
+  "pmid:99999999"
+ ],
+ "mechanism_of_disease": [
+  {
+   "evidence_ids": [
+    "uniprot:P13569",
+    "pmid:42687801"
+   ],
+   "statement": "Loss of apical chloride conductance causes cystic fibrosis [uniprot:P13569] [pmid:42687801]"
+  },
+  {
+   "evidence_ids": [
+    "pmid:99999999"
+   ],
+   "statement": "An unrelated mechanism from a paper nobody fetched [pmid:99999999]"
+  }
+ ],
+ "protein": [
+  {
+   "evidence_ids": [
+    "uniprot:P13569"
+   ],
+   "statement": "CFTR is a 1480-residue epithelial chloride channel of four domains, two nucleotide-binding and two transmembrane [uniprot:P13569]"
+  },
+  {
+   "evidence_ids": [],
+   "statement": "The protein is a 1480 aa ABC transporter, as I recall it"
+  },
+  {
+   "evidence_ids": [
+    "uniprot:P13569"
+   ],
+   "statement": "P13569 is the reviewed human entry; the paralogue O60566 is not [uniprot:P13569]"
+  }
+ ],
+ "region_knowledge": [
+  {
+   "evidence_ids": [
+    "uniprot:P13569"
+   ],
+   "statement": "The nucleotide-binding domain carries many curated pathogenic variants [uniprot:P13569]"
+  }
+ ],
+ "uniprot_accession": "P13569",
+ "variant_positions": [
+  {
+   "consequence": "In-frame deletion of one residue inside the first nucleotide-binding domain [vep:7:117559590:ATCT:A] [uniprot:P13569]",
+   "evidence_ids": [
+    "vep:7:117559590:ATCT:A",
+    "uniprot:P13569"
+   ],
+   "key": "7:117559590:ATCT:A",
+   "protein_position": 999,
+   "region": [
+    "a domain I remember"
+   ]
+  },
+  {
+   "consequence": "Premature stop in exon 12; nonsense-mediated decay predicted [vep:7:117587778:G:T]",
+   "evidence_ids": [
+    "vep:7:117587778:G:T"
+   ],
+   "key": "7:117587778:G:T",
+   "protein_position": 542,
+   "region": []
+  },
+  {
+   "consequence": "another candidate's variant",
+   "evidence_ids": [
+    "vep:7:117559590:ATCT:A"
+   ],
+   "key": "17:7675088:C:T",
+   "protein_position": 175,
+   "region": []
+  }
+ ]
+}

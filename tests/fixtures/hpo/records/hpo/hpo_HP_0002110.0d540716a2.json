@@ -1,0 +1,82 @@
+{
+ "payload": {
+  "comment": "",
+  "definition": "Persistent abnormal dilatation of the bronchi owing to localized and irreversible destruction and widening of the large airways.",
+  "descendantCount": 0,
+  "id": "HP:0002110",
+  "name": "Bronchiectasis",
+  "publicationReferences": [],
+  "synonyms": [
+   "Permanent enlargement of the airways of the lungs"
+  ],
+  "translations": [
+   {
+    "definition": "",
+    "language": "FR",
+    "name": "Bronchiectasie",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "",
+    "language": "JA",
+    "name": "気管支拡張",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "",
+    "language": "NL",
+    "name": "Bronchiëctasieen",
+    "status": "CANDIDATE"
+   },
+   {
+    "definition": "",
+    "language": "DE",
+    "name": "Bronchiektasie",
+    "status": "CANDIDATE"
+   },
+   {
+    "definition": "",
+    "language": "ES",
+    "name": "Bronquiectasias",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "",
+    "language": "ZH",
+    "name": "支气管扩张",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "Přetrvávající abnormální dilatace průdušek v důsledku lokalizované a nevratné destrukce a rozšíření velkých dýchacích cest",
+    "language": "CS",
+    "name": "Bronchiektázie",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "",
+    "language": "IT",
+    "name": "Bronchiectasie",
+    "status": "CANDIDATE"
+   },
+   {
+    "definition": "Büyük hava yollarının lokalize ve geri döndürülemez tahribatı ve genişlemesi nedeniyle bronşların kalıcı anormal genişlemesi",
+    "language": "TR",
+    "name": "Bronşektazi",
+    "status": "OFFICIAL"
+   }
+  ],
+  "xrefs": [
+   "SNOMEDCT_US:12295008",
+   "UMLS:C0006267"
+  ]
+ },
+ "query": {
+  "api": "https://ontology.jax.org/api/hp/terms/HP:0002110",
+  "id": "HP:0002110"
+ },
+ "record_id": "hpo:HP:0002110",
+ "retrieved_at": "2026-09-17T19:39:26+00:00",
+ "source": "hpo",
+ "source_version": "JAX ontology API hp (the service exposes no release identifier)",
+ "url": "https://hpo.jax.org/browse/term/HP:0002110"
+}

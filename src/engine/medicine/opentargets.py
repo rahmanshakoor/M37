@@ -24,6 +24,14 @@ Three record kinds, one per thing a claim may cite:
   only (``enableIndirect: false``, the server default, sent explicitly because ``true``
   inflates a Mendelian gene's list ~9x through ontology propagation and reorders it).
   :meth:`OpenTargetsRetriever.associated_diseases`.
+* ``opentargets:disease:<disease id>`` — the public disease object for a case-file
+  disease id (``MONDO_0009061``): name, description, synonyms, cross-references,
+  therapeutic areas and the first 100 HPO annotations with their labels. It is the
+  disease context stage 6 shows the model as a record rather than as free text, so a
+  sentence about the disease has an id to cite. ``phenotypes`` may be null for a term
+  the platform has no annotations for; it is kept as served.
+  :meth:`OpenTargetsRetriever.disease`. Verified live 2026-09-17: an unknown well-formed
+  id answers ``{"data":{"disease":null}}`` with no ``errors`` — absence, as for a target.
 
 Absence versus failure. An unknown Ensembl id is HTTP 200 ``{"data":{"target":null}}``
 with no ``errors`` key — that, and only that, is "not in Open Targets" (``None`` /
@@ -98,6 +106,7 @@ stage-6 orchestrator to copy into its manifest next to
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import re
@@ -152,6 +161,15 @@ MAP_QUERY = (
     "total mappings { term hits { id entity name score object { ... on Target { id approvedSymbol } } } } } }"
 )
 
+DISEASE_QUERY = (
+    "query Disease($id: String!) { disease(efoId: $id) { id name description "
+    "synonyms { relation terms } dbXRefs therapeuticAreas { id name } "
+    "phenotypes(page: { index: 0, size: 100 }) { count rows { phenotypeHPO { id name } } } } }"
+)
+DISEASE_PHENOTYPE_PAGE = 100
+"""HPO annotations asked for per disease: page 0 only; ``phenotypes.count`` says how
+many there are in all."""
+
 # Clinical stage strings as the server spells them, best first. They are plain Strings in
 # the schema (not an enum), so anything unlisted sorts last rather than failing.
 STAGE_ORDER = {
@@ -180,8 +198,14 @@ DRUG_COLUMNS = (
 )
 ASSOCIATION_COLUMNS = ("ensembl_id", "disease_id", "disease_name", "score", *DATATYPES,
                        "datatype_scores", "datasource_scores")
+DISEASE_COLUMNS = ("disease_id", "name", "description", "synonyms", "omim", "orphanet", "n_phenotypes",
+                   "phenotype_ids", "phenotype_names")
 
 _ENSG = re.compile(r"^ENSG\d{11}$")
+_DISEASE_ID = re.compile(r"^(MONDO|EFO|Orphanet|DOID|HP|NCIT|OTAR)_\d+$")
+"""The platform's spelling of a disease id — the ontology prefix, an underscore, digits.
+``MONDO:0009061`` (a colon) and a lower-case prefix answer null live: refused before any
+request, as :func:`normalise_id` refuses a versioned Ensembl id."""
 _NCT = re.compile(r"^NCT\d{8}$")
 
 
@@ -210,6 +234,20 @@ def drug_url(chembl_id: str) -> str:
 
 def association_url(ensg: str, disease_id: str) -> str:
     return f"{PLATFORM_URL}/evidence/{ensg}/{urllib.parse.quote(disease_id, safe='')}"
+
+
+def disease_url(disease_id: str) -> str:
+    return f"{PLATFORM_URL}/disease/{urllib.parse.quote(disease_id, safe='')}"
+
+
+def valid_disease_id(s: str) -> str:
+    """``MONDO_0009061`` — stripped; :class:`ValueError` for any other spelling, before
+    any request (the API answers ``null`` for a colon or a lower-case prefix, which
+    would read as absence)."""
+    core = str(s).strip()
+    if not _DISEASE_ID.match(core):
+        raise ValueError(f"not an Open Targets disease id: {s!r} (expected e.g. MONDO_0009061, EFO_0000400, Orphanet_586)")
+    return core
 
 
 class OpenTargetsRetriever:
@@ -314,6 +352,27 @@ class OpenTargetsRetriever:
             for did, row in rows
         ]
 
+    def disease(self, disease_id: str) -> EvidenceRecord | None:
+        """The disease record for a platform disease id, or ``None`` when Open Targets
+        has no such disease (``data.disease`` null with no errors — the one verified
+        shape of absence). ``phenotypes`` is page 0 of up to
+        :data:`DISEASE_PHENOTYPE_PAGE` HPO annotations, or null when the platform has
+        none; the payload is the object as served either way."""
+        did = valid_disease_id(disease_id)
+        version = self.version()
+        resp, d = self._post(DISEASE_QUERY, {"id": did}, lambda body: _disease_of(body, did))
+        if d is None:
+            return None
+        return EvidenceRecord(
+            record_id=f"{SOURCE}:disease:{did}",
+            source=SOURCE,
+            source_version=version,
+            query=self._query(DISEASE_QUERY, {"id": did}),
+            url=disease_url(did),
+            retrieved_at=resp.retrieved_at,
+            payload=d,
+        )
+
     def resolve_symbol(self, symbol: str, *, allow_synonym: bool = False) -> str | None:
         """Ensembl gene id for a gene symbol, or ``None``.
 
@@ -343,6 +402,8 @@ class OpenTargetsRetriever:
             return extract_drug(record)
         if kind == "association":
             return extract_association(record)
+        if kind == "disease":
+            return extract_disease(record)
         return extract_target(record)
 
     def params(self) -> dict[str, Any]:
@@ -357,6 +418,8 @@ class OpenTargetsRetriever:
             "api_url": self.url,
             "approval_stage": APPROVAL_STAGE,
             "datatypes": list(DATATYPES),
+            "disease_phenotype_page": DISEASE_PHENOTYPE_PAGE,
+            "disease_query_sha256": hashlib.sha256(DISEASE_QUERY.encode()).hexdigest(),
             "disease_size": self.disease_size,
             "enable_indirect": False,
             "max_page_size": MAX_PAGE_SIZE,
@@ -450,6 +513,20 @@ def _target_of(body: dict[str, Any], ensg: str) -> dict[str, Any] | None:
     if not isinstance(t, dict) or t.get("id") != ensg:
         raise OpenTargetsError("data.target did not echo the Ensembl id requested")
     return t
+
+
+def _disease_of(body: dict[str, Any], did: str) -> dict[str, Any] | None:
+    """``data.disease`` — ``None`` for absence; a dict that echoes the id asked for."""
+    d = _field(body, "disease")
+    if d is None:
+        return None
+    if not isinstance(d, dict) or d.get("id") != did:
+        raise OpenTargetsError("data.disease did not echo the disease id requested")
+    if d.get("phenotypes") is not None:
+        block = _dict(d.get("phenotypes"), "disease.phenotypes")
+        rows = _list(block.get("rows"), "disease.phenotypes.rows")
+        _check_count(block, len(rows), "disease.phenotypes", page_size=DISEASE_PHENOTYPE_PAGE)
+    return d
 
 
 def _version_of(body: dict[str, Any]) -> str:
@@ -655,6 +732,30 @@ def extract_association(record: EvidenceRecord) -> dict[str, str]:
     out["datatype_scores"] = _scores(row.get("datatypeScores"))
     out["datasource_scores"] = _scores(row.get("datasourceScores"))
     return out
+
+
+def extract_disease(record: EvidenceRecord) -> dict[str, str]:
+    """Flat view of a disease record (:data:`DISEASE_COLUMNS`): the exact synonyms
+    ``;``-joined, the OMIM and Orphanet cross-references, and the HPO annotations of
+    page 0 as ids and labels (``n_phenotypes`` is the server's total)."""
+    d = record.payload
+    synonyms = [t for s in _rows(d.get("synonyms")) if s.get("relation") == "hasExactSynonym"
+                for t in (s.get("terms") or []) if isinstance(t, str) and t]
+    xrefs = [str(x) for x in (d.get("dbXRefs") or []) if isinstance(x, str)]
+    ph = d.get("phenotypes") if isinstance(d.get("phenotypes"), dict) else {}
+    terms = [r.get("phenotypeHPO") for r in _rows(ph.get("rows"))]
+    terms = [t for t in terms if isinstance(t, dict)]
+    return {
+        "disease_id": _s(d.get("id")),
+        "name": _s(d.get("name")),
+        "description": _s(d.get("description")),
+        "synonyms": ";".join(_unique(synonyms)),
+        "omim": ";".join(x.split(":", 1)[1] for x in xrefs if x.startswith(("OMIM:", "OMIMPS:"))),
+        "orphanet": ";".join(x.split(":", 1)[1] for x in xrefs if x.startswith("Orphanet:")),
+        "n_phenotypes": _s(ph.get("count")) if ph else "",
+        "phenotype_ids": ";".join(_s(t.get("id")) for t in terms),
+        "phenotype_names": ";".join(_s(t.get("name")) for t in terms),
+    }
 
 
 def _rows(x: Any) -> list[dict[str, Any]]:

@@ -9,6 +9,7 @@
 #   ingest -> retrieve (live: Ensembl VEP, local ClinVar, gnomAD; no funnel)
 #          -> filter -> rank (only when the Exomiser bundle is present and verified)
 #          -> reason (dry run, or live with PUBLIC_LIVE_MODEL=1)
+#          -> dossier --dry-run (the gene's UniProt entry and the fixed searches, cache-backed)
 #          -> medicine --dry-run
 #
 # Stage 5 runs dry by default (bundles and the exact prompts, no model), which writes
@@ -102,7 +103,7 @@ if [ -e "$RUN_DIR/01_ingest" ]; then
   fi
 fi
 
-ST_ingest= ST_retrieve= ST_filter= ST_rank= ST_reason= ST_medicine=   # one line per stage for the summary (bash 3.2: no assoc arrays)
+ST_ingest= ST_retrieve= ST_filter= ST_rank= ST_reason= ST_dossier= ST_medicine=   # one line per stage for the summary (bash 3.2: no assoc arrays)
 say() { printf '\n== %s\n' "$*"; }
 run() { printf '$ %s\n' "$*"; "$@"; }
 
@@ -195,6 +196,22 @@ else
   CHAIN_SOURCE="recorded"
 fi
 
+# ------------------------------------------------------- 5b dossier (dry run)
+# A step inside stage 5, on the chain's candidate. Its retrieval is the engine's, so
+# a dry run still fetches (UniProt and Europe PMC, through $CACHE) and writes the
+# bundle and the prompt; only the model is skipped, so no dossier is produced.
+say "stage 5 · dossier --dry-run"
+set +e
+run uv run engine dossier --run "$RUN_DIR" --dry-run --cache "$CACHE"
+dos_rc=$?
+set -e
+if [ "$dos_rc" -ne 0 ]; then
+  echo "the dossier step failed (exit $dos_rc); it reads a stage-5 chain in $RUN_DIR/05_reason/chains/" >&2
+  ST_dossier="FAILED (exit $dos_rc)"
+else
+  ST_dossier="ok (dry run: UniProt entry, fixed searches, bundle and prompt; no model)"
+fi
+
 # ------------------------------------------------------------------ 6 medicine (dry run)
 say "stage 6 · medicine --dry-run"
 set +e
@@ -210,7 +227,7 @@ ST_medicine="ok (dry run: bundle and prompt on the $CHAIN_SOURCE chain, no model
 
 # ------------------------------------------------------------------ summary
 say "summary · $RUN_DIR"
-for s in ingest retrieve filter rank reason medicine; do eval "v=\$ST_$s"; printf '  %-9s %s\n' "$s" "$v"; done
+for s in ingest retrieve filter rank reason dossier medicine; do eval "v=\$ST_$s"; printf '  %-9s %s\n' "$s" "$v"; done
 uv run python - "$RUN_DIR" "$CHAIN_SOURCE" <<'PY'
 import hashlib
 import json
@@ -262,6 +279,12 @@ for path in prompts:
     print(f"              {d['candidate_id']}: system {len(d['system'])} chars, {len(sys_sections)} sections {sys_sections}")
     print(f"              {' ' * len(d['candidate_id'])}  user {len(d['user'])} chars, {n_variants} variant section(s), "
           f"tools {tools}, schema keys {sorted(d['output_schema'].get('properties', {}))}")
+    for line in user_lines:
+        if line.startswith("case HPO:") or line.startswith("HPO definitions:"):
+            print(f"              {' ' * len(d['candidate_id'])}  {line[:160]}")
+t = p.get("hpo_terms") or {}
+print(f"              hpo terms: served {len(t.get('served') or [])} · fetched {len(t.get('fetched') or [])} · "
+      f"missing {t.get('missing')} · store {t.get('store')} · records {c.get('hpo_records')}")
 if not p["dry_run"]:
     print(f"              model {p['model']} · effort {p['effort']} · usage {c.get('usage')} · rejections {c.get('rejections')}")
 for path in sorted((run / "05_reason" / "chains").glob("*.json")):
@@ -271,6 +294,22 @@ for path in sorted((run / "05_reason" / "chains").glob("*.json")):
     n_met = sum(1 for v in d["variants"] for cr in v["criteria"] if cr["met"])
     print(f"              chain {d['candidate_id']} ({chain_source}, sha256 {hashlib.sha256(path.read_bytes()).hexdigest()[:12]}…): "
           f"{n_crit} criteria, {n_met} met · classification {cls} · literature {len(d['literature'])}")
+m = manifest("05_reason/dossier")
+if m is None:
+    print("  dossier     not run")
+else:
+    c, p = m["counts"], m["params"]
+    [d_bundle] = (run / "05_reason" / "dossier" / "bundles").glob("*.json")
+    [d_prompt] = (run / "05_reason" / "dossier" / "prompts").glob("*.json")
+    b = json.loads(d_bundle.read_text())
+    pr = json.loads(d_prompt.read_text())
+    print(f"  dossier     candidate {p['candidate']} ({b['gene_symbol']}) · uniprot {b['accession']} · dry run {p['dry_run']} · "
+          f"features {len(b['feature_map'])} · papers {len(b['papers'])} · citable record ids {len(b['record_ids'])}")
+    print(f"              prompt: system {len(pr['system'])} chars, user {len(pr['user'])} chars, "
+          f"schema keys {sorted(pr['output_schema'].get('properties', {}))}")
+    for v in b["variants"]:
+        print(f"              {v['key']}: residue {v['residue']} · region {(v['region'] or ['none'])[0][:90]}")
+
 m = manifest("06_medicine")
 c, p = m["counts"], m["params"]
 [bundle_path] = (run / "06_medicine" / "bundles").glob("*.json")   # stage 6 reports on one candidate
@@ -284,4 +323,10 @@ print(f"              bundle: {len(bundle['record_ids'])} citable record ids · 
       f"chain classifications {{{', '.join(v['key'] + ': ' + str(v['classification']) for v in bundle['chain']['variants'])}}}")
 print(f"              prompt: system {len(prompt['system'])} chars, user {len(prompt['user'])} chars, tools {tools}, "
       f"schema keys {sorted(prompt['output_schema'].get('properties', {}))}")
+for line in prompt["user"].splitlines():
+    if line.startswith("case HPO:") or line.startswith("HPO definitions:"):
+        print(f"              {line[:160]}")
+print(f"              dossier in the bundle: {'yes' if bundle.get('dossier') else 'no (the step ran dry: no validated dossier to read)'}"
+      f" · hpo terms served {len((p.get('hpo_terms') or {}).get('served') or [])} fetched "
+      f"{len((p.get('hpo_terms') or {}).get('fetched') or [])}")
 PY

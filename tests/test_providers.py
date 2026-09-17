@@ -176,6 +176,8 @@ def run_dir(tmp_path: Path) -> Path:
         url="https://www.ncbi.nlm.nih.gov/gene/1080", retrieved_at="2026-09-12T00:00:00+00:00",
         payload={"ranking": {"rank": 1, "gene_symbol": "CFTR", "moi": "AR", "exomiser_score": 0.97}, "citation": "Exomiser"}))
     rank_store.write_index()
+    # the case terms' hpo: records, so stage 5 serves them and never asks the JAX API
+    shutil.copytree(FIXTURES / "hpo" / "records", run / "05_reason" / "evidence", dirs_exist_ok=True)
     return run
 
 

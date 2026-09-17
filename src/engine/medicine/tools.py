@@ -1,9 +1,9 @@
-"""The five tools the medicine agent may call, and what they leave behind.
+"""The six tools the medicine agent may call, and what they leave behind.
 
 Three of them are stage 5's (:class:`~engine.reason.tools.ReasonTools`): ``get_record``
 reads a citable record, ``search_literature`` and ``get_paper`` retrieve papers and
-write them as ``pmid:`` records — here into ``06_medicine/evidence/``. The two new
-ones are how a drug enters the report at all:
+write them as ``pmid:`` records — here into ``06_medicine/evidence/``. The three
+others are how a drug enters the report at all:
 
 * ``drugs_for_gene(gene)`` asks the three gene-centric sources in turn — Open Targets
   (the target profile, the top :data:`DISEASES_PER_GENE` target–disease associations
@@ -17,6 +17,13 @@ ones are how a drug enters the report at all:
 * ``search_trials(condition, intervention, term)`` asks ClinicalTrials.gov and returns
   study records ``nct:<id>`` plus the search's own ``nct-search:`` record (what was
   asked, the registry's total, the ids in order) — the reason a trial was on the table.
+* ``search_chembl(mechanism_text, indication_text)`` asks ChEMBL's curated mechanism
+  table and its drug-indication table by *text* — a mechanism phrase, a disease name —
+  so a class of intervention that acts on the consequence of the defect rather than on
+  the gene product (a read-through compound, a drug for the disease's own indication)
+  can be found without a gene symbol. Rows and their molecules become the same
+  ``chembl:`` records the gene route makes; the search's own ``chembl-search:`` record
+  (what was asked, the server's total, the ids returned) says where the engine looked.
 
 Scope and absence. ``get_record`` serves the candidate's own list (the stage-5 bundle,
 the ids its chain cites) and whatever the tools returned in this conversation; any
@@ -24,7 +31,8 @@ other id is a ``KeyError`` to the model, whether or not the run holds it. A sour
 does not know the gene, or knows it and lists nothing, is reported as such with the
 record that says so (the DGIdb gene record, the Open Targets target counts) — absence
 is a result the report can cite. The number of distinct genes one conversation may
-look up is capped (``max_genes``), because every symbol goes to three public APIs.
+look up is capped (``max_genes``: the candidate gene plus the pathway nodes the ladder
+names), because every symbol goes to three public APIs.
 
 A trial reached by a search and again by a later search yields records that differ
 only in ``retrieved_at``; the first one in any store of the run is the one served and
@@ -55,14 +63,15 @@ from typing import Any, Iterable
 
 from engine.agents.client import ToolSpec
 from engine.agents.validator import EvidenceIndex
-from engine.medicine.chembl import drug_rows
+from engine.medicine.chembl import DEFAULT_CHEMBL_SEARCH, MAX_CHEMBL_SEARCH, SEARCH_SOURCE, drug_rows, phase_label
 from engine.medicine.opentargets import extract_association, extract_drug, extract_target, normalise_id
 from engine.reason.tools import DEFAULT_MAX_RESULTS, MAX_RESULTS_CAP, ReasonTools, ToolLog, check_query
 from engine.retrieve.store import EvidenceRecord, EvidenceStore
 
-MAX_GENES = 5
+MAX_GENES = 8
 """Distinct gene symbols one conversation may send to the drug sources: the candidate
-gene and a few pathway targets; not a screen."""
+gene plus the pathway nodes the ladder's intervention classes act through (a
+checkpoint gene's partners, the stressed pathway's effectors); not a screen."""
 DEFAULT_TRIALS = 10
 MAX_TRIALS = 25
 """ClinicalTrials.gov returns the most recently updated first; a report needs the few
@@ -99,6 +108,10 @@ CHEMBL_FIELDS = ("chembl_id", "name", "molecule_type", "max_phase", "first_appro
 TRIAL_FIELDS = ("nct_id", "title", "status", "why_stopped", "study_type", "phases", "conditions", "interventions",
                 "start_date", "primary_completion_date", "enrollment", "enrollment_type", "sponsor", "primary_outcomes",
                 "sex", "min_age", "max_age", "has_results", "last_update_post_date")
+CHEMBL_MECHANISM_SEARCH_FIELDS = ("record_id", "chembl_id", "name", "action_type", "mechanism_of_action", "max_phase",
+                                  "first_approval", "target_chembl_id", "target_name")
+CHEMBL_INDICATION_SEARCH_FIELDS = ("record_id", "chembl_id", "name", "mesh_heading", "efo_term", "max_phase_for_ind",
+                                   "first_approval")
 
 
 @dataclass
@@ -112,7 +125,8 @@ class MedicineRetrievers:
     dgidb: Any
     """``fetch(symbol) -> GeneResult``."""
     chembl: Any
-    """``drugs_for_target_symbol(symbol) -> list[EvidenceRecord]``."""
+    """``drugs_for_target_symbol(symbol) -> list[EvidenceRecord]``, ``search_mechanisms(text, limit=)``
+    and ``search_indications(text, limit=)`` ``-> (records, total_count)``."""
     trials: Any
     """``find(condition, intervention, max_results, term=) -> SearchResult``, ``extract(record)``."""
     literature: Any
@@ -131,13 +145,17 @@ class MedicineLog(ToolLog):
     """``nct-search:`` record ids, in call order."""
     trials: list[str] = field(default_factory=list)
     """``nct:`` record ids returned, first appearance only."""
+    chembl_searches: list[str] = field(default_factory=list)
+    """``chembl-search:`` record ids, in call order."""
 
     def ids(self) -> list[str]:
-        return list(dict.fromkeys([*super().ids(), *self.drug_records, *self.trial_searches, *self.trials]))
+        return list(dict.fromkeys([*super().ids(), *self.drug_records, *self.trial_searches, *self.trials,
+                                   *self.chembl_searches]))
 
     def as_dict(self) -> dict[str, Any]:
         return {**super().as_dict(), "genes": list(self.genes), "drug_records": list(self.drug_records),
-                "trial_searches": list(self.trial_searches), "trials": list(self.trials)}
+                "trial_searches": list(self.trial_searches), "trials": list(self.trials),
+                "chembl_searches": list(self.chembl_searches)}
 
 
 class MedicineTools(ReasonTools):
@@ -148,7 +166,8 @@ class MedicineTools(ReasonTools):
     def __init__(self, index: EvidenceIndex, store: EvidenceStore, retrievers: MedicineRetrievers | None, *,
                  gene_symbol: str, gene_id: str | None = None, citable: Iterable[str] | None = None,
                  default_max_results: int = DEFAULT_MAX_RESULTS, max_results_cap: int = MAX_RESULTS_CAP,
-                 max_genes: int = MAX_GENES, default_trials: int = DEFAULT_TRIALS, max_trials: int = MAX_TRIALS):
+                 max_genes: int = MAX_GENES, default_trials: int = DEFAULT_TRIALS, max_trials: int = MAX_TRIALS,
+                 default_chembl_search: int = DEFAULT_CHEMBL_SEARCH, max_chembl_search: int = MAX_CHEMBL_SEARCH):
         super().__init__(index, store, retrievers.literature if retrievers is not None else None, citable=citable,
                          default_max_results=default_max_results, max_results_cap=max_results_cap)
         self.retrievers = retrievers
@@ -157,6 +176,8 @@ class MedicineTools(ReasonTools):
         self.max_genes = max_genes
         self.default_trials = default_trials
         self.max_trials = max_trials
+        self.default_chembl_search = default_chembl_search
+        self.max_chembl_search = max_chembl_search
         self.log = MedicineLog()
 
     # ---- handlers
@@ -213,6 +234,37 @@ class MedicineTools(ReasonTools):
                      "its eligibility criteria or outcome."),
         }
 
+    def search_chembl(self, inputs: dict[str, Any]) -> dict[str, Any]:
+        mechanism_text, indication_text = (_text(inputs.get(k)) for k in ("mechanism_text", "indication_text"))
+        if not (mechanism_text or indication_text):
+            raise ValueError("a ChEMBL search needs a mechanism_text (words of a curated mechanism of action) "
+                             "and/or an indication_text (a disease or condition name)")
+        n = inputs.get("max_results")
+        n = self.default_chembl_search if n is None else int(n)
+        if not 1 <= n <= self.max_chembl_search:
+            raise ValueError(f"max_results must be between 1 and {self.max_chembl_search}, got {n}")
+        chembl = self._retrievers().chembl
+        out: dict[str, Any] = {"mechanism_text": mechanism_text, "indication_text": indication_text, "search_records": [],
+                               "total_mechanisms": None, "total_indications": None, "mechanisms": [], "indications": []}
+        if mechanism_text:
+            records, total = chembl.search_mechanisms(mechanism_text, limit=n)
+            search, rows, molecules = self._keep_search(records)
+            out["search_records"].append(search.record_id)
+            out["total_mechanisms"] = total
+            out["mechanisms"] = [_mechanism_hit(r, molecules) for r in rows]
+        if indication_text:
+            records, total = chembl.search_indications(indication_text, limit=n)
+            search, rows, molecules = self._keep_search(records)
+            out["search_records"].append(search.record_id)
+            out["total_indications"] = total
+            out["indications"] = [_indication_hit(r, molecules) for r in rows]
+        out["note"] = ("Every record_id above is now citable, the search_records included (list them in a class's "
+                       "`searched`). Cite the molecule record (chembl:<CHEMBL id>) for a drug; a mechanism or "
+                       "indication row alone does not name it. total_* is how many rows matched in ChEMBL; the ones "
+                       "returned are the first by id. Approval status is the molecule's max_phase and first_approval; "
+                       "an indication row's max_phase_for_ind says only how far that pairing was documented.")
+        return out
+
     # ---- specs
 
     def specs(self) -> list[ToolSpec]:
@@ -221,7 +273,7 @@ class MedicineTools(ReasonTools):
             base["get_record"],
             description=("Return one citable evidence record by its id — the candidate's variant records (e.g. "
                          "vep:7:117559590:ATCT:A, gnomad:7-117559590-ATCT-A, clinvar:VCV000007105), the stage-5 chain's "
-                         "papers, and every record drugs_for_gene, search_trials, search_literature or get_paper returned "
+                         "papers, and every record drugs_for_gene, search_trials, search_chembl, search_literature or get_paper returned "
                          "in this conversation (e.g. chembl:CHEMBL2010601, opentargets:drug:ENSG00000001626:CHEMBL2010601, "
                          "dgidb:CFTR:rxcui:1243041, nct:NCT01807923): source, version, the query that produced it, its "
                          "URL and the full raw payload. Use it to quote a detail exactly (a mechanism row's variant, a "
@@ -241,7 +293,8 @@ class MedicineTools(ReasonTools):
                 "mechanism rows joined to the molecule: phase, first approval, withdrawal/black-box flags, indications, "
                 "the protein variant the mechanism was shown on). Every record returned becomes citable by its record_id; "
                 "a source that does not know the gene says so. At most "
-                f"{MAX_GENES} distinct genes per report — the candidate gene and the pathway targets you argue for.",
+                f"{MAX_GENES} distinct genes per report — the candidate gene plus the pathway nodes your intervention "
+                "classes act through; list them in the class's `targets`.",
                 {"type": "object", "properties": {"gene": {"type": "string", "description": "HGNC gene symbol, e.g. CFTR."}}},
                 self.drugs_for_gene,
             ),
@@ -261,6 +314,27 @@ class MedicineTools(ReasonTools):
                                     "description": f"Trials to return, 1–{MAX_TRIALS}; null for the default of {DEFAULT_TRIALS}."},
                 }},
                 self.search_trials,
+            ),
+            ToolSpec(
+                "search_chembl",
+                "Search ChEMBL by text, without a gene: mechanism_text is matched against the curated mechanism-of-"
+                "action table (e.g. 'read-through', 'proteasome inhibitor', 'conductance regulator'; a gene symbol "
+                "finds nothing there) and indication_text against the drug-indication table's MeSH headings (a "
+                "disease name, e.g. 'cystic fibrosis'). Returns the matching rows as chembl:mechanism:<id> / "
+                "chembl:indication:<id> records, each molecule as chembl:<CHEMBL id> with max_phase and "
+                "first_approval, and a chembl-search:<sha256> record per table that says what was asked and how "
+                "many rows matched — cite it in a class's `searched`. One page of max_results rows per table "
+                f"(1–{MAX_CHEMBL_SEARCH}; null for the default of {DEFAULT_CHEMBL_SEARCH}), ordered by id. Null for a "
+                "text not used; at least one is required. Never put a genomic coordinate in a query.",
+                {"type": "object", "properties": {
+                    "mechanism_text": {"anyOf": [{"type": "string"}, {"type": "null"}],
+                                       "description": "Words of a curated mechanism of action, or null."},
+                    "indication_text": {"anyOf": [{"type": "string"}, {"type": "null"}],
+                                        "description": "A disease or condition name (MeSH heading words), or null."},
+                    "max_results": {"anyOf": [{"type": "integer"}, {"type": "null"}],
+                                    "description": f"Rows to return per table, 1–{MAX_CHEMBL_SEARCH}; null for the default of {DEFAULT_CHEMBL_SEARCH}."},
+                }},
+                self.search_chembl,
             ),
         ]
 
@@ -355,6 +429,24 @@ class MedicineTools(ReasonTools):
             self.log.trials.append(rec.record_id)
         return held or rec
 
+    def _keep_search(self, records: list[EvidenceRecord]) -> tuple[EvidenceRecord, list[EvidenceRecord], dict[str, EvidenceRecord]]:
+        """A ChEMBL text search's records into the store and onto the citable list:
+        the ``chembl-search:`` record (logged as a search), the rows, and the molecules
+        keyed by ChEMBL id."""
+        search = next(r for r in records if r.source == SEARCH_SOURCE)
+        self._put(search)
+        self.log.chembl_searches.append(search.record_id)
+        rows, molecules = [], {}
+        for rec in records:
+            if rec.source == SEARCH_SOURCE:
+                continue
+            kept = self._keep_drug_record(rec)
+            if kept.query.get("endpoint") == "molecule":
+                molecules[str(kept.payload.get("molecule_chembl_id"))] = kept
+            else:
+                rows.append(kept)
+        return search, rows, molecules
+
     @staticmethod
     def _trial_summary(rec: EvidenceRecord, trials: Any) -> dict[str, Any]:
         return {"record_id": rec.record_id, "url": rec.url, **_pick(trials.extract(rec), TRIAL_FIELDS)}
@@ -370,6 +462,40 @@ def _pick(cols: dict[str, Any], names: Iterable[str]) -> dict[str, Any]:
             v = v[: FIELD_CHARS - 1].rstrip() + "…"
         out[name] = v
     return out
+
+
+def _mechanism_hit(row: EvidenceRecord, molecules: dict[str, EvidenceRecord]) -> dict[str, Any]:
+    """One mechanism row of a text search joined with its molecule's name and phase."""
+    m = row.payload
+    mol = molecules.get(str(m.get("molecule_chembl_id")))
+    p = mol.payload if mol is not None else {}
+    return _pick({
+        "record_id": row.record_id,
+        "chembl_id": str(m.get("molecule_chembl_id") or ""),
+        "name": str(p.get("pref_name") or ""),
+        "action_type": str(m.get("action_type") or ""),
+        "mechanism_of_action": str(m.get("mechanism_of_action") or ""),
+        "max_phase": phase_label(p["max_phase"] if p.get("max_phase") is not None else m.get("max_phase")),
+        "first_approval": "" if p.get("first_approval") is None else str(p["first_approval"]),
+        "target_chembl_id": str(m.get("target_chembl_id") or ""),
+        "target_name": str(m.get("target_name") or ""),
+    }, CHEMBL_MECHANISM_SEARCH_FIELDS)
+
+
+def _indication_hit(row: EvidenceRecord, molecules: dict[str, EvidenceRecord]) -> dict[str, Any]:
+    """One indication row of a text search joined with its molecule's name and approval year."""
+    ind = row.payload
+    mol = molecules.get(str(ind.get("molecule_chembl_id")))
+    p = mol.payload if mol is not None else {}
+    return _pick({
+        "record_id": row.record_id,
+        "chembl_id": str(ind.get("molecule_chembl_id") or ""),
+        "name": str(p.get("pref_name") or ""),
+        "mesh_heading": str(ind.get("mesh_heading") or ""),
+        "efo_term": str(ind.get("efo_term") or ""),
+        "max_phase_for_ind": phase_label(ind.get("max_phase_for_ind")),
+        "first_approval": "" if p.get("first_approval") is None else str(p["first_approval"]),
+    }, CHEMBL_INDICATION_SEARCH_FIELDS)
 
 
 def _symbol(value: Any) -> str:

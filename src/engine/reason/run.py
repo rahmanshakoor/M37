@@ -28,8 +28,10 @@ What is written, and why in this form:
 * ``transcripts/<candidate_id>.json`` — every turn, every tool call and result, token
   usage and the final text exactly as the model wrote it. A failed run leaves
   ``<candidate_id>.failed.json`` with the turns completed before the failure.
-* ``evidence/`` — the ``pmid:`` (and ``pmid-search:``) records the tools fetched, in the
-  stage-2 format, so a paper cited in a chain is a record like any other.
+* ``evidence/`` — the ``pmid:`` (and ``pmid-search:``) records the tools fetched, and the
+  ``hpo:`` records of the case terms (fetched once, before the first bundle, from the
+  JAX ontology API — served from any store of the run on a rerun), in the stage-2
+  format, so a paper or a phenotype term cited in a chain is a record like any other.
 * ``chains/<candidate_id>.json`` — the validated chain, classification filled by the
   engine; ``validation/<candidate_id>.json`` — every rejection and dispute.
 * ``evidence_chain.md`` — the chains rendered with a References section per candidate.
@@ -63,8 +65,10 @@ import yaml
 from engine.agents import client as ac
 from engine.agents import providers
 from engine.agents.bundle import Bundle, build_bundle, write_bundle
+from engine.agents.redaction import Redactions
 from engine.agents.render import cited_ids, render_evidence_chain
 from engine.agents.schema import ALL_CODES, EvidenceChain, VariantChain, acmg_points, combine_acmg, combine_richards_2015
+from engine.agents.terms import check_terms
 from engine.agents.validator import (
     AF_FIELD, AF_FIELDS, THRESHOLDS, EvidenceIndex, Rejection, ValidationReport, canonical_key, frequency_rules, validate,
 )
@@ -73,6 +77,7 @@ from engine.manifest import Manifest
 from engine.reason.checks import AccessionResolver, stage_checks
 from engine.reason.prompts import PROMPT_VERSION, SYSTEM_PROMPT, instructions_sha256, prompt_sha256, user_prompt
 from engine.reason.tools import ABSTRACT_CHARS, COORDINATE_RULE, DEFAULT_MAX_RESULTS, MAX_RESULTS_CAP, ReasonTools
+from engine.retrieve.hpo import API_URL as HPO_API_URL, VERSION_NOTE as HPO_VERSION_NOTE, case_terms
 from engine.retrieve.http import Http, HttpCache, RateLimiter, default_cache_root
 from engine.retrieve.literature import LiteratureRetriever
 from engine.retrieve.run import BACKOFF_FLOOR, RATE_LIMITS, RETRIES
@@ -89,6 +94,7 @@ OUTPUT_DIRS = ("bundles", "prompts", "transcripts", "chains", "validation")
 DEFAULT_TOP_N = 3
 DEFAULT_MAX_TURNS = 10
 CITATION_SCOPE = "the bundle's record ids plus the records returned by this candidate's own tool calls"
+HPO_STORE = f"{STAGE_DIR}/evidence/hpo"
 
 Progress = Callable[[str], None]
 
@@ -156,7 +162,20 @@ def run_reason(
     _clear_outputs(out_dir)
     store = EvidenceStore(out_dir / "evidence")  # exists before the index is built, so it is in it
     index = EvidenceIndex.from_run(run_dir, stages=EVIDENCE_STAGES)
-    literature = None if dry_run else _literature(http, cache_root, offline)
+    shared: dict[str, Http] = {}
+
+    def http_once() -> Http:
+        """One ``Http`` — one cache, one limiter — for the term fetch and the literature
+        tools, built only when something needs it (a dry run whose terms are all in
+        the store builds none)."""
+        if "http" not in shared:
+            shared["http"] = _http(http, cache_root, offline)
+        return shared["http"]
+
+    # the case terms as records, before the first bundle: served from any store of the run,
+    # fetched (cache-backed, --offline honoured) only when missing — in a dry run too
+    terms = case_terms(hpo, index, store, http_factory=http_once)
+    literature = None if dry_run else LiteratureRetriever(http_once())
     disclosure = providers.disclosure(provider or "anthropic", model, effort) if dry_run else None
 
     m.params.update({
@@ -187,20 +206,26 @@ def run_reason(
                        "coordinates_in_queries": COORDINATE_RULE},
         "hpo": list(hpo),
         "hpo_source": hpo_source,
+        "hpo_terms": {"source": f"JAX ontology API {HPO_API_URL}<id>", "store": HPO_STORE,
+                      "served": list(terms.served), "fetched": list(terms.fetched), "missing": list(terms.missing),
+                      "version_note": HPO_VERSION_NOTE},
         "offline": offline,
-        "cache_root": str(_cache_root(cache_root)) if http is None and not dry_run else None,
+        "cache_root": str(_cache_root(cache_root)) if http is None else None,
     })
     m.counts.update({"candidates_total": len(candidates), "candidates_selected": len(chosen),
-                     "candidates_reasoned": 0, "chains_written": 0})
+                     "candidates_reasoned": 0, "chains_written": 0,
+                     "hpo_terms": len(hpo), "hpo_records": len(terms.records)})
+    for hpo_id in terms.missing:
+        m.note(f"HPO term {hpo_id} has no record at the JAX API (404); it is shown bare in the bundle and is not citable")
 
-    results: list[tuple[Bundle, EvidenceChain, EvidenceIndex]] = []
+    results: list[tuple[Bundle, EvidenceChain, EvidenceIndex, ValidationReport]] = []
     usage_total = ac.Usage()
     validation: dict[str, Any] = {}
-    written: list[str] = []
+    written: list[str] = list(terms.fetched)
     for i, cand in enumerate(chosen, 1):
         cid = str(cand["candidate_id"])
         progress(f"candidate {i}/{len(chosen)}: bundle")
-        bundle = build_bundle(cand, run_dir, hpo)
+        bundle = build_bundle(cand, run_dir, hpo, hpo_records=terms.records)
         write_bundle(bundle, out_dir)
         tools = ReasonTools(index, store, literature, citable=bundle.record_ids, default_max_results=literature_max_results)
         request = build_request(bundle, tools, model=model, effort=effort, max_turns=max_turns)
@@ -236,7 +261,7 @@ def run_reason(
             m.note(f"{cid}: disputed {d.path}: {d.reason}")
         for n in report.notes:
             m.note(f"{cid}: {n}")
-        results.append((bundle, cleaned, scoped))
+        results.append((bundle, cleaned, scoped, report))
         disclosure = disclosure or result.disclosure
         progress(f"candidate {i}/{len(chosen)}: {_classification_line(cleaned)} · "
                  f"{report.counts['items_dropped']} rejected · {report.counts['frequency_disputed']} disputed")
@@ -250,7 +275,8 @@ def run_reason(
     m.counts["evidence_records"] = store.count()
     m.counts["evidence_records_added"] = len(dict.fromkeys(written))
     if dry_run:
-        m.note("dry run: bundles and prompts written; no model was called and no chain was produced.")
+        m.note("dry run: bundles and prompts written; no model was called and no chain was produced; "
+               "the case HPO terms were served or fetched (see params.hpo_terms).")
     else:
         if not chosen:
             m.note("no candidate selected: stage 3 listed none; no model was called.")
@@ -343,22 +369,34 @@ def check_chain(chain: EvidenceChain, bundle: Bundle, records: list[EvidenceReco
                 run_index: EvidenceIndex, *, af_field: str, thresholds: dict[str, float]) -> tuple[EvidenceChain, ValidationReport]:
     """Everything between the model's answer and the chain on disk, in order: pin the
     identity to the bundle (:func:`align_chain`), the stage's own checks
-    (:func:`~engine.reason.checks.stage_checks`), the shared validator over the
-    candidate's scoped index — told the candidate's keys, so its frequency checks look
-    up the right variant and it would drop a foreign entry even if the alignment had
-    let one through — a note for every rejected id that exists elsewhere in the run,
-    and the classification. One report carries all of it."""
+    (:func:`~engine.reason.checks.stage_checks`), the HPO term check
+    (:func:`~engine.agents.terms.check_terms`: an ``HP:`` id no ``hpo:`` record in
+    scope carries is redacted to a footnote marker, a label that is not the record's
+    is disputed in place), the shared validator over the candidate's scoped index — told
+    the candidate's keys, so its frequency checks look up the right variant and it
+    would drop a foreign entry even if the alignment had let one through — a note for
+    every rejected id that exists elsewhere in the run, and the classification. One
+    report carries all of it."""
     aligned, notes, dropped = align_chain(chain, bundle)
-    checks = stage_checks(aligned, AccessionResolver(records))
+    redactions = Redactions.continuing(aligned)
+    checks = stage_checks(aligned, AccessionResolver(records), redactions)
+    data = checks.chain.model_dump()
+    terms = check_terms(data, scoped, redact=redactions.redact)
+    pre = list(redactions.rejections)  # the stage's and the term check's redactions, each with its marker
     rank = bundle.rank or {}
-    phenotype_rank = ({"rank": rank.get("exomiser_rank"), "record_id": rank.get("exomiser_evidence_id") or rank.get("evidence_id")}
-                      if bundle.rank is not None else None)
-    cleaned, report = validate(checks.chain, scoped, af_field=af_field, thresholds=thresholds,
-                               keys=[v.key for v in bundle.variants], phenotype_rank=phenotype_rank)
-    report.rejections[:0] = dropped + checks.dropped + checks.redacted
+    phenotype_rank = ({"ran": True, "rank": rank.get("exomiser_rank"),
+                       "record_id": rank.get("exomiser_evidence_id") or rank.get("evidence_id")}
+                      if bundle.rank is not None else {"ran": False})
+    cleaned, report = validate(EvidenceChain.model_validate(data), scoped, af_field=af_field, thresholds=thresholds,
+                               keys=[v.key for v in bundle.variants], phenotype_rank=phenotype_rank,
+                               redactions=redactions)
+    report.rejections[:0] = dropped + checks.dropped + pre
+    report.disputes.extend(terms.disputes)
     report.counts["items_dropped"] += len(dropped) + len(checks.dropped)
     for name in ("redactions", "ids_checked", "ids_unknown"):
-        report.counts[name] += len(checks.redacted)
+        report.counts[name] += len(pre)
+    report.counts.update(terms.counts)
+    notes = notes + terms.notes
     out_of_scope = [rid for rid in cited_ids(aligned, run_index) if rid not in scoped and rid in run_index]
     report.counts["citations_out_of_scope"] = len(out_of_scope)
     report.notes = notes + [f"out of scope: {rid} exists in the run's evidence but was neither in the bundle nor "
@@ -462,26 +500,29 @@ def classify(chain: EvidenceChain) -> EvidenceChain:
 
 # --------------------------------------------------------------------------- render
 
-def render_document(chains: list[tuple[Bundle, EvidenceChain, EvidenceIndex]], *,
+def render_document(chains: list[tuple[Bundle, EvidenceChain, EvidenceIndex, ValidationReport]], *,
                     disclosure: str | None, model: str, effort: str) -> str:
     """``evidence_chain.md``: a summary table, then every chain with its own References,
-    resolved against the index the chain was validated with."""
+    resolved against the index the chain was validated with, and the footnotes of its
+    own redactions — numbered ``[^<n>-k]`` per candidate, so the markers of one chain
+    never collide with another's in the one document."""
     out = ["# Evidence chains", ""]
     out.append(f"{len(chains)} candidate(s) · model {model} · effort {effort} · classification computed by the "
                "engine from the validated criteria (ClinGen SVI points over ACMG/AMP 2015 codes). Every claim cites a record id; the References "
                "under each chain resolve them.")
     out.append("")
     out.extend(["| # | candidate | gene | model | variant | classification |", "|---|---|---|---|---|---|"])
-    for i, (bundle, chain, _) in enumerate(chains, 1):
+    for i, (bundle, chain, _, _) in enumerate(chains, 1):
         c = bundle.candidate
         for v in chain.variants:
             label = (v.classification or "not computed").replace("_", " ")
             out.append(f"| {i} | {chain.candidate_id} | {c.get('gene_symbol') or '-'} | {c.get('model') or '-'} | {v.key} | {label} |")
     out.append("")
-    for _, chain, index in chains:
+    for i, (_, chain, index, report) in enumerate(chains, 1):
         out.append("---")
         out.append("")
-        out.append(render_evidence_chain(chain, index, disclosure=disclosure).rstrip("\n"))
+        out.append(render_evidence_chain(chain, index, disclosure=disclosure, rejections=report.rejections,
+                                         footnote_prefix=f"{i}-").rstrip("\n"))
         out.append("")
     return "\n".join(out).rstrip("\n") + "\n"
 
@@ -533,11 +574,17 @@ def _clear_outputs(out_dir: Path) -> None:
         (out_dir / name).unlink(missing_ok=True)
 
 
-def _literature(http: Http | None, cache_root: Path | None, offline: bool) -> LiteratureRetriever:
+def _http(http: Http | None, cache_root: Path | None, offline: bool) -> Http:
+    """The stage's ``Http`` (tests pass their own): the shared cache root, the
+    orchestrator's rate table, ``--offline`` failing on any miss."""
     if http is None:
         http = Http(HttpCache(_cache_root(cache_root)), limiter=RateLimiter(RATE_LIMITS), offline=offline,
                     backoff_floor=BACKOFF_FLOOR, retries=RETRIES)
-    return LiteratureRetriever(http)
+    return http
+
+
+def _literature(http: Http | None, cache_root: Path | None, offline: bool) -> LiteratureRetriever:
+    return LiteratureRetriever(_http(http, cache_root, offline))
 
 
 def _client(provider: str | None, model: str, effort: str, progress: Progress) -> ac.ModelClient:

@@ -31,6 +31,7 @@ from pydantic import BaseModel
 
 from engine.agents import client as ac
 from engine.agents.bundle import build_bundle, load_rank, project_columns, write_bundle
+from engine.agents.redaction import FOOTNOTE_UNKNOWN, Redactions, markers
 from engine.agents.render import cited_ids, render_evidence_chain, render_medicine_report
 from engine.agents.schema import ALL_CODES, Criterion, EvidenceChain, MechanismClaim, MedicineReport, VariantChain, combine_acmg
 from engine.agents.validator import (
@@ -222,28 +223,67 @@ def test_fabricated_pmid_is_dropped_everywhere(index: EvidenceIndex):
     assert [c.code for c in cleaned.variants[0].criteria] == ["PP3"]
     pp3 = cleaned.variants[0].criteria[0]
     assert pp3.met is False and pp3.justification.startswith("[DISPUTED — PP3 recomputed from vep:7:117559590:ATCT:A: CADD 17.55")
-    assert pp3.justification.endswith("in silico; also PMID 7647779 and PMID [citation removed: no such record]")
-    assert cleaned.mechanism_hypothesis == f"LoF [{CFTR_VEP}] [citation removed: no such record]"
+    assert pp3.justification.endswith("in silico; also PMID 7647779 and [^1]")  # the marker alone, not "PMID [^1]"
+    assert cleaned.mechanism_hypothesis == f"LoF [{CFTR_VEP}] [^2]"
     reasons = {r.path: r.reason for r in report.rejections}
     assert reasons["literature[1]"] == f"no such literature record in the store: {FAKE_PMID}"
     assert reasons["literature[3]"] == "not a pmid:<n> id: 'not-a-pmid'"
     assert reasons["variants[0].criteria[0]"] == f"unknown evidence id(s): {FAKE_PMID}"
     assert report.counts["literature_removed"] == 2 and report.counts["redactions"] == 2
-    assert "99999999" not in render_evidence_chain(cleaned, index)
+    assert [(r.path, r.marker) for r in report.rejections if r.marker] == [
+        ("variants[0].criteria[1].justification", 1), ("mechanism_hypothesis", 2)]  # numbered in order of discovery
+    assert all(r.marker is None for r in report.rejections if "literature" in r.path or r.path.endswith("]"))
+    assert "99999999" not in render_evidence_chain(cleaned, index)  # the prose; only a footnote may name the id
+    md = render_evidence_chain(cleaned, index, rejections=report.rejections)
+    assert "citation removed: no such record" not in md and "99999999" not in md.split("## Literature")[1]
+    assert f"[^1]: citation removed by the validator: inline PMID not in the store: {FAKE_PMID}" in md.split("## Phase")[0]
+    assert (md.split("## Mechanism hypothesis")[1].split("## Limits")[0] ==
+            f"\n\nLoF [{CFTR_VEP}] [^2]\n\n[^2]: citation removed by the validator: inline citation to a record not in the store: {FAKE_PMID}\n\n")
 
 
 def test_inline_citations_are_found_in_every_spelling_and_redacted_per_id(index: EvidenceIndex):
+    near_miss = "gnomad:7-117559590-ATCT:A"  # a colon where the store has a dash: the same record, misspelled
     prose = (f"pmid:99999999 shows X; (pmid:99999999); pmid 99999999; [ {FAKE_CLINVAR} ] with spaces; "
              f"see gnomad:9-9-A-T. Also [PMID:7647779], [pmid:7647779, pmid:99999999] and [{CFTR_VEP}; {FAKE_PMID}]. "
-             f"Bare {CFTR_GNOMAD}: fine. HP:0002205 and chr7:117559590 and NM_000492.4:c.1521_1523del stay.")
-    out = chain([criterion("PP3", "supporting", [CFTR_VEP])], phase_statement=prose)
+             f"Bare {CFTR_GNOMAD}: fine. HP:0002205 and chr7:117559590 and NM_000492.4:c.1521_1523del stay. "
+             f"Near miss {near_miss} respelled.")
+    out = chain([criterion("PP3", "supporting", [CFTR_VEP]),
+                 criterion("PM2", "moderate", [near_miss], met=False, just="af 0.0119 is not rare")], phase_statement=prose)
     cleaned, report = validate(out, index)
-    r = "[citation removed: no such record]"
     assert cleaned.phase_statement == (
-        f"{r} shows X; ({r}); PMID {r}; {r} with spaces; see {r}. Also [pmid:7647779], [pmid:7647779] {r} and "
-        f"[{CFTR_VEP}] {r}. Bare {CFTR_GNOMAD}: fine. HP:0002205 and chr7:117559590 and NM_000492.4:c.1521_1523del stay.")
-    assert report.counts["redactions"] == 7 and "99999999" not in render_evidence_chain(cleaned, index)
+        f"[^1] shows X; ([^2]); [^3]; [^4] with spaces; see [^5]. Also [pmid:7647779], [pmid:7647779] [^6] and "
+        f"[{CFTR_VEP}] [^7]. Bare {CFTR_GNOMAD}: fine. HP:0002205 and chr7:117559590 and NM_000492.4:c.1521_1523del stay. "
+        f"Near miss {CFTR_GNOMAD} respelled.")
+    assert report.counts["redactions"] == 7 and [rj.marker for rj in report.rejections] == [1, 2, 3, 4, 5, 6, 7]
     assert all(rj.path == "phase_statement" for rj in report.rejections)
+    # the near-miss: respelled in the list and in the prose, counted and noted, never a rejection
+    assert cleaned.variants[0].criteria[1].evidence_ids == [CFTR_GNOMAD] and cleaned.variants[0].criteria[1].met is False
+    assert report.counts["ids_respelled"] == 2 and [d.path for d in report.disputes] == ["variants[0].criteria[0]"]  # PP3 only
+    assert report.notes == [
+        f"variants[0].criteria[1].evidence_ids: {near_miss!r} respelled to {CFTR_GNOMAD!r} (one separator edit; the store's spelling)",
+        f"phase_statement: {near_miss!r} respelled to {CFTR_GNOMAD!r} (one separator edit; the store's spelling)",
+    ]
+    assert report.rules["respelling"].startswith("an id one separator edit (: - _ / . or case) away from exactly one store id")
+    # the rendered chain: the marker in the section, the footnote at the section's end, no sentence anywhere
+    assert "99999999" not in render_evidence_chain(cleaned, index)  # the prose; only a footnote may name the id
+    md = render_evidence_chain(cleaned, index, rejections=report.rejections)
+    assert "citation removed: no such record" not in md and "99999999" not in md.split("## Literature")[1]
+    phase = md.split("## Phase\n\n")[1].split("## Mechanism hypothesis")[0]
+    assert phase.startswith("[^1] shows X; ([^2]); [^3];") and phase.endswith(
+        "[^5]: citation removed by the validator: inline citation to a record not in the store: gnomad:9-9-A-T\n"
+        f"[^6]: citation removed by the validator: inline citation to a record not in the store: {FAKE_PMID}\n"
+        f"[^7]: citation removed by the validator: inline citation to a record not in the store: {FAKE_PMID}\n\n")
+    assert f"\n[^1]: citation removed by the validator: inline citation to a record not in the store: {FAKE_PMID}\n" in phase
+    assert f"\n[^3]: citation removed by the validator: inline PMID not in the store: {FAKE_PMID}\n" in phase
+    assert f"\n[^4]: citation removed by the validator: inline citation to a record not in the store: {FAKE_CLINVAR}\n" in phase
+    assert markers(phase) == [1, 2, 3, 4, 5, 6, 7] and "[^" not in md.split("## Mechanism hypothesis")[1]
+    # with no rejections handed in, the marker stays and the reason is declared unknown
+    bare = render_evidence_chain(cleaned, index)
+    assert f"[^1]: {FOOTNOTE_UNKNOWN}\n" in bare and "[^1] shows X" in bare
+    # several chains in one file: the prefix keeps the references unique
+    prefixed_md = render_evidence_chain(cleaned, index, rejections=report.rejections, footnote_prefix="2-")
+    assert "[^2-1] shows X; ([^2-2]);" in prefixed_md and f"\n[^2-1]: citation removed by the validator: " in prefixed_md
+    assert "[^1]" not in prefixed_md
     # the renderer's inventory uses the same tokenizer: References lists exactly what survived
     assert cited_ids(cleaned, index) == sorted({PAPER, CFTR_VEP, CFTR_GNOMAD})
     assert citation_tokens(f"x [PMID:7647779] y pmid:1 z [hp:1, HP:2] HP:3 [{CFTR_VEP}] VCV000007105 NCT01807923 PMC1 rs1") == \
@@ -268,7 +308,6 @@ def test_bare_accessions_in_prose_resolve_through_the_store_or_are_redacted(inde
     """``VCV…``/``NCT…`` name records directly; ``PMC…``/``doi:`` resolve through the
     pmid: records' own ids; ``rs`` ids are identifiers, checked against the cited
     records and only noted; a numbered ``[1]`` names nothing."""
-    r = "[citation removed: no such record]"
     prose = ("ClinVar VCV999999999 and VCV000007105 (vcv000007105); trials NCT99999999 and NCT01807923; "
              "PubMed 99999999 and PubMed ID 7647779 and PMC9999999 and PMC3219147 (see doi:10.1073/pnas.1105787108, "
              "doi:10.1000/fake.123); dbSNP rs999999999 and rs1801133; refs [1] and [2, 3] and [4-6]; "
@@ -280,10 +319,11 @@ def test_bare_accessions_in_prose_resolve_through_the_store_or_are_redacted(inde
     out = chain([criterion("PP3", "supporting", [CFTR_VEP, "opentargets:knownDrug:stub"])], mechanism_hypothesis=prose)
     cleaned, report = validate(out, index)
     assert cleaned.mechanism_hypothesis == (
-        f"ClinVar {r} and VCV000007105 (vcv000007105); trials {r} and NCT01807923; "
-        f"PMID {r} and PubMed ID 7647779 and {r} and PMC3219147 [{VX809_PAPER}] (see doi:10.1073/pnas.1105787108, "
-        f"{r}); dbSNP rs999999999 and rs1801133; refs {r} and {r} and {r}; "
-        f"ChEMBL {r} and CHEMBL2103870 (a record) and CHEMBL2010601 (carried); DOI 10.1038/ng0595-111 stays [{MTHFR_VEP}].")
+        f"ClinVar [^1] and VCV000007105 (vcv000007105); trials [^2] and NCT01807923; "
+        f"[^3] and PubMed ID 7647779 and [^4] and PMC3219147 [{VX809_PAPER}] (see doi:10.1073/pnas.1105787108, "
+        f"[^5]); dbSNP rs999999999 and rs1801133; refs [^6] and [^7] and [^8]; "
+        f"ChEMBL [^9] and CHEMBL2103870 (a record) and CHEMBL2010601 (carried); DOI 10.1038/ng0595-111 stays [{MTHFR_VEP}].")
+    assert [rj.marker for rj in report.rejections] == list(range(1, 10))
     reasons = [rj.reason for rj in report.rejections]
     assert reasons == [
         "inline accession not in the store: clinvar:VCV999999999",
@@ -300,9 +340,15 @@ def test_bare_accessions_in_prose_resolve_through_the_store_or_are_redacted(inde
     assert report.notes == ["mechanism_hypothesis: dbSNP id not carried by any record the answer cites, left in place "
                             "(not a citation): rs999999999"]  # rs1801133 is in the cited MTHFR VEP record
     assert report.counts["identifiers_unverified"] == 1
-    refs = render_evidence_chain(cleaned, index).split("## References")[1]
+    md = render_evidence_chain(cleaned, index, rejections=[asdict(rj) for rj in report.rejections])  # dicts, as the validation JSON holds them
+    section = md.split("## Mechanism hypothesis\n\n")[1].split("## Limits")[0]
+    assert section.startswith("ClinVar [^1] and VCV000007105") and "\n\n[^1]: citation removed by the validator: inline accession not in the store: clinvar:VCV999999999\n" in section
+    assert section.endswith("[^9]: citation removed by the validator: inline ChEMBL id neither a chembl: record in the store nor "
+                            "carried by a cited record: CHEMBL999999\n\n")
+    assert [line.split(":")[0] for line in section.strip().split("\n")[-9:]] == [f"[^{k}]" for k in range(1, 10)]
+    refs = md.split("## References")[1]
     assert f"[{CFTR_CLINVAR}]" in refs and f"[{TRIAL}]" in refs and f"[{VX809_PAPER}]" in refs and f"[{PAPER}]" in refs
-    assert "99999999" not in refs and "fake" not in refs
+    assert "99999999" not in refs and "fake" not in refs and "[^" not in refs
     assert cited_ids(cleaned, index) == sorted({CFTR_VEP, MTHFR_VEP, CFTR_CLINVAR, TRIAL, PAPER, VX809_PAPER, "opentargets:knownDrug:stub"})
 
 
@@ -670,12 +716,58 @@ def test_index_add_and_ids_cover_memory_and_stores(store: EvidenceStore):
     assert index.ids() == sorted(on_disk + ["pmid:1"]) and 12345 not in index and index.get("nope:0") is None
 
 
+def test_index_ids_of_lists_one_source_memory_first(store: EvidenceStore):
+    """``ids_of`` is what a near-miss respelling searches: one source, memory records
+    first, each id once — the store's other directories are not read."""
+    index = EvidenceIndex([store])
+    assert index.ids_of("gnomad") == [MTHFR_GNOMAD, TP53_GNOMAD, CFTR_GNOMAD]  # the store's file order
+    assert index.ids_of("pmid") == [VX809_PAPER, PAPER] and index.ids_of("nothing") == []
+    index.add(EvidenceRecord(record_id="gnomad:1-1-A-T", source="gnomad", source_version="v", query={}, url="https://x",
+                             retrieved_at="2026-01-01T00:00:00+00:00", payload={}))
+    index.add(store.get(CFTR_GNOMAD))  # on disk too: listed once, from memory
+    assert index.ids_of("gnomad") == ["gnomad:1-1-A-T", CFTR_GNOMAD, MTHFR_GNOMAD, TP53_GNOMAD]
+    memory = EvidenceIndex.from_records([store.get(CFTR_VEP), store.get(PAPER)])
+    assert memory.ids_of("vep") == [CFTR_VEP] and memory.ids_of("pmid") == [PAPER] and memory.ids_of("gnomad") == []
+
+
+def test_revalidating_a_validated_chain_keeps_its_markers_and_numbers(index: EvidenceIndex):
+    """``engine reason --revalidate`` on a clean chain: the markers a first pass left
+    are not citations, so a second pass neither redacts nor renumbers them, only
+    notes them; a new redaction continues after the highest one."""
+    out = chain([criterion("PP3", "supporting", [CFTR_VEP], just=f"in silico [{FAKE_PMID}]")],
+                phase_statement=f"see [{FAKE_CLINVAR}] and [{CFTR_CLINVAR}]", mechanism_hypothesis=f"LoF [{CFTR_VEP}] [{FAKE_PMID}]")
+    first, r1 = validate(out, index)
+    assert first.variants[0].criteria[0].justification.endswith("in silico [^1]")
+    assert first.phase_statement == f"see [^2] and [{CFTR_CLINVAR}]" and first.mechanism_hypothesis == f"LoF [{CFTR_VEP}] [^3]"
+    assert [rj.marker for rj in r1.rejections] == [1, 2, 3] and r1.notes == []
+
+    second, r2 = validate(first, index)
+    assert second == first and r2.rejections == [] and r2.counts["redactions"] == 0
+    assert [n for n in r2.notes if "footnote" in n] == [
+        f"{path}: model-written footnote marker [^{k}] left in place (no rejection of this validation "
+        "carries it; a renderer prints its reason as unknown)"
+        for path, k in [("variants[0].criteria[0].justification", 1), ("phase_statement", 2), ("mechanism_hypothesis", 3)]]
+    assert Redactions.continuing(first).next == 4 and Redactions.continuing(second.model_dump()).next == 4
+
+    # a chain that already carries markers and gains a new redaction: numbered after the highest
+    third, r3 = validate(dict(first.model_dump(), limits=[f"also [{FAKE_TRIAL}]"]), index)
+    assert third.limits == ["also [^4]"] and [rj.marker for rj in r3.rejections] == [4]
+    md = render_evidence_chain(third, index, rejections=r3.rejections)
+    assert f"[^1]: {FOOTNOTE_UNKNOWN}" in md and "[^4]: citation removed by the validator: inline citation to a record not in the store: nct:NCT99999999" in md
+    # a counter handed in by a stage check is continued, and its own markers are not noted
+    counter = Redactions.continuing(first.model_dump())
+    fourth, r4 = validate(dict(first.model_dump(), limits=[f"also [{FAKE_TRIAL}]"]), index, redactions=counter)
+    assert fourth == third and not [n for n in r4.notes if "footnote" in n] and counter.next == 5
+    assert counter.rejections == r4.rejections
+
+
 def test_render_medicine_report_with_no_surviving_candidate_says_so(index: EvidenceIndex):
     report = MedicineReport(candidate_id="CFTR:hom", gene_symbol="CFTR",
                             mechanism=[MechanismClaim(statement=f"LoF [{CFTR_VEP}]", evidence_ids=[CFTR_VEP])],
                             candidates=[], limits=["no drug record cited survived"])
     md = render_medicine_report(report, index, disclosure="FakeClient")
-    assert "## Drug candidates\n\n- none survived validation\n" in md
+    assert "## Drug candidates\n\n- No candidate proposed (the legacy renderer; see 06_medicine/report.md for the classes searched)\n" in md
+    assert "survived validation" not in md
     assert md.index("## Mechanism") < md.index("## Drug candidates") < md.index("## Limits")
 
 
@@ -1147,7 +1239,8 @@ def test_answer_schema_asks_for_every_field_but_never_the_engines_and_pins_the_c
 
     med = ac.AgentRequest(system="s", user="u", output_model=MedicineReport).output_schema
     assert med["$defs"]["DrugCandidate"]["properties"]["counter_arguments"]["minItems"] == 1
-    assert "trial_ids" in med["$defs"]["DrugCandidate"]["required"] and "enum" not in json.dumps(med)
+    assert "trial_ids" in med["$defs"]["DrugCandidate"]["required"]
+    assert "enum" not in json.dumps(med["$defs"]["DrugCandidate"])  # nothing pinned unless the caller pins it (a Literal field elsewhere is the schema's own)
 
     class Other(BaseModel):  # a "code" that is not an ACMG code, and a "classification" the engine fills
         code: str

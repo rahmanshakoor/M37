@@ -36,6 +36,7 @@ REPO = Path(__file__).resolve().parents[1]
 FIX = REPO / "tests" / "fixtures" / "public_case"
 SCRIPT = REPO / "scripts" / "run_public_case.sh"
 CHAIN = FIX / "05_reason" / "chain_CFTR_comphet.json"
+HPO_EVIDENCE = FIX / "05_reason" / "evidence"
 
 F508DEL = "7:117559590:ATCT:A"
 G542X = "7:117587778:G:T"
@@ -57,6 +58,10 @@ ALLELES = [
     ("17:7676154:G:C", "rs1042522", "TP53", "0/1"),
 ]
 HPO = ["HP:0012236", "HP:0001738", "HP:0002205", "HP:0006528", "HP:0002110"]
+HPO_IDS = sorted(f"hpo:{t}" for t in HPO)
+HPO_LINE = ("case HPO: HP:0001738 Exocrine pancreatic insufficiency [hpo:HP:0001738]; HP:0002110 Bronchiectasis [hpo:HP:0002110]; "
+            "HP:0002205 Recurrent respiratory infections [hpo:HP:0002205]; HP:0006528 Chronic lung disease [hpo:HP:0006528]; "
+            "HP:0012236 Elevated sweat chloride [hpo:HP:0012236]")
 # What the CFTR:comphet bundle may cite: the recorded stage-2 records of its two variants.
 CFTR_PAIR_IDS = ["clinvar:VCV000007105", "clinvar:VCV000007115", "gnomad:7-117559590-ATCT-A", "gnomad:7-117587778-G-T",
                  f"vep:{F508DEL}", f"vep:{G542X}"]
@@ -135,7 +140,8 @@ def test_script_is_valid_bash_and_points_at_the_fixture():
     subprocess.run(["bash", "-n", str(SCRIPT)], check=True)
     assert 'CASE="$REPO/tests/fixtures/public_case/case.yaml"' in text
     assert 'CHAIN_FIXTURE="$REPO/tests/fixtures/public_case/05_reason/chain_CFTR_comphet.json"' in text
-    for stage in ("engine ingest", "engine retrieve", "engine filter", "engine rank", "engine reason", "engine medicine"):
+    for stage in ("engine ingest", "engine retrieve", "engine filter", "engine rank", "engine reason",
+                  "engine dossier", "engine medicine"):
         assert stage in text, stage
     assert "--dry-run" in text and "--funnel" not in text.split("engine retrieve", 1)[1].split("\n", 1)[0]
     # the run and cache default to a plain temp directory, never a machine- or session-specific path
@@ -210,6 +216,13 @@ def make_run_from_recorded_stage2(tmp_path: Path) -> Path:
     return run
 
 
+def seed_hpo_records(run: Path) -> None:
+    """The recorded ``hpo:`` records of the five case terms into the stage-5 store, so
+    ``run_reason`` serves them and never asks the JAX API (which it otherwise would,
+    cache-backed, in a dry run too)."""
+    shutil.copytree(HPO_EVIDENCE, run / "05_reason" / "evidence", dirs_exist_ok=True)
+
+
 def test_recorded_stage2_output_is_consistent_with_the_vcf():
     rows = json.loads((FIX / "02_retrieve" / "annotated_rows.json").read_text())
     assert [(f"{r['chrom']}:{r['pos']}:{r['ref']}:{r['alt']}", r["id"], r["gene_symbol"], r["gt"]) for r in rows] == ALLELES
@@ -262,8 +275,10 @@ def test_reason_dry_run_writes_the_prompt_for_the_cftr_pair(tmp_path: Path):
 
     run = make_run_from_recorded_stage2(tmp_path)
     run_filter(run)
+    seed_hpo_records(run)
     manifest_path = run_reason(run, top_n=3, dry_run=True, case_path=FIX / "case.yaml", cache_root=tmp_path / "cache")
     out = run / "05_reason"
+    assert not (tmp_path / "cache").exists()  # every term was served from the store: no Http was built
     assert sorted(p.name for p in (out / "prompts").iterdir()) == \
         ["CFTR:comphet.json", "CFTR:comphet.md", "TP53:het_single.json", "TP53:het_single.md"]
     assert not (out / "chains").exists()  # a dry run writes no chain; the script copies the recorded one in before stage 6
@@ -278,16 +293,26 @@ def test_reason_dry_run_writes_the_prompt_for_the_cftr_pair(tmp_path: Path):
     assert [line for line in user.splitlines() if line.startswith("## Variant ")] == [f"## Variant {F508DEL}", f"## Variant {G542X}"]
     assert "phase: unknown — no shared PID; 28.2 kb apart" in user
     assert "exomiser: no stage-4 output" in user  # stage 4 was not run here
-    assert "case HPO: " + ", ".join(sorted(HPO)) in user
+    # the case terms carry the label each hpo: record spells, and the record id to cite
+    assert "HP:0012236 Elevated sweat chloride [hpo:HP:0012236]" in user and HPO_LINE + "\n" in user
+    assert "HPO definitions: HP:0001738 — " in user and "HP:0012236 — An increased concentration of chloride in the sweat." in user
     assert "p.Phe508del" in user and "p.Gly542Ter" in user and "4 stars (practice_guideline)" in user
     for rid in ("clinvar:VCV000007105", "clinvar:VCV000007115", "gnomad:7-117559590-ATCT-A", "gnomad:7-117587778-G-T",
-                f"vep:{F508DEL}", f"vep:{G542X}"):
+                f"vep:{F508DEL}", f"vep:{G542X}", *HPO_IDS):
         assert f"[{rid}]" in user
     assert "17:7675088" not in user  # the other candidate's variant is not in this prompt
+    bundle = json.loads((out / "bundles" / "CFTR:comphet.json").read_text())
+    assert [t["record_id"] for t in bundle["hpo_terms"]] == HPO_IDS and set(HPO_IDS) <= set(bundle["record_ids"])
+    assert bundle["hpo_terms"][0]["payload"]["name"] == "Exocrine pancreatic insufficiency"
 
     m = json.loads(manifest_path.read_text())
     assert m["counts"]["candidates_selected"] == 2 and m["counts"]["candidates_total"] == 2
     assert m["params"]["hpo"] == HPO and m["params"]["hpo_source"].startswith("case file")
+    assert m["params"]["hpo_terms"]["served"] == HPO_IDS and m["params"]["hpo_terms"]["fetched"] == [] and m["params"]["hpo_terms"]["missing"] == []
+    assert m["params"]["hpo_terms"]["store"] == "05_reason/evidence/hpo" and "no HPO release" in m["params"]["hpo_terms"]["version_note"]
+    assert m["counts"]["hpo_terms"] == 5 and m["counts"]["hpo_records"] == 5 and m["counts"]["evidence_records"] == 5
+    assert m["counts"]["evidence_records_added"] == 0
+    assert any("the case HPO terms were served or fetched" in n for n in m["notes"])
 
 
 # ------------------------------------------------------------------ stage 6 on the recorded stage-5 chain
@@ -318,7 +343,7 @@ def test_recorded_chain_is_stage5_output_over_the_recorded_evidence():
                      + [v.summary for v in chain.variants] + [c.justification for v in chain.variants for c in v.criteria])
     cited |= set(cited_ids(prose))
     assert cited == set(CFTR_PAIR_IDS) and cited <= set(index)
-    assert "[citation removed" not in prose  # stage 5 redacted nothing
+    assert "[citation removed" not in prose and "[^" not in prose  # stage 5 redacted nothing
     for v in chain.variants:
         assert v.classification == combine_acmg(v.criteria), v.key
         codes = [c.code for c in v.criteria]
@@ -344,6 +369,7 @@ def test_medicine_dry_run_builds_on_the_recorded_chain(tmp_path: Path):
 
     run = make_run_from_recorded_stage2(tmp_path)
     run_filter(run)
+    seed_hpo_records(run)
     run_reason(run, top_n=3, dry_run=True, case_path=FIX / "case.yaml", cache_root=tmp_path / "cache")
     chains = run / "05_reason" / "chains"
     chains.mkdir()
@@ -358,15 +384,18 @@ def test_medicine_dry_run_builds_on_the_recorded_chain(tmp_path: Path):
 
     bundle = json.loads((out / "bundles" / "CFTR:comphet.json").read_text())
     assert bundle["candidate_id"] == "CFTR:comphet" and bundle["gene_symbol"] == "CFTR" and bundle["gene_id"] == "ENSG00000001626"
-    assert bundle["missing_ids"] == [] and set(bundle["record_ids"]) == set(CFTR_PAIR_IDS)
+    # the pair's stage-2 records plus the case terms' hpo: records, which stage 5 put in its store
+    assert bundle["missing_ids"] == [] and set(bundle["record_ids"]) == set(CFTR_PAIR_IDS) | set(HPO_IDS)
     assert [(v["key"], v["classification"]) for v in bundle["chain"]["variants"]] == \
         [(F508DEL, "vus"), (G542X, "pathogenic")]
     text = bundle["text"]
     assert text.startswith("# Candidate CFTR:comphet\n") and f"## Variant {F508DEL}" in text and f"## Variant {G542X}" in text
-    assert "case HPO: " + ", ".join(sorted(HPO)) in text and "17:7675088" not in text
+    # the stage-6 bundle names every case term (bare ids today; labels and hpo: ids once stage 6 reads the records)
+    assert "case HPO: " in text and all(t in text.split("case HPO: ", 1)[1].split("\n", 1)[0] for t in HPO) and "17:7675088" not in text
 
     prompt = json.loads((out / "prompts" / "CFTR:comphet.json").read_text())
-    assert [t["name"] for t in prompt["tool_definitions"]] == ["get_record", "search_literature", "get_paper", "drugs_for_gene", "search_trials"]
+    from engine.medicine.run import TOOLS
+    assert [t["name"] for t in prompt["tool_definitions"]] == list(TOOLS)  # stage 6's own list, whatever it holds
     assert prompt["output_schema"]["properties"]["candidate_id"]["enum"] == ["CFTR:comphet"]
     assert prompt["output_schema"]["properties"]["gene_symbol"]["enum"] == ["CFTR"]
     assert prompt["user"].endswith(text)
@@ -401,6 +430,7 @@ def test_stages_5_and_6_run_on_the_recorded_evidence_with_a_scripted_client(tmp_
 
     run = make_run_from_recorded_stage2(tmp_path)
     run_filter(run)
+    seed_hpo_records(run)
 
     # -- stage 5: top 1 (CFTR:comphet), the chain's content as the scripted answer, no literature turn
     answer = json.loads(CHAIN.read_text())
@@ -417,28 +447,47 @@ def test_stages_5_and_6_run_on_the_recorded_evidence_with_a_scripted_client(tmp_
     assert validation["rejections"] == [] and validation.get("redactions", []) == []
     m5 = json.loads(manifest_path.read_text())
     assert m5["counts"]["chains_written"] == 1 and m5["counts"]["candidates_selected"] == 1 and m5["counts"]["rejections"] == 0
-    assert m5["counts"]["evidence_records_added"] == 0  # no paper fetched: the stage-5 store stays empty
+    assert m5["counts"]["evidence_records_added"] == 0  # no paper fetched, every term served: the stage-5 store holds the five seeded records
+    assert m5["counts"]["evidence_records"] == 5 and m5["params"]["hpo_terms"]["served"] == HPO_IDS
+    assert validation["counts"]["hp_ids_checked"] == 0 and validation["counts"]["hp_labels_disputed"] == 0  # the recorded chain writes no HP: id
+    assert HPO_LINE in json.loads((out5 / "bundles" / "CFTR:comphet.json").read_text())["text"]
     assert sorted(p.name for p in (out5 / "transcripts").iterdir()) == ["CFTR:comphet.json"]
     md = (out5 / "evidence_chain.md").read_text()
     assert "CFTR:comphet" in md and "— pathogenic" in md and f"## Variant {G542X}" in md and "17:7675088" not in md
 
-    # -- stage 6: the real retrievers over the recorded fixtures; the model cites only what the tools returned
+    # -- stage 6: the real retrievers over the recorded fixtures; the model cites only what the tools returned.
+    # The class the candidate belongs to must name a search made in this conversation, so the trial search the
+    # scripted turn below makes is run here too (same request, same stub fixture) to learn its record id.
+    trial_search = retrievers(stub_http()).trials.find("cystic fibrosis", "ivacaftor", 3).record.record_id
     report = {
         "candidate_id": "CFTR:comphet", "gene_symbol": "CFTR",
         "mechanism": [
             {"statement": f"p.Phe508del misfolds CFTR and p.Gly542Ter truncates it: two loss-of-function alleles [vep:{F508DEL}] [vep:{G542X}] [clinvar:VCV000007105]",
              "evidence_ids": [f"vep:{F508DEL}", f"vep:{G542X}", "clinvar:VCV000007105"]},
         ],
+        "consequence": [{"statement": f"No functional CFTR channel at the apical membrane: thickened secretions and recurrent airway infection "
+                                      f"[{OT_CF}] — the case lists HP:0002205 Recurrent respiratory infections [hpo:HP:0002205]",
+                         "evidence_ids": [OT_CF]}],
         "pathway_targets": [{"statement": f"CFTR's strongest Open Targets association is cystic fibrosis [{OT_CF}]; the target is tractable by small molecules [{OT_TARGET}]",
                              "evidence_ids": [OT_CF, OT_TARGET]}],
+        "intervention_classes": [{
+            "name": "potentiation of residual channel function", "acts_on": f"the misfolded channel that reaches the membrane [{CH_IVACAFTOR_MEC}]",
+            "targets": ["CFTR"], "searched": [trial_search], "verdict": "candidates_proposed", "rejection_reason": "",
+            "evidence_ids": [CH_IVACAFTOR_MEC],
+        }],
         "candidates": [{
-            "name": "Ivacaftor", "chembl_id": "CHEMBL2010601", "mechanism_of_action": "CFTR potentiator",
+            "name": "Ivacaftor", "chembl_id": "CHEMBL2010601", "intervention_class": "potentiation of residual channel function",
+            "mechanism_of_action": "CFTR potentiator",
             "approval_status": "approved 2012, cystic fibrosis (ChEMBL max_phase 4; Open Targets APPROVAL)",
+            "approved_indication": f"cystic fibrosis, as the record states (ChEMBL max_phase 4) [{CH_IVACAFTOR}]",
             "rationale": f"Potentiates the residual p.Phe508del channel at the membrane [{CH_IVACAFTOR}] [{CH_IVACAFTOR_MEC}] [{OT_IVACAFTOR}]",
             "counter_arguments": ["p.Gly542Ter produces no protein to potentiate; benefit rests on the p.Phe508del allele alone",
                                   "systemic exposure of a child; the trials cited were in other genotype combinations"],
+            "paediatric_safety": f"Every cell carries the defect, so exposure is systemic and lifelong; the trial record states the ages studied [{TRIAL}]",
             "evidence_ids": [CH_IVACAFTOR, CH_IVACAFTOR_MEC, OT_IVACAFTOR], "trial_ids": [TRIAL],
         }],
+        "surveillance": [{"statement": f"Airway infection and lung function are what the disease record's phenotypes name [{OT_CF}]",
+                          "evidence_ids": [OT_CF]}],
         "follow_up_experiments": [f"Sweat chloride and nasal potential difference after ivacaftor exposure in vitro [{CH_IVACAFTOR}]"],
         "limits": ["No paper was retrieved in this run; the mechanism rests on the variant and drug records alone"],
         "literature": [],
@@ -462,10 +511,13 @@ def test_stages_5_and_6_run_on_the_recorded_evidence_with_a_scripted_client(tmp_
     assert [c.name for c in final.candidates] == ["Ivacaftor"] and final.candidates[0].chembl_id == "CHEMBL2010601"
     assert final.candidates[0].trial_ids == [TRIAL] and len(final.candidates[0].counter_arguments) == 2
     assert [c.evidence_ids for c in final.pathway_targets] == [[OT_CF, OT_TARGET]]
+    assert [c.name for c in final.intervention_classes] == ["potentiation of residual channel function"]
+    assert final.candidates[0].intervention_class == final.intervention_classes[0].name
     validation = json.loads((out6 / "validation" / "CFTR:comphet.json").read_text())
     assert validation["rejections"] == []
     md = (out6 / "report.md").read_text()
-    assert "Ivacaftor" in md and "cystic fibrosis" in md and "[citation removed" not in md and "17:7675088" not in md
+    assert "Ivacaftor" in md and "cystic fibrosis" in md and "[citation removed" not in md and "[^" not in md \
+        and "17:7675088" not in md
 
     store = EvidenceStore(out6 / "evidence")
     assert store.count() == N_DRUG_RECORDS + 4 and store.count("nct") == 3 and store.count("pmid") == 0

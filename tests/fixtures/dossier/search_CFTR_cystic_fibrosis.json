@@ -1,0 +1,2250 @@
+{
+ "body": {
+  "hitCount": 11336,
+  "nextCursorMark": "AoIIQN6d7ig1NTk2MDE2Mg==",
+  "nextPageUrl": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=(TITLE_ABS:\"CFTR\" AND TITLE_ABS:\"Cystic fibrosis\") AND SRC:MED&cursorMark=AoIIQN6d7ig1NTk2MDE2Mg==&resultType=core&pageSize=8&format=json",
+  "request": {
+   "cursorMark": "*",
+   "pageSize": 8,
+   "queryString": "(TITLE_ABS:\"CFTR\" AND TITLE_ABS:\"Cystic fibrosis\") AND SRC:MED",
+   "resultType": "core",
+   "sort": "",
+   "synonym": false
+  },
+  "resultList": {
+   "result": [
+    {
+     "abstractText": "The discovery of Cystic Fibrosis Transmembrane conductance Regulator (CFTR) modulators has revolutionized the management and clinical outcomes of cystic fibrosis. However, the pleiotropic effects of these new treatments outside the lungs are still largely unknown. Here we report two unusual cases of acute kidney injury in patient with cystic fibrosis (pwCF) following a first exposure to aminoglycoside while under triple correction therapy. We hypothesize that CFTR modulator therapy restored the reabsorption of aminoglycoside in the proximal tubule of the kidneys, a process that is primarily deficient in patients with cystic fibrosis, thus exacerbating the toxicity of these molecules.",
+     "affiliation": "Nephrology Dept, Lyon Sud Hospital, Pierre-Benite, France.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0002-8609-3572"
+       },
+       {
+        "type": "ORCID",
+        "value": "0000-0002-9707-7199"
+       },
+       {
+        "type": "ORCID",
+        "value": "0009-0007-2502-2475"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Nephrology Dept, Lyon Sud Hospital, Pierre-Benite, France."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0009-0007-2502-2475"
+        },
+        "firstName": "Deslais",
+        "fullName": "Martin D",
+        "initials": "D",
+        "lastName": "Martin"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Nephrology Dept, Lyon Sud Hospital, Pierre-Benite, France."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-8609-3572"
+        },
+        "firstName": "Novel-Catin",
+        "fullName": "Etienne NC",
+        "initials": "NC",
+        "lastName": "Etienne"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Hospices Civils de Lyon (HCL), Cystic Fibrosis Adult Reference Center, Department of Internal Medicine, Groupe Hospitalier Sud, Pierre Benite Cedex, France."
+          }
+         ]
+        },
+        "firstName": "Nove-Josserand",
+        "fullName": "Raphaële NJ",
+        "initials": "NJ",
+        "lastName": "Raphaële"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Nephrology Dept, Lyon Sud Hospital, Pierre-Benite, France."
+          },
+          {
+           "affiliation": "Université Claude Bernard Lyon1, Lyon, France."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-9707-7199"
+        },
+        "firstName": "Fouque",
+        "fullName": "Denis F",
+        "initials": "F",
+        "lastName": "Denis"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Hospices Civils de Lyon (HCL), Cystic Fibrosis Adult Reference Center, Department of Internal Medicine, Groupe Hospitalier Sud, Pierre Benite Cedex, France."
+          },
+          {
+           "affiliation": "INSERM U1290 RESHAPE Research in Health Care Performance, Lyon 1 Claude Bernard University, Lyon, France."
+          },
+          {
+           "affiliation": "Université Claude Bernard Lyon1, Lyon, France."
+          }
+         ]
+        },
+        "firstName": "Durieu",
+        "fullName": "Isabelle D",
+        "initials": "D",
+        "lastName": "Isabelle"
+       }
+      ]
+     },
+     "authorString": "Martin D, Etienne NC, Raphaële NJ, Denis F, Isabelle D.",
+     "citedByCount": 0,
+     "dateOfCreation": "2026-09-03",
+     "dateOfRevision": "2026-09-03",
+     "doi": "10.1093/joneph/aajag182",
+     "electronicPublicationDate": "2026-09-03",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-09-03",
+     "firstPublicationDate": "2026-09-03",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1093/joneph/aajag182"
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "N",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "N",
+     "hasReferences": "N",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "Y",
+     "id": "42687801",
+     "inEPMC": "N",
+     "inPMC": "N",
+     "isOpenAccess": "N",
+     "journalInfo": {
+      "dateOfPublication": "2026 Sep",
+      "journal": {
+       "essn": "1724-6059",
+       "isoabbreviation": "J Nephrol",
+       "issn": "1121-8428",
+       "medlineAbbreviation": "J Nephrol",
+       "nlmid": "9012268",
+       "title": "Journal of nephrology"
+      },
+      "journalIssueId": 4251834,
+      "monthOfPublication": 9,
+      "printPublicationDate": "2026-09-01",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Aminoglycoside",
+       "Cystic Fibrosis",
+       "Acute Kidney Injury"
+      ]
+     },
+     "language": "eng",
+     "nihAuthMan": "N",
+     "pageInfo": "aajag182",
+     "pmid": "42687801",
+     "pubModel": "Print-Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "aheadofprint",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Acute kidney injury after aminoglycoside exposure in two cystic fibrosis patients receiving triple CFTR modulator therapy."
+    },
+    {
+     "affiliation": "Division of Clinical Pharmacology, Indiana University School of Medicine, Indianapolis, Indiana, USA.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0001-8019-9811"
+       },
+       {
+        "type": "ORCID",
+        "value": "0009-0002-3804-9267"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Division of Clinical Pharmacology, Indiana University School of Medicine, Indianapolis, Indiana, USA."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0001-8019-9811"
+        },
+        "firstName": "Emma M",
+        "fullName": "Tillman EM",
+        "initials": "EM",
+        "lastName": "Tillman"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Division of Clinical Pharmacology, Indiana University School of Medicine, Indianapolis, Indiana, USA."
+          }
+         ]
+        },
+        "firstName": "Arina",
+        "fullName": "Lazutina A",
+        "initials": "A",
+        "lastName": "Lazutina"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Division of Clinical Pharmacology, Indiana University School of Medicine, Indianapolis, Indiana, USA."
+          }
+         ]
+        },
+        "firstName": "Ross C",
+        "fullName": "Robinson RC",
+        "initials": "RC",
+        "lastName": "Robinson"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Division of Clinical Pharmacology, Indiana University School of Medicine, Indianapolis, Indiana, USA."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0009-0002-3804-9267"
+        },
+        "firstName": "Abi",
+        "fullName": "Colwell A",
+        "initials": "A",
+        "lastName": "Colwell"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Division of Pulmonary, Critical Care, Sleep, and Occupational Medicine, Indiana University School of Medicine, Indianapolis, Indiana, USA."
+          }
+         ]
+        },
+        "firstName": "Cynthia D",
+        "fullName": "Brown CD",
+        "initials": "CD",
+        "lastName": "Brown"
+       }
+      ]
+     },
+     "authorString": "Tillman EM, Lazutina A, Robinson RC, Colwell A, Brown CD.",
+     "citedByCount": 0,
+     "dateOfCreation": "2026-08-26",
+     "dateOfRevision": "2026-08-28",
+     "doi": "10.1002/ppul.71813",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-08-26",
+     "firstPublicationDate": "2026-09-01",
+     "fullTextIdList": {
+      "fullTextId": [
+       "PMC13507763"
+      ]
+     },
+     "fullTextReceivedDate": "2026-09-10",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1002/ppul.71813"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "html",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13507763"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "pdf",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13507763?pdf=render"
+       }
+      ]
+     },
+     "grantsList": {
+      "grant": [
+       {
+        "agency": "Cystic Fibrosis Foundation",
+        "grantId": "008009A124 ‐ Tillman",
+        "orderIn": 0
+       },
+       {
+        "agency": "Cystic Fibrosis Foundation",
+        "grantId": "008009A124 - Tillman",
+        "orderIn": 0
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "N",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "Y",
+     "hasReferences": "Y",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "Y",
+     "id": "42643084",
+     "inEPMC": "Y",
+     "inPMC": "Y",
+     "isOpenAccess": "Y",
+     "journalInfo": {
+      "dateOfPublication": "2026 Sep",
+      "issue": "9",
+      "journal": {
+       "essn": "1099-0496",
+       "isoabbreviation": "Pediatr Pulmonol",
+       "issn": "8755-6863",
+       "medlineAbbreviation": "Pediatr Pulmonol",
+       "nlmid": "8510590",
+       "title": "Pediatric pulmonology"
+      },
+      "journalIssueId": 4248385,
+      "monthOfPublication": 9,
+      "printPublicationDate": "2026-09-01",
+      "volume": "61",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Adverse drug reaction",
+       "Case Series",
+       "Fluid Overload",
+       "Cftr Modulator"
+      ]
+     },
+     "language": "eng",
+     "license": "cc by-nc",
+     "nihAuthMan": "N",
+     "pageInfo": "e71813",
+     "pmcid": "PMC13507763",
+     "pmid": "42643084",
+     "pubModel": "Print",
+     "pubTypeList": {
+      "pubType": [
+       "letter",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "ppublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Case Series of Sustained Fluid-Associated Weight Gain Following Cystic Fibrosis Transmembrane Conductance Regulator (CFTR) Modulator Therapy."
+    },
+    {
+     "abstractText": "Cystic fibrosis transmembrane conductance regulator-related disorder (CFTR-RD) is an increasingly recognized genetic condition characterized by CFTR dysfunction without fulfilling the diagnostic criteria for cystic fibrosis. With the widespread application of genetic testing, an increasing number of patients with CFTR protein dysfunction have been identified; however, many do not meet the typical diagnostic criteria for cystic fibrosis. CFTR-RD may involve multiple organ systems and presents with heterogeneous and complex clinical manifestations, posing significant challenges for diagnosis and management. Here, we report the case of an adolescent male with bronchiectasis, elevated liver enzyme levels, and pancreatic exocrine insufficiency. Genetic analysis revealed a maternally inherited heterozygous intronic <i>CFTR</i> variant. Based on the clinical manifestations and laboratory findings, the patient was highly suspected of having CFTR-RD despite not fulfilling the diagnostic criteria for cystic fibrosis. This case underscores the importance of recognizing CFTR-RD in patients with multisystem involvement and atypical features of cystic fibrosis, and highlights the value of multidisciplinary evaluation in establishing an accurate diagnosis and developing an individualized treatment strategy.",
+     "affiliation": "Department of Pulmonary and Critical Care Medicine, The State Key Laboratory of Complex Severe and Rare Diseases, Peking Union Medical College Hospital, Chinese Academy of Medical Sciences & Peking Union Medical College, Beijing 100730, China.",
+     "authMan": "N",
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pulmonary and Critical Care Medicine, The State Key Laboratory of Complex Severe and Rare Diseases, Peking Union Medical College Hospital, Chinese Academy of Medical Sciences & Peking Union Medical College, Beijing 100730, China."
+          }
+         ]
+        },
+        "firstName": "A Y",
+        "fullName": "Li AY",
+        "initials": "AY",
+        "lastName": "Li"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pulmonary and Critical Care Medicine, The State Key Laboratory of Complex Severe and Rare Diseases, Peking Union Medical College Hospital, Chinese Academy of Medical Sciences & Peking Union Medical College, Beijing 100730, China."
+          }
+         ]
+        },
+        "firstName": "W J",
+        "fullName": "Zhou WJ",
+        "initials": "WJ",
+        "lastName": "Zhou"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pulmonary and Critical Care Medicine, The State Key Laboratory of Complex Severe and Rare Diseases, Peking Union Medical College Hospital, Chinese Academy of Medical Sciences & Peking Union Medical College, Beijing 100730, China."
+          }
+         ]
+        },
+        "firstName": "Y L",
+        "fullName": "Yang YL",
+        "initials": "YL",
+        "lastName": "Yang"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Gastroenterology, Peking Union Medical College Hospital, Chinese Academy of Medical Sciences and Peking Union Medical College, Beijing 100730, China."
+          }
+         ]
+        },
+        "firstName": "J",
+        "fullName": "Li J",
+        "initials": "J",
+        "lastName": "Li"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Center for Rare Diseases, The State Key Laboratory for Complex, Severe, and Rare Diseases, Peking Union Medical College Hospital, Chinese Academy of Medical Sciences & Peking Union Medical College, Beijing 100730, China."
+          }
+         ]
+        },
+        "firstName": "Y X",
+        "fullName": "Li YX",
+        "initials": "YX",
+        "lastName": "Li"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pulmonary and Critical Care Medicine, The State Key Laboratory of Complex Severe and Rare Diseases, Peking Union Medical College Hospital, Chinese Academy of Medical Sciences & Peking Union Medical College, Beijing 100730, China."
+          }
+         ]
+        },
+        "firstName": "Y Q",
+        "fullName": "Wang YQ",
+        "initials": "YQ",
+        "lastName": "Wang"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pulmonary and Critical Care Medicine, The State Key Laboratory of Complex Severe and Rare Diseases, Peking Union Medical College Hospital, Chinese Academy of Medical Sciences & Peking Union Medical College, Beijing 100730, China."
+          }
+         ]
+        },
+        "firstName": "Q L",
+        "fullName": "Chen QL",
+        "initials": "QL",
+        "lastName": "Chen"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pulmonary and Critical Care Medicine, The State Key Laboratory of Complex Severe and Rare Diseases, Peking Union Medical College Hospital, Chinese Academy of Medical Sciences & Peking Union Medical College, Beijing 100730, China."
+          }
+         ]
+        },
+        "firstName": "J P",
+        "fullName": "Fan JP",
+        "initials": "JP",
+        "lastName": "Fan"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Center for Rare Diseases, The State Key Laboratory for Complex, Severe, and Rare Diseases, Peking Union Medical College Hospital, Chinese Academy of Medical Sciences & Peking Union Medical College, Beijing 100730, China."
+          }
+         ]
+        },
+        "firstName": "Y P",
+        "fullName": "Liu YP",
+        "initials": "YP",
+        "lastName": "Liu"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pulmonary and Critical Care Medicine, The State Key Laboratory of Complex Severe and Rare Diseases, Peking Union Medical College Hospital, Chinese Academy of Medical Sciences & Peking Union Medical College, Beijing 100730, China."
+          }
+         ]
+        },
+        "firstName": "X L",
+        "fullName": "Tian XL",
+        "initials": "XL",
+        "lastName": "Tian"
+       }
+      ]
+     },
+     "authorString": "Li AY, Zhou WJ, Yang YL, Li J, Li YX, Wang YQ, Chen QL, Fan JP, Liu YP, Tian XL.",
+     "chemicalList": {
+      "chemical": [
+       {
+        "name": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "registryNumber": "126880-72-6"
+       },
+       {
+        "name": "CFTR protein, human",
+        "registryNumber": "0"
+       }
+      ]
+     },
+     "citedByCount": 0,
+     "dateOfCompletion": "2026-08-05",
+     "dateOfCreation": "2026-08-05",
+     "dateOfRevision": "2026-08-05",
+     "doi": "10.3760/cma.j.cn112147-20251230-00835",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-08-07",
+     "firstPublicationDate": "2026-08-01",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.3760/cma.j.cn112147-20251230-00835"
+       }
+      ]
+     },
+     "grantsList": {
+      "grant": [
+       {
+        "agency": "Academy of Medical Sciences Innovation Fund for Medical Sciences",
+        "grantId": "2023-I2M-C&T-A-002",
+        "orderIn": 0
+       },
+       {
+        "agency": "National Natural Science Foundation of China",
+        "grantId": "82370056",
+        "orderIn": 0
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "N",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "N",
+     "hasReferences": "N",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "Y",
+     "id": "42557072",
+     "inEPMC": "N",
+     "inPMC": "N",
+     "isOpenAccess": "N",
+     "journalInfo": {
+      "dateOfPublication": "2026 Aug",
+      "issue": "8",
+      "journal": {
+       "isoabbreviation": "Zhonghua Jie He He Hu Xi Za Zhi",
+       "issn": "1001-0939",
+       "medlineAbbreviation": "Zhonghua Jie He He Hu Xi Za Zhi",
+       "nlmid": "8712226",
+       "title": "Zhonghua jie he he hu xi za zhi = Zhonghua jiehe he huxi zazhi = Chinese journal of tuberculosis and respiratory diseases"
+      },
+      "journalIssueId": 4239524,
+      "monthOfPublication": 8,
+      "printPublicationDate": "2026-08-01",
+      "volume": "49",
+      "yearOfPublication": 2026
+     },
+     "language": "chi",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Liver",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "EN",
+           "majorTopic_YN": "N",
+           "qualifierName": "enzymology"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Humans",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Cystic Fibrosis",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "DI",
+           "majorTopic_YN": "N",
+           "qualifierName": "diagnosis"
+          },
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Exocrine Pancreatic Insufficiency",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "CO",
+           "majorTopic_YN": "N",
+           "qualifierName": "complications"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Bronchiectasis",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "CO",
+           "majorTopic_YN": "N",
+           "qualifierName": "complications"
+          },
+          {
+           "abbreviation": "DI",
+           "majorTopic_YN": "N",
+           "qualifierName": "diagnosis"
+          },
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Adolescent",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Male",
+        "majorTopic_YN": "N"
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "857-861",
+     "pmid": "42557072",
+     "pubModel": "Print",
+     "pubTypeList": {
+      "pubType": [
+       "Journal Article",
+       "English Abstract",
+       "Case Reports"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "ppublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "[Bronchiectasis with elevated liver enzymes and pancreatic exocrine insufficiency]."
+    },
+    {
+     "abstractText": "The introduction of cystic fibrosis transmembrane conductance regulator (CFTR) modulators has transformed the therapeutic landscape of cystic fibrosis. CFTR modulators target specific functional defects in the CFTR protein, improving its folding, trafficking, gating, or conductance depending on mutation class. As CFTR modulators become the standard of care, emerging data highlight not only their transformative benefits but also knowledge gaps regarding long-term outcomes, variability in therapeutic response, effects on early disease, and extra-pulmonary implications for people with cystic fibrosis (CF) complications. Additionally, access, tolerability, and the needs of individuals with rare or non-modulator-responsive mutations remain important challenges. This article aims to provide a summary of recent literature pertaining to CFTR modulators. Through this summary, we seek to enhance the knowledge of the growing body of evidence guiding the next era of CF care, in which disease modification at the molecular level is increasingly achievable.",
+     "affiliation": "Ms. Selhorst is affiliated with Respiratory Care, Nemours Children's Health, Wilmington, Delaware, USA.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0002-3127-1992"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Ms. Selhorst is affiliated with Respiratory Care, Nemours Children's Health, Wilmington, Delaware, USA."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-3127-1992"
+        },
+        "firstName": "Dawn",
+        "fullName": "Selhorst D",
+        "initials": "D",
+        "lastName": "Selhorst"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Dr. Stekolchik is affiliated with Division of Pulmonology, Nemours Children's Health, Wilmington, Delaware, USA."
+          }
+         ]
+        },
+        "firstName": "Elena",
+        "fullName": "Stekolchik E",
+        "initials": "E",
+        "lastName": "Stekolchik"
+       }
+      ]
+     },
+     "authorString": "Selhorst D, Stekolchik E.",
+     "citedByCount": 0,
+     "dateOfCreation": "2026-08-22",
+     "dateOfRevision": "2026-08-22",
+     "doi": "10.1177/19433654261477809",
+     "electronicPublicationDate": "2026-08-22",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-08-23",
+     "firstPublicationDate": "2026-08-22",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1177/19433654261477809"
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "N",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "N",
+     "hasReferences": "N",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "N",
+     "id": "42631468",
+     "inEPMC": "N",
+     "inPMC": "N",
+     "isOpenAccess": "N",
+     "journalInfo": {
+      "dateOfPublication": "2026 Aug",
+      "journal": {
+       "essn": "1943-3654",
+       "isoabbreviation": "Respir Care",
+       "issn": "0020-1324",
+       "medlineAbbreviation": "Respir Care",
+       "nlmid": "7510357",
+       "title": "Respiratory care"
+      },
+      "journalIssueId": 4237379,
+      "monthOfPublication": 8,
+      "printPublicationDate": "2026-08-01",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Cystic Fibrosis",
+       "Early Initiation",
+       "Sweat Chloride",
+       "Cftr Modulators",
+       "Microbial Landscape",
+       "Treatment Burden Reduction"
+      ]
+     },
+     "language": "eng",
+     "nihAuthMan": "N",
+     "pageInfo": "19433654261477809",
+     "pmid": "42631468",
+     "pubModel": "Print-Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "aheadofprint",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Year in Review: Cystic Fibrosis Modulator Therapy-Efficacy, Access, and Evolution."
+    },
+    {
+     "abstractText": "Cystic fibrosis (CF) is caused by pathogenic variants of the Cystic Fibrosis Transmembrane Conductance Regulator (CFTR) gene. CF in the airways is associated with dehydrated and hyperconcentrated mucus, impaired mucociliary transport, and inflammation. Although CF is a genetic disorder, CFTR sequence variations alone may not fully explain its phenotypic variation. Additionally, while pharmacological CFTR modulators that correct CFTR protein function greatly improve clinical outcomes, people with CF treated with modulators can still exhibit abnormal mucus and persistent inflammation compared to non-CF individuals. As such, understanding the regulation of mucus and inflammation remains crucial to full characterization and management of CF. We suggest that non-DNA-sequence-based mechanisms that regulate CFTR, mucus, and inflammation contribute to CF pathogenesis. This review highlights three features of transcriptional regulation known to modify gene expression (DNA methylation, histone modifications, and three-dimensional chromatin organization) and their role in CF airways. For each feature, we discuss current knowledge of their role in regulating CFTR, gel-forming mucin genes, and inflammation in CF contexts. We also highlight exploratory efforts to target epigenetic mechanisms as CF treatment strategies and suggest that epigenetics and chromatin organization offer a rich space for future CF research.",
+     "affiliation": "Marsico Lung Institute and Cystic Fibrosis Center, University of North Carolina at Chapel Hill, NC, USA.",
+     "authMan": "Y",
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Marsico Lung Institute and Cystic Fibrosis Center, University of North Carolina at Chapel Hill, NC, USA."
+          }
+         ]
+        },
+        "firstName": "Agustín",
+        "fullName": "De Ganzó A",
+        "initials": "A",
+        "lastName": "De Ganzó"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Thomas Lord Department of Mechanical Engineering and Materials Science, Duke University, Durham, NC, USA. Electronic address: brian.chan@duke.edu."
+          }
+         ]
+        },
+        "firstName": "Brian",
+        "fullName": "Chan B",
+        "initials": "B",
+        "lastName": "Chan"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Marsico Lung Institute and Cystic Fibrosis Center, University of North Carolina at Chapel Hill, NC, USA; Thomas Lord Department of Mechanical Engineering and Materials Science, Duke University, Durham, NC, USA; Departments of Biomedical Engineering, Chemistry, and Physics, Duke University, Durham, NC, USA; Institute for Chemical Reaction Design and Discovery (WPI-ICReDD), Hokkaido University, Sapporo, Japan."
+          }
+         ]
+        },
+        "firstName": "Michael",
+        "fullName": "Rubinstein M",
+        "initials": "M",
+        "lastName": "Rubinstein"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Marsico Lung Institute and Cystic Fibrosis Center, University of North Carolina at Chapel Hill, NC, USA; Department of Medicine, University of North Carolina at Chapel Hill, NC, USA."
+          }
+         ]
+        },
+        "firstName": "Kenichi",
+        "fullName": "Okuda K",
+        "initials": "K",
+        "lastName": "Okuda"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Marsico Lung Institute and Cystic Fibrosis Center, University of North Carolina at Chapel Hill, NC, USA; Department of Medicine, University of North Carolina at Chapel Hill, NC, USA; Department of Cell Biology and Physiology, University of North Carolina at Chapel Hill, NC, USA."
+          }
+         ]
+        },
+        "firstName": "Carla M P",
+        "fullName": "Ribeiro CMP",
+        "initials": "CMP",
+        "lastName": "Ribeiro"
+       }
+      ]
+     },
+     "authorString": "De Ganzó A, Chan B, Rubinstein M, Okuda K, Ribeiro CMP.",
+     "citedByCount": 0,
+     "dateOfCreation": "2026-09-15",
+     "dateOfRevision": "2026-09-15",
+     "doi": "10.1016/j.jcf.2026.08.013",
+     "electronicPublicationDate": "2026-09-15",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-09-16",
+     "firstPublicationDate": "2026-09-15",
+     "fullTextIdList": {
+      "fullTextId": [
+       "PMC13578995"
+      ]
+     },
+     "fullTextReceivedDate": "2026-09-17",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1016/j.jcf.2026.08.013"
+       },
+       {
+        "availability": "Free",
+        "availabilityCode": "F",
+        "documentStyle": "html",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13578995"
+       },
+       {
+        "availability": "Free",
+        "availabilityCode": "F",
+        "documentStyle": "pdf",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13578995?pdf=render"
+       },
+       {
+        "availability": "Free",
+        "availabilityCode": "F",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1016/j.jcf.2026.08.013"
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "N",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "Y",
+     "hasReferences": "N",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "Y",
+     "id": "42744679",
+     "inEPMC": "Y",
+     "inPMC": "Y",
+     "isOpenAccess": "N",
+     "journalInfo": {
+      "dateOfPublication": "2026 Sep",
+      "journal": {
+       "essn": "1873-5010",
+       "isoabbreviation": "J Cyst Fibros",
+       "issn": "1569-1993",
+       "medlineAbbreviation": "J Cyst Fibros",
+       "nlmid": "101128966",
+       "title": "Journal of cystic fibrosis : official journal of the European Cystic Fibrosis Society"
+      },
+      "journalIssueId": 4257687,
+      "monthOfPublication": 9,
+      "printPublicationDate": "2026-09-01",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Inflammation",
+       "Chromatin organization",
+       "Epigenetics",
+       "Mucus Hyperconcentration"
+      ]
+     },
+     "language": "eng",
+     "manuscriptId": "NIHMS2207695",
+     "nihAuthMan": "Y",
+     "pageInfo": "S1569-1993(26)03733-1",
+     "pmcid": "PMC13578995",
+     "pmid": "42744679",
+     "pubModel": "Print-Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "research-article",
+       "Review",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "aheadofprint",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Epigenetic regulation and chromatin organization in cystic fibrosis airways."
+    },
+    {
+     "abstractText": "Cystic fibrosis transmembrane conductance regulator (CFTR) modulators have been revolutionary for cystic fibrosis patients. Their potential influence on AA amyloidosis has not been investigated. In AA amyloidosis, patients develop amyloid deposits of serum A amyloid, in the context of a chronic inflammatory state. This case report is of a gentleman with cystic fibrosis and nephrotic range proteinuria secondary to AA amyloidosis. At 5 years following commencement of CFTR modulators, he is in sustained, complete remission with normal urine protein excretion and serum amyloid protein levels within the normal range.",
+     "affiliation": "Regional Centre for Nephrology and Transplantation, Belfast City Hospital, Belfast, UK.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0002-9338-7990"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Regional Centre for Nephrology and Transplantation, Belfast City Hospital, Belfast, UK."
+          },
+          {
+           "affiliation": "Renal, Belfast, UK, Northern Ireland Medical and Dental Training Agency, Belfast, United Kingdom."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0002-9338-7990"
+        },
+        "firstName": "Rachel",
+        "fullName": "McDougall R",
+        "initials": "R",
+        "lastName": "McDougall"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Regional Centre for Nephrology and Transplantation, Belfast City Hospital, Belfast, UK."
+          }
+         ]
+        },
+        "firstName": "Christopher",
+        "fullName": "Hill C",
+        "initials": "C",
+        "lastName": "Hill"
+       }
+      ]
+     },
+     "authorString": "McDougall R, Hill C.",
+     "citedByCount": 0,
+     "dateOfCompletion": "2026-09-11",
+     "dateOfCreation": "2026-09-11",
+     "dateOfRevision": "2026-09-12",
+     "doi": "10.1093/ckj/sfag266",
+     "electronicPublicationDate": "2026-08-18",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-09-12",
+     "firstPublicationDate": "2026-08-18",
+     "fullTextIdList": {
+      "fullTextId": [
+       "PMC13560580"
+      ]
+     },
+     "fullTextReceivedDate": "2026-09-13",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1093/ckj/sfag266"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "html",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13560580"
+       },
+       {
+        "availability": "Open access",
+        "availabilityCode": "OA",
+        "documentStyle": "pdf",
+        "site": "Europe_PMC",
+        "url": "https://europepmc.org/articles/PMC13560580?pdf=render"
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "N",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "Y",
+     "hasReferences": "Y",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "Y",
+     "id": "42724683",
+     "inEPMC": "Y",
+     "inPMC": "Y",
+     "isOpenAccess": "Y",
+     "journalInfo": {
+      "dateOfPublication": "2026 Sep",
+      "issue": "9",
+      "journal": {
+       "essn": "2048-8513",
+       "isoabbreviation": "Clin Kidney J",
+       "issn": "2048-8505",
+       "medlineAbbreviation": "Clin Kidney J",
+       "nlmid": "101579321",
+       "title": "Clinical kidney journal"
+      },
+      "journalIssueId": 4253152,
+      "monthOfPublication": 9,
+      "printPublicationDate": "2026-09-01",
+      "volume": "19",
+      "yearOfPublication": 2026
+     },
+     "keywordList": {
+      "keyword": [
+       "Amyloidosis",
+       "Proteinuria",
+       "Nephrotic syndrome",
+       "Cystic Fibrosis",
+       "Cftr"
+      ]
+     },
+     "language": "eng",
+     "license": "cc by",
+     "nihAuthMan": "N",
+     "pageInfo": "sfag266",
+     "pmcid": "PMC13560580",
+     "pmid": "42724683",
+     "pubModel": "Electronic-eCollection",
+     "pubTypeList": {
+      "pubType": [
+       "Journal Article",
+       "Case Reports",
+       "case-report"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "epublish",
+     "source": "MED",
+     "title": "Treatment with CFTR modulators and subsequent remission of AA amyloidosis."
+    },
+    {
+     "abstractText": "The Cystic Fibrosis Foundation organised a multidisciplinary committee to develop this Position Paper to outline current knowledge and best practices in reproductive health care for individuals with cystic fibrosis. Working groups reviewed the literature and provided relevant guidance on reproductive health services, fertility, contraception, preconception and pregnancy, and cystic fibrosis transmembrane conductance regulator (CFTR) modulator exposure in utero and during lactation. Findings included: (1) reproductive health-care provision should be standardised, and education should begin at cystic fibrosis diagnosis and revisited annually; (2) contraception is safe overall, but underutilised in those with cystic fibrosis compared with the general population; (3) fertility might be improving with CFTR modulators for females with cystic fibrosis, but not for males with cystic fibrosis-assisted reproductive technologies are still required for males to achieve biological parenthood; (4) pregnancy requires close monitoring and unique screening for diabetes; and (5) CFTR modulator exposure in utero has implications for infant monitoring and cystic fibrosis screening results in newborns.",
+     "affiliation": "Division of Pulmonary and Critical Care Medicine, University of Texas Southwestern, Dallas, TX, USA. Electronic address: raksha.jain@utsouthwestern.edu.",
+     "authMan": "N",
+     "authorIdList": {
+      "authorId": [
+       {
+        "type": "ORCID",
+        "value": "0000-0003-3361-4941"
+       }
+      ]
+     },
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Division of Pulmonary and Critical Care Medicine, University of Texas Southwestern, Dallas, TX, USA. Electronic address: raksha.jain@utsouthwestern.edu."
+          }
+         ]
+        },
+        "firstName": "Raksha",
+        "fullName": "Jain R",
+        "initials": "R",
+        "lastName": "Jain"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Division of Pulmonary, Critical Care and Sleep Medicine, National Jewish Health, Denver, CO, USA; Division of Pediatric Pulmonary Medicine, National Jewish Health, Denver, CO, USA."
+          }
+         ]
+        },
+        "firstName": "Jennifer L",
+        "fullName": "Taylor JL",
+        "initials": "JL",
+        "lastName": "Taylor"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pediatrics, Division of Adolescent and Young Adult Medicine, University of Pittsburgh School of Medicine, Pittsburgh, PA, USA."
+          }
+         ]
+        },
+        "firstName": "Traci M",
+        "fullName": "Kazmerski TM",
+        "initials": "TM",
+        "lastName": "Kazmerski"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pharmacy, University of Virginia Health, Charlottesville, VA, USA."
+          }
+         ]
+        },
+        "firstName": "Kevin",
+        "fullName": "Lonabaugh K",
+        "initials": "K",
+        "lastName": "Lonabaugh"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Division of Pulmonary and Critical Care Medicine, Oregon Health and Science University, Portland, OR, USA."
+          }
+         ]
+        },
+        "firstName": "Aaron",
+        "fullName": "Trimble A",
+        "initials": "A",
+        "lastName": "Trimble"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Division of Urology, Rutgers Robert Wood Johnson Medical School, New Brunswick, NJ, USA."
+          }
+         ]
+        },
+        "firstName": "Danielle",
+        "fullName": "Velez Leitner D",
+        "initials": "D",
+        "lastName": "Velez Leitner"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Clinical Sciences, Medical University of South Carolina, Charleston, SC, USA."
+          }
+         ]
+        },
+        "firstName": "Kimberly",
+        "fullName": "Foil K",
+        "initials": "K",
+        "lastName": "Foil"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Division of Pulmonary and Critical Care Medicine, University of Pennsylvania Perelman School of Medicine, Philadelphia, PA, USA."
+          }
+         ]
+        },
+        "firstName": "Gina",
+        "fullName": "Hong G",
+        "initials": "G",
+        "lastName": "Hong"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Bethesda, MD, USA."
+          }
+         ]
+        },
+        "firstName": "William B",
+        "fullName": "Johns WB",
+        "initials": "WB",
+        "lastName": "Johns"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Division of Maternal and Fetal Medicine, University of Washington School of Medicine, Seattle, WA, USA."
+          }
+         ]
+        },
+        "firstName": "Teodora",
+        "fullName": "Kolarova T",
+        "initials": "T",
+        "lastName": "Kolarova"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pulmonary and Sleep Medicine, Children's Mercy, Kansas City, MO, USA."
+          }
+         ]
+        },
+        "firstName": "Ellen",
+        "fullName": "Meier E",
+        "initials": "E",
+        "lastName": "Meier"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Bethesda, MD, USA."
+          }
+         ]
+        },
+        "firstName": "Annette",
+        "fullName": "Perry A",
+        "initials": "A",
+        "lastName": "Perry"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pediatrics, University of California Irvine School of Medicine, Irvine, CA, USA; Miller Children's and Women's Hospital, Long Beach, CA, USA."
+          }
+         ]
+        },
+        "firstName": "Kathryn E",
+        "fullName": "Singh KE",
+        "initials": "KE",
+        "lastName": "Singh"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Bethesda, MD, USA."
+          }
+         ]
+        },
+        "firstName": "Chelsea",
+        "fullName": "Stahl C",
+        "initials": "C",
+        "lastName": "Stahl"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Division of Pediatric Pulmonary, Medical University of South Carolina, Charleston, SC, USA."
+          }
+         ]
+        },
+        "firstName": "Sylvia",
+        "fullName": "Szentpetery S",
+        "initials": "S",
+        "lastName": "Szentpetery"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Obstetrics and Gynecology, University of Pennsylvania Perelman School of Medicine, Philadelphia, PA, USA."
+          }
+         ]
+        },
+        "firstName": "Marissa S",
+        "fullName": "Weiss MS",
+        "initials": "MS",
+        "lastName": "Weiss"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Division of Pulmonary and Critical Care Medicine, Johns Hopkins School of Medicine, Baltimore, MD, USA."
+          }
+         ]
+        },
+        "firstName": "Natalie E",
+        "fullName": "West NE",
+        "initials": "NE",
+        "lastName": "West"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Clinical Research Services, National Jewish Health, Denver, CO, USA."
+          }
+         ]
+        },
+        "firstName": "Alexandra",
+        "fullName": "Wilson A",
+        "initials": "A",
+        "lastName": "Wilson"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pharmaceutical Care, University of Iowa Health Care, Iowa City, IA, USA; University of California San Diego, La Jolla, CA, USA."
+          }
+         ]
+        },
+        "firstName": "Brittany",
+        "fullName": "Wright B",
+        "initials": "B",
+        "lastName": "Wright"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Inova Fairfax Hospital, Falls Church, VA, USA; Cystic Fibrosis Foundation, Bethesda, MA, USA."
+          }
+         ]
+        },
+        "firstName": "A Whitney",
+        "fullName": "Brown AW",
+        "initials": "AW",
+        "lastName": "Brown"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Cystic Fibrosis Foundation, Bethesda, MA, USA."
+          }
+         ]
+        },
+        "firstName": "Sarah E",
+        "fullName": "Hempstead SE",
+        "initials": "SE",
+        "lastName": "Hempstead"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Cystic Fibrosis Foundation, Bethesda, MA, USA."
+          }
+         ]
+        },
+        "firstName": "Paula",
+        "fullName": "Lomas P",
+        "initials": "P",
+        "lastName": "Lomas"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Respiratory & Sleep Medicine, Westmead Hospital, Sydney, NSW, Australia."
+          }
+         ]
+        },
+        "authorId": {
+         "type": "ORCID",
+         "value": "0000-0003-3361-4941"
+        },
+        "firstName": "Peter G",
+        "fullName": "Middleton PG",
+        "initials": "PG",
+        "lastName": "Middleton"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Pulmonology Institute and CF Center, Carmel Medical Center, Haifa, Israel; The Technion-Israel Institute of Technology, The B Rappaport Faculty of Medicine, Haifa, Israel."
+          }
+         ]
+        },
+        "firstName": "Michal",
+        "fullName": "Shteinberg M",
+        "initials": "M",
+        "lastName": "Shteinberg"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Adult Cystic Fibrosis Centre, Royal Brompton Hospital, Guys and St Thomas' Hospital Foundation Trust, London, UK; NHLI, Imperial College London, London UK; NIHR Biomedical Research Centre, London, UK."
+          }
+         ]
+        },
+        "firstName": "Imogen",
+        "fullName": "Felton I",
+        "initials": "I",
+        "lastName": "Felton"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Obstetrics and Gynecology, University of Pennsylvania Perelman School of Medicine, Philadelphia, PA, USA."
+          }
+         ]
+        },
+        "firstName": "Andrea H",
+        "fullName": "Roe AH",
+        "initials": "AH",
+        "lastName": "Roe"
+       }
+      ]
+     },
+     "authorString": "Jain R, Taylor JL, Kazmerski TM, Lonabaugh K, Trimble A, Velez Leitner D, Foil K, Hong G, Johns WB, Kolarova T, Meier E, Perry A, Singh KE, Stahl C, Szentpetery S, Weiss MS, West NE, Wilson A, Wright B, Brown AW, Hempstead SE, Lomas P, Middleton PG, Shteinberg M, Felton I, Roe AH.",
+     "chemicalList": {
+      "chemical": [
+       {
+        "name": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "registryNumber": "126880-72-6"
+       }
+      ]
+     },
+     "citedByCount": 0,
+     "dateOfCompletion": "2026-07-29",
+     "dateOfCreation": "2026-07-13",
+     "dateOfRevision": "2026-08-19",
+     "doi": "10.1016/s2213-2600(26)00120-7",
+     "electronicPublicationDate": "2026-07-13",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-07-15",
+     "firstPublicationDate": "2026-07-13",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1016/S2213-2600(26)00120-7"
+       }
+      ]
+     },
+     "grantsList": {
+      "grant": [
+       {
+        "agency": "Cystic Fibrosis Foundation",
+        "orderIn": 0
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "N",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "N",
+     "hasReferences": "Y",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "Y",
+     "id": "42442376",
+     "inEPMC": "N",
+     "inPMC": "N",
+     "isOpenAccess": "N",
+     "journalInfo": {
+      "dateOfPublication": "2026 Aug",
+      "issue": "8",
+      "journal": {
+       "essn": "2213-2619",
+       "isoabbreviation": "Lancet Respir Med",
+       "issn": "2213-2600",
+       "medlineAbbreviation": "Lancet Respir Med",
+       "nlmid": "101605555",
+       "title": "The Lancet. Respiratory medicine"
+      },
+      "journalIssueId": 4234826,
+      "monthOfPublication": 8,
+      "printPublicationDate": "2026-08-01",
+      "volume": "14",
+      "yearOfPublication": 2026
+     },
+     "language": "eng",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Humans",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Cystic Fibrosis",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "CO",
+           "majorTopic_YN": "N",
+           "qualifierName": "complications"
+          },
+          {
+           "abbreviation": "DI",
+           "majorTopic_YN": "N",
+           "qualifierName": "diagnosis"
+          },
+          {
+           "abbreviation": "TH",
+           "majorTopic_YN": "N",
+           "qualifierName": "therapy"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Contraception",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ST",
+           "majorTopic_YN": "N",
+           "qualifierName": "standards"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Preconception Care",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ST",
+           "majorTopic_YN": "N",
+           "qualifierName": "standards"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Pregnancy",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Infant, Newborn",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Female",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Male",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Reproductive Health",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ST",
+           "majorTopic_YN": "N",
+           "qualifierName": "standards"
+          }
+         ]
+        }
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "730-746",
+     "pmid": "42442376",
+     "pubModel": "Print-Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "Consensus Statement",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "ppublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "Reproductive health guidance for the cystic fibrosis community: a Cystic Fibrosis Foundation Position Paper."
+    },
+    {
+     "abstractText": "Sweat chloride concentrations are elevated in people with cystic fibrosis due to the absence or dysfunction of the cystic fibrosis transmembrane conductance regulator (CFTR) protein, an epithelial cell membrane ion channel. For many people with cystic fibrosis with responsive variants and drug access, treatment with CFTR modulators increases CFTR function, reduces sweat chloride concentrations, and improves lung health and quality of life. In clinical trials, average sweat chloride reduction is correlated with clinical efficacy across different modulators and study populations. Thus, for people with cystic fibrosis, larger reductions and lower absolute sweat chloride concentrations are often presumed to indicate greater clinical response and better prognosis. However, although true at the population level, at the individual level, a relationship between sweat chloride and clinical outcomes has not been definitively shown. This Personal View highlights how sweat chloride quantification informs our understanding of CFTR modulator therapeutic response while cautioning its ability to fully predict individual clinical response.",
+     "affiliation": "Department of Pediatrics, University of Colorado Anschutz Medical Campus, Aurora, CO, USA. Electronic address: edith.zemanick@childrenscolorado.org.",
+     "authMan": "N",
+     "authorList": {
+      "author": [
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pediatrics, University of Colorado Anschutz Medical Campus, Aurora, CO, USA. Electronic address: edith.zemanick@childrenscolorado.org."
+          }
+         ]
+        },
+        "firstName": "Edith T",
+        "fullName": "Zemanick ET",
+        "initials": "ET",
+        "lastName": "Zemanick"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pediatric Respiratory Medicine, Immunology and Critical Care Medicine, Charité - Universitätsmedizin Berlin, corporate member of Freie Universität Berlin and Humboldt-Universität zu Berlin, Berlin, Germany; German Center for Lung Research, Berlin, Germany; German Center for Child and Adolescent Health, Berlin, Germany."
+          }
+         ]
+        },
+        "firstName": "Simon Y",
+        "fullName": "Graeber SY",
+        "initials": "SY",
+        "lastName": "Graeber"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "IRCCS Istituto Giannina Gaslini, Genoa, Italy."
+          }
+         ]
+        },
+        "firstName": "Carlo",
+        "fullName": "Castellani C",
+        "initials": "C",
+        "lastName": "Castellani"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Genetic Medicine, Johns Hopkins School of Medicine, Baltimore, MD, USA."
+          }
+         ]
+        },
+        "firstName": "Garry R",
+        "fullName": "Cutting GR",
+        "initials": "GR",
+        "lastName": "Cutting"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "APHP-Université Paris Cité, Paris, France."
+          }
+         ]
+        },
+        "firstName": "Isabelle",
+        "fullName": "Fajac I",
+        "initials": "I",
+        "lastName": "Fajac"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pediatrics, Case Western Reserve University School of Medicine and Rainbow Babies and Children's Hospital, Cleveland, OH, USA."
+          }
+         ]
+        },
+        "firstName": "Michael W",
+        "fullName": "Konstan MW",
+        "initials": "MW",
+        "lastName": "Konstan"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pediatrics, Emory University and Children's Healthcare of Atlanta, Atlanta, GA, USA."
+          }
+         ]
+        },
+        "firstName": "Rachel W",
+        "fullName": "Linnemann RW",
+        "initials": "RW",
+        "lastName": "Linnemann"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "St Vincent's University Hospital & University College Dublin School of Medicine, Dublin, Ireland."
+          }
+         ]
+        },
+        "firstName": "Edward F",
+        "fullName": "McKone EF",
+        "initials": "EF",
+        "lastName": "McKone"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pediatrics, University of Colorado Anschutz Medical Campus, Aurora, CO, USA."
+          }
+         ]
+        },
+        "firstName": "Angela",
+        "fullName": "Metcalf A",
+        "initials": "A",
+        "lastName": "Metcalf"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "University of Alabama at Birmingham, Birmingham, AL, USA."
+          }
+         ]
+        },
+        "firstName": "George M",
+        "fullName": "Solomon GM",
+        "initials": "GM",
+        "lastName": "Solomon"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Internal Medicine and Department of Pediatrics, National Jewish Health, Denver, CO, USA."
+          }
+         ]
+        },
+        "firstName": "Jennifer L",
+        "fullName": "Taylor-Cousar JL",
+        "initials": "JL",
+        "lastName": "Taylor-Cousar"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Seattle Children's Research Institute, Seattle, WA,USA; Department of Biostatistics and Department of Pediatrics, University of Washington, Seattle, WA, USA."
+          }
+         ]
+        },
+        "firstName": "Nicole",
+        "fullName": "Mayer-Hamblett N",
+        "initials": "N",
+        "lastName": "Mayer-Hamblett"
+       },
+       {
+        "authorAffiliationDetailsList": {
+         "authorAffiliation": [
+          {
+           "affiliation": "Department of Pediatric Respiratory Medicine, Immunology and Critical Care Medicine, Charité - Universitätsmedizin Berlin, corporate member of Freie Universität Berlin and Humboldt-Universität zu Berlin, Berlin, Germany; German Center for Lung Research, Berlin, Germany; German Center for Child and Adolescent Health, Berlin, Germany; Cluster of Excellence ImmunoPreCept, Charité - Universitätsmedizin Berlin, Berlin, Germany."
+          }
+         ]
+        },
+        "firstName": "Marcus A",
+        "fullName": "Mall MA",
+        "initials": "MA",
+        "lastName": "Mall"
+       }
+      ]
+     },
+     "authorString": "Zemanick ET, Graeber SY, Castellani C, Cutting GR, Fajac I, Konstan MW, Linnemann RW, McKone EF, Metcalf A, Solomon GM, Taylor-Cousar JL, Mayer-Hamblett N, Mall MA.",
+     "chemicalList": {
+      "chemical": [
+       {
+        "name": "Chlorides",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Indoles",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Aminopyridines",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Aminophenols",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Quinolones",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "registryNumber": "126880-72-6"
+       },
+       {
+        "name": "CFTR protein, human",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Benzodioxoles",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Thiazolidines",
+        "registryNumber": "0"
+       },
+       {
+        "name": "Chloride Channel Agonists",
+        "registryNumber": "0"
+       },
+       {
+        "name": "ivacaftor",
+        "registryNumber": "1Y740ILL1Z"
+       }
+      ]
+     },
+     "citedByCount": 0,
+     "dateOfCompletion": "2026-07-29",
+     "dateOfCreation": "2026-07-13",
+     "dateOfRevision": "2026-08-29",
+     "doi": "10.1016/s2213-2600(26)00159-1",
+     "electronicPublicationDate": "2026-07-13",
+     "epmcAuthMan": "N",
+     "firstIndexDate": "2026-07-15",
+     "firstPublicationDate": "2026-07-13",
+     "fullTextUrlList": {
+      "fullTextUrl": [
+       {
+        "availability": "Subscription required",
+        "availabilityCode": "S",
+        "documentStyle": "doi",
+        "site": "DOI",
+        "url": "https://doi.org/10.1016/S2213-2600(26)00159-1"
+       }
+      ]
+     },
+     "hasBook": "N",
+     "hasData": "N",
+     "hasDbCrossReferences": "N",
+     "hasEvaluations": "N",
+     "hasLabsLinks": "N",
+     "hasPDF": "N",
+     "hasReferences": "N",
+     "hasSuppl": "N",
+     "hasTMAccessionNumbers": "N",
+     "hasTextMinedTerms": "Y",
+     "id": "42442377",
+     "inEPMC": "N",
+     "inPMC": "N",
+     "isOpenAccess": "N",
+     "journalInfo": {
+      "dateOfPublication": "2026 Aug",
+      "issue": "8",
+      "journal": {
+       "essn": "2213-2619",
+       "isoabbreviation": "Lancet Respir Med",
+       "issn": "2213-2600",
+       "medlineAbbreviation": "Lancet Respir Med",
+       "nlmid": "101605555",
+       "title": "The Lancet. Respiratory medicine"
+      },
+      "journalIssueId": 4234826,
+      "monthOfPublication": 8,
+      "printPublicationDate": "2026-08-01",
+      "volume": "14",
+      "yearOfPublication": 2026
+     },
+     "language": "eng",
+     "meshHeadingList": {
+      "meshHeading": [
+       {
+        "descriptorName": "Sweat",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          },
+          {
+           "abbreviation": "CH",
+           "majorTopic_YN": "N",
+           "qualifierName": "chemistry"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Humans",
+        "majorTopic_YN": "N"
+       },
+       {
+        "descriptorName": "Cystic Fibrosis",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "DT",
+           "majorTopic_YN": "N",
+           "qualifierName": "drug therapy"
+          },
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Chlorides",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "AN",
+           "majorTopic_YN": "N",
+           "qualifierName": "analysis"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Aminopyridines",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "TU",
+           "majorTopic_YN": "N",
+           "qualifierName": "therapeutic use"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Aminophenols",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "TU",
+           "majorTopic_YN": "N",
+           "qualifierName": "therapeutic use"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Indoles",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "TU",
+           "majorTopic_YN": "N",
+           "qualifierName": "therapeutic use"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Quinolones",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "TU",
+           "majorTopic_YN": "N",
+           "qualifierName": "therapeutic use"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Cystic Fibrosis Transmembrane Conductance Regulator",
+        "majorTopic_YN": "Y",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "GE",
+           "majorTopic_YN": "N",
+           "qualifierName": "genetics"
+          },
+          {
+           "abbreviation": "ME",
+           "majorTopic_YN": "N",
+           "qualifierName": "metabolism"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Benzodioxoles",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "TU",
+           "majorTopic_YN": "N",
+           "qualifierName": "therapeutic use"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Thiazolidines",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "TU",
+           "majorTopic_YN": "N",
+           "qualifierName": "therapeutic use"
+          }
+         ]
+        }
+       },
+       {
+        "descriptorName": "Chloride Channel Agonists",
+        "majorTopic_YN": "N",
+        "meshQualifierList": {
+         "meshQualifier": [
+          {
+           "abbreviation": "TU",
+           "majorTopic_YN": "N",
+           "qualifierName": "therapeutic use"
+          }
+         ]
+        }
+       }
+      ]
+     },
+     "nihAuthMan": "N",
+     "pageInfo": "704-716",
+     "pmid": "42442377",
+     "pubModel": "Print-Electronic",
+     "pubTypeList": {
+      "pubType": [
+       "Review",
+       "Journal Article"
+      ]
+     },
+     "pubYear": "2026",
+     "publicationStatus": "ppublish",
+     "source": "MED",
+     "subsetList": {
+      "subset": [
+       {
+        "code": "IM",
+        "name": "Index Medicus"
+       }
+      ]
+     },
+     "title": "The role of sweat chloride in determining CFTR protein restoration in people with cystic fibrosis."
+    }
+   ]
+  },
+  "version": "6.9"
+ },
+ "headers": {
+  "content-type": "application/json;charset=UTF-8"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": {
+   "format": "json",
+   "pageSize": 8,
+   "query": "(TITLE_ABS:\"CFTR\" AND TITLE_ABS:\"Cystic fibrosis\") AND SRC:MED",
+   "resultType": "core",
+   "synonym": "false"
+  },
+  "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
+ },
+ "retrieved_at": "2026-09-17T19:41:42+00:00",
+ "status": 200,
+ "text": null
+}

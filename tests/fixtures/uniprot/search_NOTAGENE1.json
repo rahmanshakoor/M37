@@ -1,0 +1,24 @@
+{
+ "body": {
+  "results": []
+ },
+ "headers": {
+  "content-type": "application/json",
+  "x-total-results": "0",
+  "x-uniprot-release": "2026_03",
+  "x-uniprot-release-date": "02-September-2026"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": {
+   "fields": "accession,id,gene_primary,gene_names,protein_name,length,organism_id",
+   "format": "json",
+   "query": "(gene_exact:NOTAGENE1) AND (organism_id:9606) AND (reviewed:true)"
+  },
+  "url": "https://rest.uniprot.org/uniprotkb/search"
+ },
+ "retrieved_at": "2026-09-17T19:40:51+00:00",
+ "status": 200,
+ "text": null
+}

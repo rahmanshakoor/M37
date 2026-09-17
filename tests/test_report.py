@@ -1,12 +1,14 @@
 """The report — ``engine.report`` (CONTRACTS.md, "Report").
 
 Network-free: the run directory is assembled from the public demo fixtures the way
-``tests/test_public_case.py`` does — the recorded stage-2 store, the real stage 3,
-stage 4 over the recorded Exomiser outputs with the fake Docker runner, stage 5 with a
-scripted client answering the recorded chain (plus one fabricated citation, so the
-validator has something to reject), stage 6 with the real drug and trial retrievers
-over the recorded fixtures — so every view and the rendered document are checked
-against files real stages wrote. The public run ``scripts/run_public_case.sh`` leaves
+``tests/test_public_case.py`` does — the recorded stage-2 store, the ``hpo:`` term
+records of the public case (stage 5 fetches the case terms, so its store is seeded
+from ``tests/fixtures/hpo/records``), the real stage 3, stage 4 over the recorded
+Exomiser outputs with the fake Docker runner, stage 5 with a scripted client answering
+the recorded chain (plus one fabricated citation, so the validator has something to
+reject), stage 6 with the real drug, trial and disease retrievers over the recorded
+fixtures — so every view and the rendered document are checked against files real
+stages wrote. The public run ``scripts/run_public_case.sh`` leaves
 in ``${TMPDIR:-/tmp}/engine-public-case/run`` is checked too when it is present.
 Nothing here derives from a person.
 """
@@ -34,10 +36,15 @@ from engine.reason.run import run_reason
 from engine.report import views
 from engine.report.cli import commands, report, report_command
 from engine.report.render import CSS, FONTS_URL, _Linker, _claims, render_run, write_report
-from tests.test_medicine import CH_IVACAFTOR, CH_IVACAFTOR_MEC, OT_CF, OT_IVACAFTOR, OT_TARGET, TRIAL, retrievers, stub_http
+from tests.test_medicine import (CH_IVACAFTOR, CH_IVACAFTOR_MEC, DISEASE, NCT_SEARCH, OT_CF, OT_DISEASE, OT_IVACAFTOR,
+                                 OT_TARGET, TRIAL, retrievers, stub_http)
 from tests.test_public_case import CFTR_PAIR_IDS, CHAIN, F508DEL, FIX, G542X, HPO, R175H, make_run_from_recorded_stage2
 from tests.test_rank import FakeDocker, make_data_dir
 
+HPO_RECORDS = Path(__file__).parent / "fixtures" / "hpo" / "records"
+"""The five public ``hpo:`` term records; stage 5 serves the case terms from a store
+that holds them instead of asking the JAX API."""
+CLASS = "potentiation of the residual F508del channel"
 FAKE_PMID = "pmid:999999"
 """A paper no store holds: the scripted chain cites it under PS3, which the stage-5
 checks drop — the rejection must be on the page."""
@@ -51,6 +58,11 @@ def scripted_chain() -> dict:
     answer = json.loads(CHAIN.read_text())
     for v in answer["variants"]:
         v["classification"] = None
+        # the recorded fixture was made without stage 4, so its PP4 is unverified; this
+        # run has the ranker, and the model claims the criterion for it to check
+        for c in v["criteria"]:
+            if c["code"] == "PP4":
+                c["met"] = True
     answer["variants"][1]["criteria"].append({
         "code": "PS3", "strength": "strong", "met": True,
         "justification": "A functional study the model made up", "evidence_ids": [FAKE_PMID],
@@ -59,21 +71,40 @@ def scripted_chain() -> dict:
 
 
 def scripted_report() -> dict:
+    """The medicine report the scripted model writes: one class backed by the trial
+    search it made, one candidate inside it, one rejected on a record, and a
+    consequence claim citing the disease record — the ladder, in miniature."""
     return {
         "candidate_id": "CFTR:comphet", "gene_symbol": "CFTR",
         "mechanism": [{"statement": f"Two loss-of-function alleles [vep:{F508DEL}] [vep:{G542X}]",
                        "evidence_ids": [f"vep:{F508DEL}", f"vep:{G542X}"]},
                       {"statement": f"p.Phe508del is cited bare here, vep:{F508DEL}, as the validator leaves a resolving id",
                        "evidence_ids": [f"vep:{F508DEL}"]}],
+        "consequence": [{"statement": f"Chloride secretion fails and the airway surface dehydrates; the disease record "
+                                      f"names recurrent bronchopulmonary infections [{OT_DISEASE}]",
+                         "evidence_ids": [OT_DISEASE]}],
         "pathway_targets": [{"statement": f"Cystic fibrosis is the top association [{OT_CF}]; tractable [{OT_TARGET}]",
                              "evidence_ids": [OT_CF, OT_TARGET]}],
+        "intervention_classes": [{
+            "name": CLASS, "acts_on": f"the residual channel at the apical membrane [vep:{F508DEL}]",
+            "targets": ["CFTR"], "searched": [NCT_SEARCH, OT_TARGET], "verdict": "candidates_proposed",
+            "rejection_reason": "", "evidence_ids": [OT_TARGET],
+        }],
         "candidates": [{
-            "name": "Ivacaftor", "chembl_id": "CHEMBL2010601", "mechanism_of_action": "CFTR potentiator",
-            "approval_status": "approved (ChEMBL max_phase 4)",
+            "name": "Ivacaftor", "chembl_id": "CHEMBL2010601", "intervention_class": CLASS,
+            "mechanism_of_action": "CFTR potentiator", "approval_status": "approved (ChEMBL max_phase 4)",
+            "approved_indication": "cystic fibrosis with a gating mutation (ChEMBL first_approval 2012)",
             "rationale": f"Potentiates the residual p.Phe508del channel [{CH_IVACAFTOR}] [{CH_IVACAFTOR_MEC}] [{OT_IVACAFTOR}]",
-            "counter_arguments": ["p.Gly542Ter produces no protein to potentiate"],
+            "counter_arguments": ["p.Gly542Ter produces no protein to potentiate",
+                                  "the trials cited were in other genotype combinations"],
+            "paediatric_safety": f"the record carries no exposure data below the approved age [{CH_IVACAFTOR}]",
             "evidence_ids": [CH_IVACAFTOR, CH_IVACAFTOR_MEC, OT_IVACAFTOR], "trial_ids": [TRIAL],
         }],
+        "considered_and_rejected": [{"name": "Crofelemer", "intervention_class": CLASS,
+                                     "reason": f"an inhibitor, the opposite action type [{OT_TARGET}]",
+                                     "evidence_ids": [OT_TARGET]}],
+        "surveillance": [{"statement": f"the disease record names hepatobiliary complications [{OT_DISEASE}]",
+                          "evidence_ids": [OT_DISEASE]}],
         "follow_up_experiments": [f"Sweat chloride after ivacaftor exposure in vitro [{CH_IVACAFTOR}]"],
         "limits": ["No paper was retrieved in this run"],
         "literature": [],
@@ -85,6 +116,7 @@ def full_run(tmp_path_factory: pytest.TempPathFactory) -> Path:
     """Stages 2–6 of the public demo, every one written by the real stage code."""
     tmp = tmp_path_factory.mktemp("report")
     run = make_run_from_recorded_stage2(tmp)
+    shutil.copytree(HPO_RECORDS, run / "05_reason" / "evidence", dirs_exist_ok=True)  # stage 5 serves the case terms
     run_filter(run)
     cfg = ExomiserConfig.load(DEFAULT_CONFIG)
     run_rank(run, FIX / "case.yaml", make_data_dir(tmp, cfg), run=FakeDocker(cfg.image_digest))
@@ -93,7 +125,8 @@ def full_run(tmp_path_factory: pytest.TempPathFactory) -> Path:
     writer = ac.FakeClient(scripted_report(), turns=[ac.FakeTurn([("drugs_for_gene", {"gene": "CFTR"})], text="drugs"),
                                                      ac.FakeTurn([("search_trials", {"condition": "cystic fibrosis", "intervention": "ivacaftor",
                                                                                      "term": None, "max_results": 3})], text="trials")])
-    run_medicine(run, None, writer, "fake-model", "low", False, retrievers=retrievers(stub_http()), case_path=FIX / "case.yaml")
+    run_medicine(run, None, writer, "fake-model", "low", False, retrievers=retrievers(stub_http()),
+                 case_path=FIX / "case.yaml", case_disease=[DISEASE])
     return run
 
 
@@ -111,6 +144,16 @@ def early_run(tmp_path: Path) -> Path:
     run = make_run_from_recorded_stage2(tmp_path)
     run_filter(run)
     return run
+
+
+def validation_with_a_marker(run: Path, marker: int = 1) -> None:
+    """Give the stage-6 validation record one redaction that carries a marker, as the
+    validator will once a citation is replaced by ``[^k]`` — the footnote's reason."""
+    path = run / "06_medicine" / "validation" / "CFTR:comphet.json"
+    doc = json.loads(path.read_text())
+    doc["rejections"].append({"path": "limits[0]", "marker": marker,
+                              "reason": "inline citation to a record not in the store: pmid:99999999"})
+    path.write_text(json.dumps(doc, sort_keys=True, indent=1) + "\n")
 
 
 class TagBalance(HTMLParser):
@@ -150,6 +193,11 @@ def test_run_summary_reads_the_manifests(full_run: Path):
     s = views.run_summary(full_run)
     assert s["sample"] is None  # stage 1 did not run here; the sample comes from its manifest only
     assert s["hpo"] == HPO and s["hpo_source"] == "04_rank/joined.json"
+    # every case term carries the label its own hpo: record spells, never one from elsewhere
+    assert [(t["id"], t["label"], t["record_id"]) for t in s["hpo_terms"]][:1] == \
+        [("HP:0012236", "Elevated sweat chloride", "hpo:HP:0012236")]
+    assert all(t["url"].startswith("https://hpo.jax.org/browse/term/") for t in s["hpo_terms"])
+    assert views.hpo_terms(full_run, ["HP:9999999"]) == [{"id": "HP:9999999", "label": "", "record_id": None, "url": None}]
     assert s["stages_present"] == ["02_retrieve", "03_filter", "04_rank", "05_reason", "06_medicine"]
     by_dir = {st["dir"]: st for st in s["stages"]}
     assert by_dir["01_ingest"] == {"dir": "01_ingest", "stage": "ingest", "present": False, "manifest": False}
@@ -244,13 +292,34 @@ def test_medicine_view_in_rubric_order(full_run: Path):
     assert m["present"] and m["dry_run"] is False and m["candidate_id"] == "CFTR:comphet" and m["gene_symbol"] == "CFTR" and m["failures"] == []
     assert m["stage5_verdicts"] == [{"key": F508DEL, "classification": "vus"}, {"key": G542X, "classification": "pathogenic"}]
     r = m["report"]
-    assert list(r)[:7] == ["candidate_id", "gene_symbol", "mechanism", "pathway_targets", "candidates", "follow_up_experiments", "limits"]
+    assert list(r) == ["candidate_id", "gene_symbol", "patient_context", "mechanism", "consequence",
+                       "intervention_classes", "pathway_targets", "candidates", "considered_and_rejected",
+                       "surveillance", "follow_up_experiments", "limits", "secondary_findings", "literature", "references"]
     assert [e["id"] for e in r["mechanism"][0]["evidence"]] == [f"vep:{F508DEL}", f"vep:{G542X}"]
+    assert [e["id"] for e in r["consequence"][0]["evidence"]] == [OT_DISEASE]
+    assert [e["id"] for e in r["surveillance"][0]["evidence"]] == [OT_DISEASE]
+    # the patient context resolves to the records a judge opens
+    assert [(d["id"], d["name"], d["record"]["id"]) for d in r["patient_context"]["disease"]] == \
+        [(DISEASE, "cystic fibrosis", OT_DISEASE)]
+    assert r["patient_context"]["disease"][0]["record"]["url"].endswith(DISEASE)
+    assert ("HP:0012236", "Elevated sweat chloride") in [(t["id"], t["label"]) for t in r["patient_context"]["hpo"]]
+    assert [t["id"] for t in r["patient_context"]["hpo"]] == sorted(HPO)  # the case's terms, in the bundle's order
+    assert all(t["record"]["url"].startswith("https://hpo.jax.org/") for t in r["patient_context"]["hpo"])
+    assert "engine-filled" in r["patient_context"]["source"]
+    # the class and its searches
+    cls = r["intervention_classes"][0]
+    assert cls["name"] == CLASS and cls["verdict"] == "candidates_proposed" and cls["targets"] == ["CFTR"]
+    assert [e["id"] for e in cls["searched"]] == [NCT_SEARCH, OT_TARGET] and all(e["url"] for e in cls["searched"])
     drug = r["candidates"][0]
     assert drug["n"] == 1 and drug["name"] == "Ivacaftor" and drug["chembl"]["id"] == CH_IVACAFTOR
+    assert drug["intervention_class"] == CLASS and drug["approved_indication"].startswith("cystic fibrosis with a gating")
+    assert "no exposure data below the approved age" in drug["paediatric_safety"]
     assert [e["id"] for e in drug["trials"]] == [TRIAL] and drug["trials"][0]["url"].startswith("https://clinicaltrials.gov/")
-    assert all(e["url"] for e in drug["evidence"]) and drug["counter_arguments"] == ["p.Gly542Ter produces no protein to potentiate"]
-    assert {e["id"] for e in r["references"]} >= {CH_IVACAFTOR, CH_IVACAFTOR_MEC, OT_IVACAFTOR, OT_CF, OT_TARGET, TRIAL, f"vep:{F508DEL}"}
+    assert all(e["url"] for e in drug["evidence"]) and len(drug["counter_arguments"]) == 2
+    assert [(x["name"], [e["id"] for e in x["evidence"]]) for x in r["considered_and_rejected"]] == [("Crofelemer", [OT_TARGET])]
+    assert r["secondary_findings"] == []  # the run's other candidate is a VUS
+    assert {e["id"] for e in r["references"]} >= {CH_IVACAFTOR, CH_IVACAFTOR_MEC, OT_IVACAFTOR, OT_CF, OT_TARGET, TRIAL,
+                                                  OT_DISEASE, NCT_SEARCH, f"vep:{F508DEL}"}
     assert all(e["url"] for e in r["references"])
     assert m["validation"] is not None and m["validation"]["rejections"] == []
 
@@ -375,6 +444,13 @@ def test_html_is_self_contained_and_well_formed(full_run: Path):
     assert not re.search(r"<(script|img|iframe)[^>]*src=", html)
     assert not re.search(r"[\U0001F300-\U0001FAFF\u2600-\u27BF]", html)  # no emoji, no dingbats
     assert "gradient" not in CSS and "border-radius" not in CSS
+    # every HP: id in the document is followed by the label its own hpo: record carries
+    head = html.split("Case HPO terms")[1].split("</table>")[0]
+    assert ('<a class="id" href="https://hpo.jax.org/browse/term/HP:0012236" rel="noopener">HP:0012236</a> '
+            "Elevated sweat chloride") in head
+    for term, label in (("HP:0002205", "Recurrent respiratory infections"), ("HP:0002110", "Bronchiectasis")):
+        assert f">{term}</a> {label}" in head
+    assert "Gene dossier" in html.split("<nav")[1].split("</nav>")[0]  # the dossier step has its own section
 
 
 def test_html_shows_candidates_ranks_and_agreement(full_run: Path):
@@ -434,11 +510,21 @@ def test_html_shows_classification_phase_limits_and_the_validator(full_run: Path
 
 def test_html_medicine_in_rubric_order_and_provenance_sha256s(full_run: Path):
     html = render_run(full_run)
+    assert_well_formed(html)
     med = html.split('<section id="medicine">')[1].split("</section>")[0]
-    order = [med.index(h) for h in ("<h3>Mechanism</h3>", "<h3>Pathway targets</h3>", "<h3>Drug candidates</h3>",
-                                     "<h3>Follow-up experiments</h3>", "<h3>Limits</h3>", "<h3>References</h3>", "<h4>Validator</h4>")]
+    order = [med.index(h) for h in ("<h3>Patient context</h3>", "<h3>Variant mechanism</h3>",
+                                     "<h3>Cellular and disease consequence</h3>", "<h3>Intervention classes searched</h3>",
+                                     "<h3>Drug candidates</h3>", "<h3>Considered and rejected</h3>", "<h3>Surveillance</h3>",
+                                     "<h3>Follow-up experiments</h3>", "<h3>Limits</h3>", "<h3>Secondary findings</h3>",
+                                     "<h3>Literature</h3>", "<h3>References</h3>", "<h4>Validator</h4>")]
     assert order == sorted(order)
     assert "Ivacaftor" in med and "p.Gly542Ter produces no protein to potentiate" in med and "never a treatment recommendation" in med
+    assert "Elevated sweat chloride" in med and "cystic fibrosis" in med  # the patient context, from records
+    assert "<th>class</th><th>acts on</th><th>targets</th><th>verdict</th><th>searches</th><th>records</th>" in med
+    assert CLASS in med and '<span class="mark good">candidates proposed</span>' in med
+    assert "Approved indication" in med and "Paediatric safety" in med and "Intervention class" in med
+    assert "Crofelemer" in med and "none recorded" in med.split("<h3>Secondary findings</h3>")[1]
+    assert "survived" not in med  # never said of a list nothing was proposed into
     prov = html.split('<section id="provenance">')[1]
     for stage_dir in ("03_filter", "04_rank", "05_reason", "06_medicine"):
         m = json.loads((full_run / stage_dir / "manifest.json").read_text())
@@ -513,6 +599,74 @@ def test_linker_links_bare_citations_the_validator_counts_and_no_others():
         bullet = _claims([{"statement": statement, "evidence": evidence}], linker)
         assert bullet.count(pm) == 1 and bullet.count(cv) == 1 and bullet.count("<a ") == 2, (statement, bullet)
     assert _claims([{"statement": "Says nothing citable.", "evidence": evidence}], linker).count("<a ") == 2
+
+
+def test_a_redaction_is_a_footnote_in_the_chain_and_in_the_medicine_section(run_copy: Path):
+    """The validator leaves ``[^k]`` in the prose and the reason in its record; the page
+    prints the marker as a reference and the reason as a footnote item — never the
+    sentence ``[citation removed: no such record]`` in the middle of a claim."""
+    report_path = run_copy / "06_medicine" / "report.json"
+    report = json.loads(report_path.read_text())
+    report["limits"] = ["No paper was retrieved in this run[^1]"]
+    report_path.write_text(json.dumps(report, sort_keys=True, indent=1) + "\n")
+    validation_with_a_marker(run_copy)
+    chain_path = run_copy / "05_reason" / "chains" / "CFTR:comphet.json"
+    chain = json.loads(chain_path.read_text())
+    chain["mechanism_hypothesis"] += " A paper the validator could not resolve[^1]."
+    chain_path.write_text(json.dumps(chain, sort_keys=True, indent=1) + "\n")
+    chain_validation = run_copy / "05_reason" / "validation" / "CFTR:comphet.json"
+    doc = json.loads(chain_validation.read_text())
+    doc["rejections"].append({"path": "mechanism_hypothesis", "marker": 1,
+                              "reason": "inline PMID not in the store: pmid:99999999"})
+    chain_validation.write_text(json.dumps(doc, sort_keys=True, indent=1) + "\n")
+
+    html = render_run(run_copy)
+    assert_well_formed(html)
+    assert "[^1]" not in html and "citation removed: no such record" not in html
+    med = html.split('<section id="medicine">')[1].split("</section>")[0]
+    assert '<sup class="fn"><a href="#fn-medicine-1">1</a></sup>' in med
+    assert ('<ol class="footnotes"><li id="fn-medicine-1">citation removed by the validator: inline citation to a '
+            'record not in the store: pmid:99999999</li></ol>') in med
+    chains = html.split('<section id="chains">')[1].split('<section id="medicine">')[0]
+    assert '<sup class="fn"><a href="#fn-CFTR:comphet-1">1</a></sup>' in chains
+    assert ('<li id="fn-CFTR:comphet-1">citation removed by the validator: inline PMID not in the store: '
+            'pmid:99999999</li>') in chains
+    # a marker no rejection carries (one the model wrote itself) still gets a footnote
+    doc["rejections"] = [r for r in doc["rejections"] if r.get("marker") != 1]
+    chain_validation.write_text(json.dumps(doc, sort_keys=True, indent=1) + "\n")
+    html = render_run(run_copy)
+    assert '<li id="fn-CFTR:comphet-1">citation removed by the validator (reason in the validation record)</li>' in html
+
+
+def test_the_html_says_no_candidate_was_proposed_and_names_the_classes(run_copy: Path):
+    report_path = run_copy / "06_medicine" / "report.json"
+    report = json.loads(report_path.read_text())
+    report["candidates"] = []
+    report_path.write_text(json.dumps(report, sort_keys=True, indent=1) + "\n")
+    med = render_run(run_copy).split('<section id="medicine">')[1].split("</section>")[0]
+    assert f"No candidate proposed. Classes searched: {escape(CLASS)} (candidates proposed)" in med
+    assert "survived" not in med
+    report["intervention_classes"] = []
+    report_path.write_text(json.dumps(report, sort_keys=True, indent=1) + "\n")
+    med = render_run(run_copy).split('<section id="medicine">')[1].split("</section>")[0]
+    assert "No candidate proposed and no intervention class was searched: the ladder was not walked (see the manifest)." in med
+    assert "No intervention class was searched." in med
+
+
+def test_the_html_shows_a_secondary_finding_as_a_finding_not_a_target(run_copy: Path):
+    report_path = run_copy / "06_medicine" / "report.json"
+    report = json.loads(report_path.read_text())
+    report["secondary_findings"] = [{"candidate_id": "TP53:het_single", "gene_symbol": "TP53", "model": "het_single",
+                                     "classifications": {R175H: "likely_pathogenic"},
+                                     "note": "a secondary finding, not a repurposing target; disclosure is the clinical "
+                                             "team's decision under the study's recontact rules"}]
+    report_path.write_text(json.dumps(report, sort_keys=True, indent=1) + "\n")
+    view = views.medicine_view(run_copy)["report"]["secondary_findings"]
+    assert view[0]["candidate_id"] == "TP53:het_single" and view[0]["classifications"] == {R175H: "likely_pathogenic"}
+    med = render_run(run_copy).split('<section id="medicine">')[1].split("</section>")[0]
+    findings = med.split("<h3>Secondary findings</h3>")[1]
+    assert "TP53:het_single" in findings and "likely pathogenic" in findings
+    assert "not a repurposing target" in findings
 
 
 # ----------------------------------------------------------------------------- CLI

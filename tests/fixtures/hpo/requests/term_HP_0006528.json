@@ -1,0 +1,79 @@
+{
+ "body": {
+  "comment": "",
+  "definition": "According to the definitions of the American and British Thoracic Societies, including pulmonary functional tests, X-rays, and CT scans for items such as fibrosis, bronchiectasis, bullae, emphysema, nodular or lymphomatous abnormalities.",
+  "descendantCount": 0,
+  "id": "HP:0006528",
+  "name": "Chronic lung disease",
+  "publicationReferences": [],
+  "synonyms": [
+   "Chronic lung disease"
+  ],
+  "translations": [
+   {
+    "definition": "",
+    "language": "FR",
+    "name": "Maladie pulmonaire chronique",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "",
+    "language": "JA",
+    "name": "慢性肺疾患",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "",
+    "language": "NL",
+    "name": "Chronische longziekte",
+    "status": "CANDIDATE"
+   },
+   {
+    "definition": "",
+    "language": "ES",
+    "name": "Enfermedad pulmonar crónica",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "",
+    "language": "ZH",
+    "name": "慢性肺病",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "Podle definic the American and British Thoracic Societies, včetně plicních funkčních testů, rentgenových snímků a CT vyšetření pro položky jako fibróza, bronchiektázie, bulky, emfyzém, uzlovité nebo lymfomatózní abnormality",
+    "language": "CS",
+    "name": "Chronické onemocnění plic",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "",
+    "language": "PT",
+    "name": "Doença pulmonar crónica",
+    "status": "OFFICIAL"
+   },
+   {
+    "definition": "Amerikan ve İngiliz Thoacic Derneklerinin tanımlamalarına göre Pulmoner fonksiyonel testler, X-ışınları ve fibroz, bronşektazi, bül, amfizem, nodüler veya lenfomatöz anormallikler gibi maddelerin taranması da dahil olmak üzere",
+    "language": "TR",
+    "name": "Kronik akciğer hastalığı",
+    "status": "OFFICIAL"
+   }
+  ],
+  "xrefs": [
+   "SNOMEDCT_US:413839001",
+   "UMLS:C0746102"
+  ]
+ },
+ "headers": {
+  "content-type": "application/json"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": null,
+  "url": "https://ontology.jax.org/api/hp/terms/HP:0006528"
+ },
+ "retrieved_at": "2026-09-17T19:39:25+00:00",
+ "status": 200,
+ "text": null
+}

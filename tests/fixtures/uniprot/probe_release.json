@@ -1,0 +1,33 @@
+{
+ "body": {
+  "results": [
+   {
+    "entryType": "UniProtKB reviewed (Swiss-Prot)",
+    "extraAttributes": {
+     "uniParcId": "UPI0005D734FE"
+    },
+    "primaryAccession": "A0A0C5B5G6"
+   }
+  ]
+ },
+ "headers": {
+  "content-type": "application/json",
+  "x-total-results": "20431",
+  "x-uniprot-release": "2026_03",
+  "x-uniprot-release-date": "02-September-2026"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": {
+   "fields": "accession",
+   "format": "json",
+   "query": "(reviewed:true) AND (organism_id:9606)",
+   "size": 1
+  },
+  "url": "https://rest.uniprot.org/uniprotkb/search"
+ },
+ "retrieved_at": "2026-09-17T19:40:50+00:00",
+ "status": 200,
+ "text": null
+}

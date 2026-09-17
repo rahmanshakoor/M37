@@ -4,7 +4,9 @@ The reasoning agent must argue only from retrieved records, so the prompt it rec
 is built here from the run directory and nothing else: every evidence record the
 store holds for the candidate's variants (full payloads, so a number the model quotes
 can be checked), the columns stage 2 projected from them (as stage 3 saw them), the
-stage-4 phenotype rank when there is one, and the case's HPO terms. The same content
+stage-4 phenotype rank when there is one, and the case's HPO terms — each with the
+label and definition its ``hpo:`` record carries, so the model never has to reach for
+a label from memory and can cite the term as a record. The same content
 is rendered twice — as JSON, written to ``05_reason/bundles/<candidate_id>.json`` so a
 judge can open exactly what the model was given, and as a compact text block for the
 prompt, with every fact followed by the record id it came from (``[gnomad:…]``) so
@@ -73,6 +75,9 @@ class Bundle:
     gene_records: list[dict[str, Any]] = field(default_factory=list)
     """Records about the candidate's gene rather than one variant: the stage-4
     ``exomiser:<gene>`` record when the rank names one and the store holds it."""
+    hpo_terms: list[dict[str, Any]] = field(default_factory=list)
+    """The ``hpo:`` records of the case terms (``engine.retrieve.hpo``), sorted by
+    ``record_id`` — exactly which labels the model saw."""
     text: str = ""
 
     def to_dict(self) -> dict[str, Any]:
@@ -84,10 +89,14 @@ class Bundle:
 
 # ----------------------------------------------------------------------------- build
 
-def build_bundle(candidate: dict[str, Any] | str, run_dir: str | Path, case_hpo: Iterable[str] = ()) -> Bundle:
+def build_bundle(candidate: dict[str, Any] | str, run_dir: str | Path, case_hpo: Iterable[str] = (), *,
+                 hpo_records: Iterable[EvidenceRecord] = ()) -> Bundle:
     """``candidate`` is an entry of ``03_filter/candidates.json`` (or its
     ``candidate_id``, looked up there). Reads ``02_retrieve/evidence`` (required),
-    ``03_filter/shortlist.tsv.gz`` and ``04_rank/joined.json`` (both optional)."""
+    ``03_filter/shortlist.tsv.gz`` and ``04_rank/joined.json`` (both optional).
+    ``hpo_records`` are the case terms' ``hpo:`` records (the stage fetched or served
+    them, :func:`engine.retrieve.hpo.case_terms`); without them the ``case HPO:`` line
+    shows the bare ids, as before."""
     run_dir = Path(run_dir)
     if isinstance(candidate, str):
         candidate = find_candidate(run_dir, candidate)
@@ -103,14 +112,17 @@ def build_bundle(candidate: dict[str, Any] | str, run_dir: str | Path, case_hpo:
     hpo = sorted(dict.fromkeys(str(h) for h in case_hpo))
     rank = load_rank(run_dir, cid, str(candidate.get("gene_symbol", "")))
     gene_records = [asdict(r) for r in _rank_records(run_dir, rank)]
+    hpo_terms = sorted((asdict(r) for r in hpo_records), key=lambda r: r["record_id"])
     bundle = Bundle(
         candidate_id=cid,
         candidate=json.loads(json.dumps(candidate, sort_keys=True)),
         variants=variants,
         rank=rank,
         case_hpo=hpo,
-        record_ids=sorted({r["record_id"] for v in variants for r in v.records} | {r["record_id"] for r in gene_records}),
+        record_ids=sorted({r["record_id"] for v in variants for r in v.records} | {r["record_id"] for r in gene_records}
+                          | {r["record_id"] for r in hpo_terms}),
         gene_records=gene_records,
+        hpo_terms=hpo_terms,
     )
     bundle.text = render_text(bundle)
     return bundle
@@ -263,14 +275,49 @@ def render_text(bundle: Bundle) -> str:
         f"rule hits: {'; '.join(c.get('rule_hits') or []) or 'none'}",
         f"caveats: {'; '.join(c.get('caveats') or []) or 'none'}",
         f"exomiser: {_rank_line(bundle.rank)}" + _tag([r["record_id"] for r in bundle.gene_records]),
-        f"case HPO: {', '.join(bundle.case_hpo) or 'none given'}",
     ]
+    lines.extend(hpo_lines(bundle.case_hpo, bundle.hpo_terms))
     for v in bundle.variants:
         lines.append("")
         lines.extend(_variant_lines(v))
     lines.append("")
     lines.append("citable record ids: " + (" ".join(f"[{r}]" for r in bundle.record_ids) or "none"))
     return "\n".join(lines) + "\n"
+
+
+def hpo_lines(case_hpo: list[str], hpo_terms: list[dict[str, Any]]) -> list[str]:
+    """The ``case HPO:`` line, and — when the bundle carries ``hpo:`` records — one
+    entry per term in the case's sorted order with the label the record spells and the
+    record id to cite (``HP:0012236 Elevated sweat chloride [hpo:HP:0012236]``; a term
+    without a record says so), followed by a ``HPO definitions:`` line when any record
+    has one. Without records the line is the bare ids, unchanged."""
+    if not hpo_terms:
+        return [f"case HPO: {', '.join(case_hpo) or 'none given'}"]
+    by_id = {_term_id(r): r for r in hpo_terms}
+    entries: list[str] = []
+    definitions: list[str] = []
+    for term in case_hpo:
+        rec = by_id.get(term)
+        if rec is None:
+            entries.append(f"{term} (no hpo: record in the store; label unknown)")
+            continue
+        payload = rec.get("payload") if isinstance(rec.get("payload"), dict) else {}
+        entries.append(f"{term} {payload.get('name') or '(no label in the record)'} [{rec['record_id']}]")
+        if payload.get("definition"):
+            definitions.append(f"{term} — {_short(str(payload['definition']), 200)}")
+    lines = [f"case HPO: {'; '.join(entries) or 'none given'}"]
+    if definitions:
+        lines.append("HPO definitions: " + "; ".join(definitions))
+    return lines
+
+
+def _term_id(record: dict[str, Any]) -> str:
+    """The HPO id a term record is about: the payload's own ``id``, else the record id's
+    second half (``hpo:HP:0012236`` → ``HP:0012236``)."""
+    payload = record.get("payload")
+    if isinstance(payload, dict) and payload.get("id"):
+        return str(payload["id"])
+    return str(record["record_id"]).split(":", 1)[1]
 
 
 def _phase(p: Any) -> str:

@@ -14,6 +14,9 @@ import yaml
 from pydantic import BaseModel, Field, field_validator
 
 HPO_ID = re.compile(r"^HP:\d{7}$")
+DISEASE_ID = re.compile(r"^(MONDO|EFO|Orphanet|DOID|HP|NCIT|OTAR)_\d+$")
+"""An Open Targets disease id as the platform spells it — an underscore, never a colon
+(``MONDO_0009061``); stage 6 fetches the public disease record for each one."""
 
 
 class CaseConfig(BaseModel):
@@ -21,6 +24,9 @@ class CaseConfig(BaseModel):
     vcf: Path
     reference_fasta: Path | None = None
     hpo: list[str] = Field(default_factory=list)
+    disease: list[str] = Field(default_factory=list)
+    """Open Targets disease ids for the suspected condition(s), in the platform's
+    underscore spelling; public identifiers, not a clinical note."""
     regions: Path | None = None
     sample: str | None = None
     """Sample name inside the VCF. Optional for a single-sample file."""
@@ -44,6 +50,15 @@ class CaseConfig(BaseModel):
         if bad:
             raise ValueError(f"not HPO ids (expected HP:0000000): {bad}")
         return terms
+
+    @field_validator("disease")
+    @classmethod
+    def _disease_ids(cls, ids: list[str]) -> list[str]:
+        out = [str(d).strip() for d in ids]
+        bad = [d for d in out if not DISEASE_ID.match(d)]
+        if bad:
+            raise ValueError(f"not Open Targets disease ids (expected MONDO_0000000, EFO_…, Orphanet_…): {bad}")
+        return out
 
     @classmethod
     def load(cls, path: str | Path) -> "CaseConfig":

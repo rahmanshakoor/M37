@@ -45,8 +45,8 @@
     {
      "code": "PP4",
      "evidence_ids": [],
-     "justification": "The case terms (elevated sweat chloride, exocrine pancreatic insufficiency, recurrent respiratory infections, chronic lung disease, bronchiectasis) are the classic cystic fibrosis picture, a single-gene CFTR disorder",
-     "met": true,
+     "justification": "[UNVERIFIED — PP4 cannot be checked: the gene-blind phenotype ranker did not run for this candidate, so the phenotype's specificity to this gene rests on the model's word alone → not met; the model said met] The case terms (elevated sweat chloride, exocrine pancreatic insufficiency, recurrent respiratory infections, chronic lung disease, bronchiectasis) are the classic cystic fibrosis picture, a single-gene CFTR disorder",
+     "met": false,
      "strength": "supporting"
     },
     {
@@ -60,12 +60,12 @@
     }
    ],
    "key": "7:117559590:ATCT:A",
-   "points": 5,
+   "points": 4,
    "summary": "Heterozygous p.Phe508del (0/1, AD 23,19), the commonest cystic fibrosis allele: an in-frame single-residue deletion in NBD1, ClinVar Pathogenic at practice-guideline level [vep:7:117559590:ATCT:A] [clinvar:VCV000007105]; its gnomAD frequency and 58 homozygotes reflect a recessive allele at carrier frequency, not benignity [gnomad:7-117559590-ATCT-A]."
   },
   {
    "classification": "pathogenic",
-   "classification_richards_2015": "pathogenic",
+   "classification_richards_2015": "likely_pathogenic",
    "criteria": [
     {
      "code": "PVS1",
@@ -98,8 +98,8 @@
     {
      "code": "PP4",
      "evidence_ids": [],
-     "justification": "The case terms are the classic cystic fibrosis picture, a single-gene CFTR disorder",
-     "met": true,
+     "justification": "[UNVERIFIED — PP4 cannot be checked: the gene-blind phenotype ranker did not run for this candidate, so the phenotype's specificity to this gene rests on the model's word alone → not met; the model said met] The case terms are the classic cystic fibrosis picture, a single-gene CFTR disorder",
+     "met": false,
      "strength": "supporting"
     },
     {
@@ -113,7 +113,7 @@
     }
    ],
    "key": "7:117587778:G:T",
-   "points": 11,
+   "points": 10,
    "summary": "Heterozygous p.Gly542Ter (0/1, AD 25,22), a nonsense allele in exon 12 of 27 predicted to trigger nonsense-mediated decay, ClinVar Pathogenic at practice-guideline level [vep:7:117587778:G:T] [clinvar:VCV000007115]; 585 alleles and no homozygotes in gnomAD [gnomad:7-117587778-G-T]."
   }
  ],

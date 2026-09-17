@@ -243,7 +243,13 @@ def _backoff(attempt: int, retry_after: str | None) -> float:
     return min(2.0 * (2 ** attempt), 60.0)
 
 
-_KEEP = ("content-type", "x-ratelimit-limit", "x-ratelimit-remaining", "x-ratelimit-reset", "retry-after")
+_KEEP = ("content-type", "x-ratelimit-limit", "x-ratelimit-remaining", "x-ratelimit-reset", "retry-after",
+         "x-uniprot-release", "x-uniprot-release-date", "x-total-results")
+"""Response headers the cache keeps: the media type, the rate-limit conversation — and
+the ones a source states its version in rather than its body. UniProt publishes its
+release only in ``x-uniprot-release`` / ``x-uniprot-release-date``, so
+:mod:`engine.retrieve.uniprot` cannot date a record without them (``x-total-results``
+is that API's hit count, kept with them so a recorded search reads as it was served)."""
 
 
 def _keep_headers(h: Any) -> dict[str, str]:

@@ -1,0 +1,119 @@
+{
+ "body": {
+  "results": [
+   {
+    "entryType": "UniProtKB reviewed (Swiss-Prot)",
+    "extraAttributes": {
+     "uniParcId": "UPI000013C4D4"
+    },
+    "genes": [
+     {
+      "geneName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000312",
+         "id": "HGNC:1884",
+         "source": "HGNC"
+        }
+       ],
+       "value": "CFTR"
+      },
+      "synonyms": [
+       {
+        "value": "ABCC7"
+       }
+      ]
+     }
+    ],
+    "organism": {
+     "taxonId": 9606
+    },
+    "primaryAccession": "P13569",
+    "proteinDescription": {
+     "alternativeNames": [
+      {
+       "fullName": {
+        "value": "ATP-binding cassette sub-family C member 7"
+       }
+      },
+      {
+       "ecNumbers": [
+        {
+         "evidences": [
+          {
+           "evidenceCode": "ECO:0000269",
+           "id": "11524016",
+           "source": "PubMed"
+          },
+          {
+           "evidenceCode": "ECO:0000269",
+           "id": "15284228",
+           "source": "PubMed"
+          },
+          {
+           "evidenceCode": "ECO:0000269",
+           "id": "26627831",
+           "source": "PubMed"
+          },
+          {
+           "evidenceCode": "ECO:0000269",
+           "id": "8910473",
+           "source": "PubMed"
+          }
+         ],
+         "value": "5.6.1.6"
+        }
+       ],
+       "fullName": {
+        "value": "Channel conductance-controlling ATPase"
+       }
+      },
+      {
+       "fullName": {
+        "value": "cAMP-dependent chloride channel"
+       }
+      }
+     ],
+     "recommendedName": {
+      "fullName": {
+       "evidences": [
+        {
+         "evidenceCode": "ECO:0000305"
+        }
+       ],
+       "value": "Cystic fibrosis transmembrane conductance regulator"
+      },
+      "shortNames": [
+       {
+        "value": "CFTR"
+       }
+      ]
+     }
+    },
+    "sequence": {
+     "length": 1480
+    },
+    "uniProtkbId": "CFTR_HUMAN"
+   }
+  ]
+ },
+ "headers": {
+  "content-type": "application/json",
+  "x-total-results": "1",
+  "x-uniprot-release": "2026_03",
+  "x-uniprot-release-date": "02-September-2026"
+ },
+ "request": {
+  "body": null,
+  "method": "GET",
+  "params": {
+   "fields": "accession,id,gene_primary,gene_names,protein_name,length,organism_id",
+   "format": "json",
+   "query": "(gene_exact:CFTR) AND (organism_id:9606) AND (reviewed:true)"
+  },
+  "url": "https://rest.uniprot.org/uniprotkb/search"
+ },
+ "retrieved_at": "2026-09-17T19:40:51+00:00",
+ "status": 200,
+ "text": null
+}

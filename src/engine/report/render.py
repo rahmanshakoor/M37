@@ -14,6 +14,13 @@ formats. It never computes a figure (a long allele frequency is shortened for th
 with the full text in the ``title``), never invents a timestamp (the document is a
 pure function of the run directory, so the same run renders to identical bytes), and
 shows what the validator rejected rather than dropping it.
+
+A redaction is a footnote, here as in the Markdown: the ``[^k]`` marker the validator
+left in the prose becomes a superscript reference, and the article (a chain) or
+section (the medicine report) it appears in ends with an ``<ol class="footnotes">``
+whose item ``fn-<anchor>-<k>`` carries the reason from the validation record — so the
+sentence reads as a sentence and the reason is one line below, never
+``[citation removed: no such record]`` mid-prose.
 """
 
 from __future__ import annotations
@@ -26,8 +33,15 @@ from typing import Any, Iterable
 
 from engine import __version__
 from engine.agents import validator
+from engine.agents.redaction import FOOTNOTE, FOOTNOTE_UNKNOWN
 from engine.agents.validator import KNOWN_SOURCES, canonical_id, citation_tokens
+from engine.dossier.render import render_dossier_html
+from engine.dossier.views import dossier_view
 from engine.report import views
+
+_MARKER = re.compile(r"\[\^(\d+)\]")
+"""The validator's footnote marker in escaped prose (it holds no HTML characters, so
+escaping leaves it as written)."""
 
 FONTS_URL = ("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500"
              "&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400"
@@ -47,6 +61,7 @@ def render_run(run_dir: Path, *, top_n: int = views.DEFAULT_TOP_N) -> str:
     candidates = views.candidates_view(run_dir)
     ranking = views.ranking_view(run_dir, top_n=top_n)
     chains = views.chain_view(run_dir)
+    dossier = dossier_view(run_dir)
     medicine = views.medicine_view(run_dir)
     provenance = views.provenance_view(run_dir)
     index = views.evidence_index(run_dir)
@@ -60,6 +75,7 @@ def render_run(run_dir: Path, *, top_n: int = views.DEFAULT_TOP_N) -> str:
         _candidates_section(candidates),
         _ranking_section(ranking),
         _chains_section(chains, linker),
+        _dossier_section(dossier, linker),
         _medicine_section(medicine, linker),
         _provenance_section(provenance),
         _footer(summary),
@@ -231,11 +247,66 @@ class _Linker:
         return token.split(":", 1)[0].lower() in self.sources
 
 
+class _Notes:
+    """One document's footnotes: the linker's prose with every ``[^k]`` marker turned
+    into a reference to ``fn-<anchor>-<k>``, and the list of reasons for the markers
+    that were printed — from the validation record's ``rejections[].marker``, or
+    :data:`~engine.agents.redaction.FOOTNOTE_UNKNOWN` for a marker no rejection
+    carries (one the model itself wrote)."""
+
+    def __init__(self, linker: _Linker, anchor: str, validation: dict[str, Any] | None):
+        self.linker = linker
+        self.anchor = anchor
+        self.reasons: dict[int, str] = {}
+        for r in (validation or {}).get("rejections") or []:
+            k, reason = r.get("marker"), r.get("reason")
+            if isinstance(k, int) and k not in self.reasons:
+                self.reasons[k] = FOOTNOTE.format(reason=reason) if reason else FOOTNOTE_UNKNOWN
+        self.seen: list[int] = []
+
+    def prose(self, text: Any) -> str:
+        return self.mark(self.linker.prose(text))
+
+    def linked(self, text: Any) -> tuple[str, list[str]]:
+        html, ids = self.linker.linked(text)
+        return self.mark(html), ids
+
+    def mark(self, html: str) -> str:
+        def repl(m: re.Match[str]) -> str:
+            k = int(m.group(1))
+            if k not in self.seen:
+                self.seen.append(k)
+            return f"<sup class=\"fn\"><a href=\"#fn-{esc(self.anchor)}-{k}\">{k}</a></sup>"
+        return _MARKER.sub(repl, html)
+
+    def list(self) -> str:
+        """The footnote list for the markers printed so far; '' when there are none."""
+        if not self.seen:
+            return ""
+        items = "".join(f"<li id=\"fn-{esc(self.anchor)}-{k}\">{esc(self.reasons.get(k, FOOTNOTE_UNKNOWN))}</li>"
+                        for k in self.seen)
+        return f"<ol class=\"footnotes\">{items}</ol>"
+
+
 # ----------------------------------------------------------------------- header
+
+def _hpo_terms(s: dict[str, Any]) -> str:
+    """The case terms as the header shows them: the id, linked to its ``hpo:`` record
+    when the run holds one, followed by the label that record carries — never a label
+    from anywhere else. A term with no record is shown bare and said to be unlabelled."""
+    out = []
+    for t in s.get("hpo_terms") or [{"id": x} for x in (s.get("hpo") or [])]:
+        rid, label, url = t.get("id"), t.get("label"), t.get("url")
+        anchor = f"<a class=\"id\" href=\"{esc(url)}\" rel=\"noopener\">{esc(rid)}</a>" if url else f"<span class=\"id\">{esc(rid)}</span>"
+        tail = f" {esc(label)}" if label else " <span class=\"muted\">(no hpo: record in this run)</span>"
+        out.append(anchor + tail)
+    return ", ".join(out)
+
+
 
 def _header(s: dict[str, Any]) -> str:
     vcf = s.get("vcf") or {}
-    hpo = _ids(s.get("hpo") or []) or "<span class=\"muted\">not recorded in this run</span>"
+    hpo = _hpo_terms(s) or "<span class=\"muted\">not recorded in this run</span>"
     facts = [
         ("Sample", f"<span class=\"id\">{_dash(s.get('sample'))}</span>"),
         ("Run directory", f"<span class=\"id\">{esc(s['run_dir'])}</span>"),
@@ -277,7 +348,7 @@ def _header(s: dict[str, Any]) -> str:
 
 def _nav() -> str:
     items = [("candidates", "Candidates"), ("ranking", "Blind ranking"), ("chains", "Evidence chains"),
-             ("medicine", "Medicine"), ("provenance", "Provenance")]
+             ("dossier", "Gene dossier"), ("medicine", "Medicine"), ("provenance", "Provenance")]
     return "<nav class=\"toc\" aria-label=\"Sections\">" + "".join(f"<a href=\"#{a}\">{esc(t)}</a>" for a, t in items) + "</nav>"
 
 
@@ -471,6 +542,7 @@ def _chains_section(ch: dict[str, Any], linker: _Linker) -> str:
 def _chain_block(chain: dict[str, Any], linker: _Linker) -> str:
     cid = str(chain["candidate_id"])
     anchor = views.candidate_file_name(cid)
+    notes = _Notes(linker, anchor, chain.get("validation"))
     out = [f"<article class=\"chain\" id=\"chain-{esc(anchor)}\">"
            f"<h3>Chain <span class=\"id\">{esc(cid)}</span> <span class=\"muted\">{_dash(chain.get('gene_symbol'))} · {_dash(chain.get('model'))}</span></h3>"]
     if not chain.get("claimed_by_manifest"):
@@ -487,26 +559,33 @@ def _chain_block(chain: dict[str, Any], linker: _Linker) -> str:
                         + (f"; 2015 Table 5: {esc(str(table).replace('_', ' '))}" if table else "") + ")</span>")
         out.append(f"<h4>Variant <span class=\"id\">{esc(v.get('key'))}</span> {_classification_mark(v.get('classification'))}{pts_html}</h4>")
         if str(v.get("summary") or "").strip():
-            out.append(f"<p>{linker.prose(v['summary'])}</p>")
+            out.append(f"<p>{notes.prose(v['summary'])}</p>")
         rows = []
         for c in v.get("criteria") or []:
             met = _mark("met", "good") if c.get("met") else _mark("not met", "")
             evidence = _links(c.get("evidence") or []) if c.get("evidence") else "<span class=\"muted\">case-level; cites no record</span>"
             rows.append(f"<tr><td class=\"id\">{esc(c.get('code'))}</td><td>{_label(c.get('strength'))}</td><td>{met}</td>"
-                        f"<td class=\"prose\">{linker.prose(c.get('justification'))}</td><td class=\"ev\">{evidence}</td></tr>")
+                        f"<td class=\"prose\">{notes.prose(c.get('justification'))}</td><td class=\"ev\">{evidence}</td></tr>")
         if rows:
             out.append(_table(["code", "strength", "met", "justification", "evidence"], rows, "criteria"))
         else:
             out.append("<p class=\"muted\">No criterion survived validation for this variant.</p>")
-    out.append(f"<h4>Phase</h4><p>{linker.prose(chain.get('phase_statement'))}</p>")
-    out.append(f"<h4>Mechanism hypothesis</h4><p>{linker.prose(chain.get('mechanism_hypothesis'))}</p>")
-    out.append("<h4>Limits</h4>" + _list(linker.prose(x) for x in chain.get("limits") or []))
-    out.append("<h4>What would change the call</h4>" + _list(linker.prose(x) for x in chain.get("what_would_change_the_call") or []))
+    out.append(f"<h4>Phase</h4><p>{notes.prose(chain.get('phase_statement'))}</p>")
+    out.append(f"<h4>Mechanism hypothesis</h4><p>{notes.prose(chain.get('mechanism_hypothesis'))}</p>")
+    out.append("<h4>Limits</h4>" + _list(notes.prose(x) for x in chain.get("limits") or []))
+    out.append("<h4>What would change the call</h4>" + _list(notes.prose(x) for x in chain.get("what_would_change_the_call") or []))
     out.append("<h4>Literature</h4>" + _list(_link(e) for e in chain.get("literature") or []))
     out.append("<h4>References</h4>" + _references(chain.get("references") or []))
+    out.append(_footnote_block(notes))
     out.append(_validation_block(chain.get("validation"), "chain"))
     out.append("</article>")
     return "".join(out)
+
+
+def _footnote_block(notes: _Notes) -> str:
+    """The document's footnote list, under a heading, when a marker was printed."""
+    body = notes.list()
+    return f"<h4>Footnotes</h4>{body}" if body else ""
 
 
 def _failures_notice(failures: list[dict[str, Any]], stage_n: int, product: str) -> str:
@@ -567,13 +646,29 @@ def _validation_block(v: dict[str, Any] | None, what: str) -> str:
     return "".join(out)
 
 
+# ------------------------------------------------------------------- dossier
+
+def _dossier_section(d: dict[str, Any], linker: _Linker) -> str:
+    """The gene dossier stage 5's own step wrote (``engine dossier``), rendered by the
+    step's own renderer. Its footnotes are numbered per dossier, like a chain's."""
+    notes = _Notes(linker, f"dossier-{d.get('candidate_id') or 'none'}", d.get("validation"))
+    body = render_dossier_html(d, prose=notes.prose, link=_link)
+    return "<section id=\"dossier\">" + body + notes.list() + "</section>"
+
+
 # --------------------------------------------------------------------- medicine
 
 def _medicine_section(m: dict[str, Any], linker: _Linker) -> str:
+    """Stage 6 in the rubric's order (the same order as ``06_medicine/report.md``):
+    patient context, variant mechanism, cellular and disease consequence, the
+    intervention classes searched, the drug candidates, what was considered and
+    rejected, surveillance, follow-up, limits, secondary findings, literature,
+    references, footnotes, the validator."""
     out = ["<section id=\"medicine\"><h2>Medicine</h2>"]
     if not m["present"]:
         out.append("<p class=\"muted\">Stage 6 has not run: no <span class=\"id\">06_medicine/</span> in this run.</p></section>")
         return "".join(out)
+    notes = _Notes(linker, "medicine", m.get("validation"))
     verdicts = " · ".join(f"<span class=\"id\">{esc(v.get('key'))}</span> {_classification_mark(v.get('classification'))}" for v in m.get("stage5_verdicts") or [])
     out.append(f"<p>Candidate <span class=\"id\">{_dash(m.get('candidate_id'))}</span> ({_dash(m.get('gene_symbol'))})"
                + (f"; stage-5 classification as the bundle carried it: {verdicts}" if verdicts else "") + ". "
@@ -591,12 +686,15 @@ def _medicine_section(m: dict[str, Any], linker: _Linker) -> str:
         out.append(_validation_block(m.get("validation"), "report") if m.get("validation") else "")
         out.append("</section>")
         return "".join(out)
-    out.append("<h3>Mechanism</h3>" + _claims(r.get("mechanism") or [], linker))
-    out.append("<h3>Pathway targets</h3>" + _claims(r.get("pathway_targets") or [], linker))
+    out.append("<h3>Patient context</h3>" + _patient_context(r.get("patient_context") or {}))
+    out.append("<h3>Variant mechanism</h3>" + _claims(r.get("mechanism") or [], notes))
+    out.append("<h3>Cellular and disease consequence</h3>" + _claims(r.get("consequence") or [], notes))
+    out.append("<h3>Intervention classes searched</h3>" + _classes(r.get("intervention_classes") or [], notes))
+    out.append("<p>Gene products the classes act on:</p>" + _claims(r.get("pathway_targets") or [], notes))
     out.append("<h3>Drug candidates</h3>")
     drugs = r.get("candidates") or []
     if not drugs:
-        out.append("<p class=\"muted\">None survived validation.</p>")
+        out.append(f"<p>{esc(_no_candidate(r.get('intervention_classes') or []))}</p>")
     for d in drugs:
         head = f"<span class=\"num\">{esc(d['n'])}</span> {esc(d.get('name'))}"
         if d.get("chembl"):
@@ -604,25 +702,108 @@ def _medicine_section(m: dict[str, Any], linker: _Linker) -> str:
         elif d.get("chembl_id"):
             head += f" <span class=\"muted id\">({esc(d['chembl_id'])})</span>"
         out.append(f"<article class=\"drug\"><h4>{head}</h4>" + _dl([
-            ("Mechanism of action", linker.prose(d.get("mechanism_of_action"))),
-            ("Approval status", linker.prose(d.get("approval_status"))),
-            ("Rationale", linker.prose(d.get("rationale"))),
+            ("Intervention class", esc(d.get("intervention_class")) or "<span class=\"muted\">none stated</span>"),
+            ("Mechanism of action", notes.prose(d.get("mechanism_of_action"))),
+            ("Approval status", notes.prose(d.get("approval_status"))),
+            ("Approved indication", notes.prose(d.get("approved_indication")) or "<span class=\"muted\">none stated</span>"),
+            ("Rationale", notes.prose(d.get("rationale"))),
             ("Evidence", _links(d.get("evidence") or [])),
             ("Trials", _links(d.get("trials") or [])),
-            ("Counter-arguments", _list(linker.prose(a) for a in d.get("counter_arguments") or [])),
+            ("Counter-arguments", _list(notes.prose(a) for a in d.get("counter_arguments") or [])),
+            ("Paediatric safety", notes.prose(d.get("paediatric_safety")) or "<span class=\"muted\">none stated</span>"),
         ]) + "</article>")
-    out.append("<h3>Follow-up experiments</h3>" + _list(linker.prose(x) for x in r.get("follow_up_experiments") or []))
-    out.append("<h3>Limits</h3>" + _list(linker.prose(x) for x in r.get("limits") or []))
+    out.append("<h3>Considered and rejected</h3>" + _rejected(r.get("considered_and_rejected") or [], notes))
+    out.append("<h3>Surveillance</h3>" + _claims(r.get("surveillance") or [], notes))
+    out.append("<h3>Follow-up experiments</h3>" + _list(notes.prose(x) for x in r.get("follow_up_experiments") or []))
+    out.append("<h3>Limits</h3>" + _list(notes.prose(x) for x in r.get("limits") or []))
+    out.append("<h3>Secondary findings</h3>" + _secondary_findings(r.get("secondary_findings") or []))
     out.append("<h3>Literature</h3>" + _list(_link(e) for e in r.get("literature") or []))
     out.append("<h3>References</h3>" + _references(r.get("references") or []))
+    out.append(_footnote_block(notes).replace("<h4>Footnotes</h4>", "<h3>Footnotes</h3>"))
     out.append(_validation_block(m.get("validation"), "report"))
     out.append("</section>")
     return "".join(out)
 
 
-def _claims(claims: list[dict[str, Any]], linker: _Linker) -> str:
-    """One bullet per claim: the statement with its inline citations linked, then the
-    ``evidence_ids`` the sentence did not already cite."""
+def _no_candidate(classes: list[dict[str, Any]]) -> str:
+    """The empty-list sentence — the classes that were searched, never a claim about
+    survival (:mod:`engine.medicine.render` writes the same one in Markdown)."""
+    from engine.medicine.render import NO_CANDIDATE, NO_CANDIDATE_NO_CLASS
+    if not classes:
+        return NO_CANDIDATE_NO_CLASS
+    return f"{NO_CANDIDATE} Classes searched: " + ", ".join(
+        f"{c.get('name')} ({str(c.get('verdict') or '').replace('_', ' ')})" for c in classes)
+
+
+def _patient_context(context: dict[str, Any]) -> str:
+    """The disease record(s) and the case terms with the labels their records carry —
+    records only, so a judge can open every one."""
+    items = []
+    for d in context.get("disease") or []:
+        head = f"disease: {esc(d.get('name') or d.get('id'))}"
+        if d.get("record"):
+            head += f" {_link(d['record'])}"
+        if d.get("description"):
+            head += f" — {esc(d['description'])}"
+        items.append(head)
+    for t in context.get("hpo") or []:
+        if t.get("record"):
+            items.append(f"case HPO: <span class=\"id\">{esc(t.get('id'))}</span> {esc(t.get('label'))} {_link(t['record'])}")
+        else:
+            items.append(f"case HPO: <span class=\"id\">{esc(t.get('id'))}</span> "
+                         "<span class=\"muted\">(no hpo: record in the store; label unknown)</span>")
+    if not items:
+        return "<p class=\"muted\">No disease record and no HPO term record in this run.</p>"
+    return _list(items) + f"<p class=\"muted small\">{esc(context.get('source'))}</p>"
+
+
+def _classes(classes: list[dict[str, Any]], notes: _Notes) -> str:
+    """One row per intervention class: what it acts on, the genes it looked up, its
+    verdict and the searches that back it."""
+    if not classes:
+        return "<p class=\"muted\">No intervention class was searched.</p>"
+    rows = []
+    for c in classes:
+        verdict = _mark(str(c.get("verdict") or "").replace("_", " "),
+                        "good" if c.get("verdict") == "candidates_proposed" else "warn")
+        if str(c.get("rejection_reason") or "").strip():
+            verdict += f" <span class=\"muted\">{notes.prose(c['rejection_reason'])}</span>"
+        rows.append(f"<tr><td>{esc(c.get('name'))}</td><td class=\"prose\">{notes.prose(c.get('acts_on'))}</td>"
+                    f"<td>{_ids(c.get('targets') or []) or '–'}</td><td>{verdict}</td>"
+                    f"<td class=\"ev\">{_links(c.get('searched') or [])}</td>"
+                    f"<td class=\"ev\">{_links(c.get('evidence') or [])}</td></tr>")
+    return _table(["class", "acts on", "targets", "verdict", "searches", "records"], rows, "classes")
+
+
+def _rejected(items: list[dict[str, Any]], notes: _Notes) -> str:
+    if not items:
+        return "<p class=\"muted\">nothing was raised and rejected on a record</p>"
+    out = []
+    for r in items:
+        cls = f" <span class=\"muted\">(class: {esc(r.get('intervention_class'))})</span>" if str(r.get("intervention_class") or "").strip() else ""
+        out.append(f"<strong>{esc(r.get('name'))}</strong>{cls} — {notes.prose(r.get('reason'))} "
+                   f"<span class=\"cites\">{_links(r.get('evidence') or [])}</span>")
+    return _list(out)
+
+
+def _secondary_findings(findings: list[dict[str, Any]]) -> str:
+    """The run's other P/LP lone heterozygotes, as the engine classified them — a fact
+    about the run, never a target of this report."""
+    if not findings:
+        return "<p class=\"muted\">none recorded</p>"
+    rows = []
+    for f in findings:
+        calls = " · ".join(f"<span class=\"id\">{esc(k)}</span> {_classification_mark(v)}"
+                           for k, v in sorted((f.get("classifications") or {}).items())) or "–"
+        rows.append(f"<tr><td class=\"id\">{esc(f.get('candidate_id'))}</td><td>{_dash(f.get('gene_symbol'))}</td>"
+                    f"<td>{_dash(f.get('model'))}</td><td>{calls}</td><td>{esc(f.get('note'))}</td></tr>")
+    return _table(["candidate", "gene", "model", "engine classification", "note"], rows, "findings")
+
+
+def _claims(claims: list[dict[str, Any]], linker: Any) -> str:
+    """One bullet per claim: the statement with its inline citations linked and its
+    redaction markers footnoted, then the ``evidence_ids`` the sentence did not
+    already cite. ``linker`` is a :class:`_Linker` or a :class:`_Notes` over one."""
     if not claims:
         return "<p class=\"muted\">none</p>"
     items = []
@@ -783,11 +964,16 @@ table.references td.url, table.files td.path, table.files td.sha, table.counts t
 ul { margin: 0.3rem 0 0.8rem; padding-left: 1.25rem; }
 li { margin: 0.2rem 0; max-width: 80ch; }
 .cites { white-space: nowrap; }
+sup.fn { font-size: 0.7em; line-height: 0; vertical-align: super; }
+sup.fn a { text-decoration: none; }
+ol.footnotes { margin: 0.3rem 0 0.8rem; padding-left: 1.5rem; font-size: 0.85rem; color: var(--ink-2); }
 details { margin: 0.75rem 0; border: 1px solid var(--line-2); }
 summary { cursor: pointer; padding: 0.4rem 0.75rem; font-size: 0.85rem; color: var(--ink-2); background: var(--bg-2); }
 details > :not(summary) { padding: 0 0.75rem; }
 pre { font-family: var(--mono); font-size: 0.78rem; line-height: 1.45; overflow-x: auto; margin: 0.5rem 0; white-space: pre; }
 article.candidate, article.chain, article.manifest, article.drug { margin: 1rem 0 2rem; }
+article.dossier { margin: 1rem 0 2rem; }
+article.dossier table.positions td ul.region { margin: 0; padding-left: 1em; }
 .doc-foot { margin-top: 4rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 0.82rem; color: var(--ink-2); }
 @media print { .head-tools, .toc { display: none; } body { font-size: 11pt; } a { color: inherit; } .page { padding-inline: 0; } }
 """

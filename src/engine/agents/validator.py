@@ -35,9 +35,15 @@ so an item that simply omits ``evidence_ids`` is judged like one that wrote ``[]
   a bare ClinVar ``VCV…``, trial ``NCT…``, ``PMC…``, ``doi:`` or ``CHEMBL…`` accession
   (``PMC``/``doi:`` resolve through the store's ``pmid:`` records; ``CHEMBL`` through a
   ``chembl:`` record or a cited record that carries it), and a numbered ``[1]``
-  reference that points at nothing; a bracketed ontology term (``[HP:0002205]``) is
+  reference that points at nothing — each replaced by a numbered footnote marker
+  ``[^k]`` whose :class:`Rejection` carries ``marker=k`` (:mod:`engine.agents.redaction`),
+  never by a sentence; a bracketed ontology term (``[HP:0002205]``) is
   not a citation and is left alone; a dbSNP ``rs`` id no cited record carries is left
   in place but noted, since it is an identifier rather than a citation;
+- respells, before calling it unknown, an id one separator edit (``:`` ``-`` ``_``
+  ``/`` ``.`` or case) away from exactly one store id of the same source — in
+  ``evidence_ids``/``trial_ids`` and in prose — and counts it ``ids_respelled``; a digit
+  or letter difference is a different record and is never respelled;
 - recomputes PM2, BS1 and BA1 from the store's gnomAD record *for the variant's key*
   (never from whichever record the model chose), falling back to VEP's copy of the
   gnomAD frequency when stage 2 fetched no gnomAD record, and, where the model
@@ -66,6 +72,7 @@ from typing import Any, Iterable, Iterator, get_args, get_origin
 
 from pydantic import BaseModel
 
+from engine.agents.redaction import Redactions, respellable, scan, unwrap
 from engine.agents.schema import (
     ALL_CODES, BENIGN_CODES, CASE_LEVEL_CODES, PATHOGENIC_CODES, RETIRED_CODES, EvidenceChain, MedicineReport,
     acmg_points, combine_acmg, combine_richards_2015,
@@ -116,10 +123,12 @@ supporting, applied to non-coding and synonymous changes. AlphaMissense is carri
 in the bundle for the reader but is not calibrated by the SVI and never counts."""
 EVIDENCE_STAGES = ("02_retrieve", "04_rank", "05_reason", "06_medicine")
 """Run-directory stages that hold an ``evidence/`` directory in the stage-2 format."""
-KNOWN_SOURCES = frozenset({"vep", "clinvar", "gnomad", "exomiser", "pmid", "nct", "opentargets", "dgidb", "chembl"})
+KNOWN_SOURCES = frozenset({"vep", "clinvar", "gnomad", "exomiser", "pmid", "nct", "opentargets", "dgidb", "chembl",
+                           "hpo", "uniprot"})
 """Record-id prefixes the engine's retrievers write. A bare ``<source>:<id>`` token in
 prose counts as a citation only for these and for the sources present in the index —
-so ``HP:0002205`` or ``chr7:117559590`` in a sentence is left alone."""
+so ``HP:0002205`` or ``chr7:117559590`` in a sentence is left alone (``hpo:HP:0002205``
+is a citation, even in a scoped index that happens to hold no ``hpo:`` record)."""
 
 STRENGTH_RANK = {"supporting": 1, "moderate": 2, "strong": 3, "very_strong": 4, "stand_alone": 5}
 STRENGTH_CAP: dict[str, str] = {**PATHOGENIC_CODES, **BENIGN_CODES, "PP3": "strong", "BP4": "strong"}
@@ -132,7 +141,6 @@ honours it); a higher one is lowered to the cap and marked."""
 DISPUTED_MARK = "[DISPUTED — {reason}]"
 UNVERIFIED_MARK = "[UNVERIFIED — {reason}]"
 CAPPED_MARK = "[STRENGTH CAPPED — {reason}]"
-_REDACTED = "[citation removed: no such record]"
 _TRAIL = ".,;:"
 
 _PMID_ID = re.compile(r"^pmid:\d+$")
@@ -227,6 +235,14 @@ class EvidenceIndex:
             out.update(d.name for d in s.root.iterdir() if d.is_dir())
         return out
 
+    def ids_of(self, source: str) -> list[str]:
+        """Every record id of one source, memory records first, then each store's
+        ``<source>/`` directory (read through :meth:`iter_source`) — what a near-miss
+        respelling searches. Stages 5 and 6 validate against the in-memory scoped index
+        of one candidate, so the list is short; on a file store this reads one
+        source directory."""
+        return [rec.record_id for rec in self.iter_source(source)]
+
 
 # --------------------------------------------------------------------------- report
 
@@ -234,6 +250,9 @@ class EvidenceIndex:
 class Rejection:
     path: str
     reason: str
+    marker: int | None = None
+    """The footnote marker ``[^k]`` left in the prose when the rejection is a
+    redaction; ``None`` for a dropped item or a cleared field."""
 
 
 @dataclass
@@ -261,10 +280,11 @@ class ValidationReport:
     notes: list[str] = field(default_factory=list)
     counts: dict[str, int] = field(default_factory=lambda: {
         "ids_checked": 0, "ids_unknown": 0, "items_dropped": 0, "duplicates_dropped": 0, "literature_removed": 0,
-        "redactions": 0, "identifiers_unverified": 0, "keys_respelled": 0, "strength_capped": 0, "chembl_cleared": 0,
+        "redactions": 0, "identifiers_unverified": 0, "keys_respelled": 0, "ids_respelled": 0, "strength_capped": 0,
+        "chembl_cleared": 0,
         "frequency_recomputed": 0, "frequency_from_vep": 0, "frequency_disputed": 0, "frequency_unverified": 0,
         "computational_recomputed": 0, "computational_disputed": 0, "computational_unverified": 0,
-        "constraint_unverified": 0, "phenotype_disputed": 0, "retired_not_counted": 0, "classification_replaced": 0,
+        "constraint_unverified": 0, "phenotype_disputed": 0, "phenotype_unverified": 0, "retired_not_counted": 0, "classification_replaced": 0,
     })
 
     @property
@@ -273,6 +293,16 @@ class ValidationReport:
 
     def reject(self, path: str, reason: str) -> None:
         self.rejections.append(Rejection(path, reason))
+
+    def redact(self, path: str, reason: str, redactions: Redactions) -> str:
+        """Record one redaction — the rejection with its marker, the counts an unknown
+        id adds — and return the marker that replaces the citation in the prose."""
+        marker = redactions.redact(path, reason)
+        self.rejections.append(redactions.rejections[-1])
+        self.counts["ids_checked"] += 1
+        self.counts["ids_unknown"] += 1
+        self.counts["redactions"] += 1
+        return marker
 
     def as_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -297,7 +327,7 @@ def frequency_rules(th: dict[str, float], af_field: str) -> dict[str, str]:
                 f"otherwise CADD PHRED ≤{CADD_BP4_MAX} supporting; non-coding/synonymous by SpliceAI ≤{SPLICEAI_BP4_MAX} supporting"),
         "PP3+PVS1": "PP3 is not counted beside a met PVS1 on the same variant (ClinGen SVI)",
         "PP4": "counted only when the gene-blind phenotype ranker (stage 4) ranks the candidate's gene first for the case's "
-               "HPO terms; the single-aetiology condition is not checked",
+               "HPO terms; unverified (not met) when stage 4 did not run; the single-aetiology condition is not checked",
         "PP2/BP1": "counted only with a constraint: record (gnomAD missense o/e) in evidence_ids; otherwise unverified, not met",
         "PP5/BP6": "retired by the ClinGen SVI (Biesecker & Harrison 2018): accepted for the record, marked, never counted",
         "classification": "ClinGen SVI points (Tavtigian 2020) over the met, non-retired criteria: supporting 1, moderate 2, "
@@ -306,6 +336,9 @@ def frequency_rules(th: dict[str, float], af_field: str) -> dict[str, str]:
         "unverified": "PM2/BS1/BA1 with no gnomAD or VEP record for the variant's key in the store → not met, marked [UNVERIFIED]",
         "strength_cap": ("a code counts at most at its ACMG/AMP 2015 default level (PP3/BP4 at most strong); "
                          "a higher stated strength is lowered to the cap and marked [STRENGTH CAPPED]"),
+        "respelling": ("an id one separator edit (: - _ / . or case) away from exactly one store id of the same source "
+                       "is respelled to the store's id and counted ids_respelled; a digit or letter difference is never respelled"),
+        "redaction": "an inline citation that names no record is replaced by a footnote marker [^k]; the rejection carries marker k",
     }
 
 
@@ -321,6 +354,8 @@ class _Walk:
     sources: frozenset[str]
     keys: dict[str, str] | None
     """Canonical key → the candidate's own spelling; ``None`` = any real key is allowed."""
+    redactions: Redactions = field(default_factory=Redactions)
+    """The marker counter — continued from the markers the object already carried."""
     cited: list[str] = field(default_factory=list)
     """Every record id the answer cites anywhere (as first read) — the records an
     identifier in prose may be carried by."""
@@ -330,6 +365,16 @@ class _Walk:
     are cleaned, so PP3 on the same variant can be refused)."""
     _corpus: dict[str, str] = field(default_factory=dict)
     _papers: dict[str, str] | None = None
+    _ids_of: dict[str, list[str]] = field(default_factory=dict)
+
+    def near_misses(self, rid: str) -> list[str]:
+        """The index ids of ``rid``'s source that ``rid`` is a respelling of
+        (:func:`~engine.agents.redaction.respellable`); each source's ids are read once
+        per walk, so a file-backed index reads a source directory once, not per id."""
+        source = rid.split(":", 1)[0]
+        if source not in self._ids_of:
+            self._ids_of[source] = self.index.ids_of(source)
+        return [sid for sid in self._ids_of[source] if respellable(rid, sid)]
 
     def corpus(self, record_id: str) -> str:
         """A record's id, URL and payload as one lower-cased string, cached."""
@@ -361,7 +406,8 @@ def validate(obj: BaseModel | dict[str, Any], index: EvidenceIndex, *,
              thresholds: dict[str, float] | None = None,
              af_field: str = AF_FIELD,
              keys: Iterable[str] | None = None,
-             phenotype_rank: dict[str, Any] | None = None) -> tuple[BaseModel, ValidationReport]:
+             phenotype_rank: dict[str, Any] | None = None,
+             redactions: Redactions | None = None) -> tuple[BaseModel, ValidationReport]:
     """Return ``(cleaned, report)``. ``obj`` is the model's answer as a pydantic object
     or a raw dict (then ``model`` says which schema, or it is inferred for the two
     known ones). ``keys`` are the candidate's variant keys: given, a variant entry
@@ -369,8 +415,11 @@ def validate(obj: BaseModel | dict[str, Any], index: EvidenceIndex, *,
     respelled canonically). The returned object is a fresh instance; ``obj`` is not
     modified. ``phenotype_rank`` (``{"rank": int | None, "record_id": str | None}``) is
     the gene-blind phenotype ranker's verdict on the candidate's gene, when stage 4
-    ran: PP4 is counted only for the ranker's top gene. Raises only if the cleaned
-    object does not fit its schema."""
+    ran: PP4 is counted only for the ranker's top gene. ``redactions`` is the marker
+    counter a stage check already used on this object; without it the counter
+    continues from the markers found in the text, and each of those — the model's
+    own, as far as this call can tell — is noted. Raises only if the cleaned object
+    does not fit its schema."""
     if isinstance(obj, BaseModel):
         model = model or type(obj)
         data = obj.model_dump()
@@ -385,7 +434,15 @@ def validate(obj: BaseModel | dict[str, Any], index: EvidenceIndex, *,
     report = ValidationReport(model=model.__name__, thresholds=th, rules=frequency_rules(th, af_field))
     sources = frozenset(KNOWN_SOURCES | index.sources())
     wanted = None if keys is None else {canonical_key(str(k)) or str(k): str(k) for k in keys}
-    walk = _Walk(index, report, th, af_field, sources, wanted, cited=_collect_cited(data, sources), phenotype_rank=phenotype_rank)
+    found = scan(data)
+    if redactions is None:
+        redactions = Redactions.continuing(data)
+        report.notes.extend(f"{path}: model-written footnote marker [^{k}] left in place (no rejection of this "
+                            "validation carries it; a renderer prints its reason as unknown)" for path, k in found)
+    else:
+        redactions.next = max(redactions.next, max((k for _, k in found), default=0) + 1)
+    walk = _Walk(index, report, th, af_field, sources, wanted, redactions=redactions,
+                 cited=_collect_cited(data, sources), phenotype_rank=phenotype_rank)
     _clean_object(data, model, "", walk, key=None)
     return model.model_validate(data), report
 
@@ -552,6 +609,8 @@ def _drop_reason(item: dict[str, Any], model: type[BaseModel], path: str, w: _Wa
     fields = model.model_fields
     ids = _norm_ids(item.get("evidence_ids")) if "evidence_ids" in fields else []
     trials = _norm_trial_ids(item.get("trial_ids")) if "trial_ids" in fields else []
+    ids = [i if i in w.index else _respelled(i, f"{path}.evidence_ids", w) or i for i in ids]
+    trials = [t if t in w.index else _respelled(t, f"{path}.trial_ids", w) or t for t in trials]
     if "evidence_ids" in fields:
         item["evidence_ids"] = ids
     if "trial_ids" in fields:
@@ -739,22 +798,42 @@ def citation_tokens(text: str, sources: Iterable[str] = KNOWN_SOURCES) -> list[s
     return found
 
 
+def _respelled(rid: str, path: str, w: _Walk) -> str | None:
+    """The store's spelling of an id that is not in the store but is one separator
+    edit away from exactly one id of its source — noted and counted; ``None`` when
+    there is none (the unknown-id rule applies) or several (noted, no guess)."""
+    found = w.near_misses(rid)
+    if len(found) == 1:
+        w.report.counts["ids_respelled"] += 1
+        w.report.notes.append(f"{path}: {rid!r} respelled to {found[0]!r} (one separator edit; the store's spelling)")
+        return found[0]
+    if found:
+        w.report.notes.append(f"{path}: {rid!r} ambiguous near-miss: {', '.join(found)}")
+    return None
+
+
 def _redact(text: str, path: str, w: _Walk) -> str:
-    """Replace inline citations that do not resolve. The text stays; the id goes.
-    A resolving id is rewritten in its canonical spelling so the References list and
-    the prose agree; a resolving ``PMC…``/``doi:`` gets its ``pmid:`` record appended
-    once, for the same reason. A bracketed token of no known source is left alone
-    and noted; a dbSNP id no cited record carries is left alone and noted."""
+    """Replace inline citations that do not resolve by a footnote marker. The text
+    stays; the id goes. A resolving id is rewritten in its canonical spelling (a
+    near-miss in the store's) so the References list and the prose agree; a resolving
+    ``PMC…``/``doi:`` gets its ``pmid:`` record appended once, for the same reason. A
+    bracketed token of no known source is left alone and noted; a dbSNP id no cited
+    record carries is left alone and noted."""
     added: set[str] = set()
 
-    def check(rid: str, what: str) -> str | None:
-        w.report.counts["ids_checked"] += 1
+    def hole(reason: str) -> str:
+        return w.report.redact(path, reason, w.redactions)
+
+    def check(rid: str, what: str) -> tuple[str, bool]:
+        """``(the id as the store spells it, True)`` or ``(the marker, False)``."""
         if rid in w.index:
-            return rid
-        w.report.counts["ids_unknown"] += 1
-        w.report.counts["redactions"] += 1
-        w.report.reject(path, f"{what}: {rid}")
-        return None
+            w.report.counts["ids_checked"] += 1
+            return rid, True
+        alt = _respelled(rid, path, w)
+        if alt is not None:
+            w.report.counts["ids_checked"] += 1
+            return alt, True
+        return hole(f"{what}: {rid}"), False
 
     def note(what: str, token: str) -> None:
         w.report.counts["identifiers_unverified"] += 1
@@ -765,11 +844,7 @@ def _redact(text: str, path: str, w: _Walk) -> str:
         tokens = _group_tokens(inner)
         if tokens is None:
             if _numbered_group(inner):
-                w.report.counts["ids_checked"] += 1
-                w.report.counts["ids_unknown"] += 1
-                w.report.counts["redactions"] += 1
-                w.report.reject(path, f"numbered reference {m.group(0)} names no record")
-                return _REDACTED
+                return hole(f"numbered reference {m.group(0)} names no record")
             return "[" + _CITATION.sub(repl, inner) + "]"
         cited = [tok for tok in tokens if _source_of(tok) in w.sources]
         if not cited:
@@ -782,18 +857,15 @@ def _redact(text: str, path: str, w: _Walk) -> str:
                 note("bracketed identifier of no evidence source, left in place (not a citation)", tok)
                 out.append(f"[{tok}]")
                 continue
-            rid = check(canonical_id(tok), "inline citation to a record not in the store")
-            out.append(f"[{rid}]" if rid else _REDACTED)
+            shown, ok = check(canonical_id(tok), "inline citation to a record not in the store")
+            out.append(f"[{shown}]" if ok else shown)
         return " ".join(out)
 
     def paper(shown: str, what: str, accession: str) -> str:
         rid = w.paper(accession)
-        w.report.counts["ids_checked"] += 1
         if rid is None:
-            w.report.counts["ids_unknown"] += 1
-            w.report.counts["redactions"] += 1
-            w.report.reject(path, f"{what}: {accession}")
-            return _REDACTED
+            return hole(f"{what}: {accession}")
+        w.report.counts["ids_checked"] += 1
         if rid in text or rid in added:
             return shown
         added.add(rid)
@@ -809,18 +881,15 @@ def _redact(text: str, path: str, w: _Walk) -> str:
         if m.group("src") is not None:
             if m.group("src").lower() not in w.sources:
                 return m.group(0)
-            return check(canonical_id(m.group(0)), "inline citation to a record not in the store") or _REDACTED
+            return check(canonical_id(m.group(0)), "inline citation to a record not in the store")[0]
         if m.group("pmc") is not None:
             return paper(m.group(0), "inline PMC id not carried by any pmid: record in the store", m.group("pmc").upper())
         if m.group("chembl") is not None:
             cid = m.group("chembl").upper()
-            w.report.counts["ids_checked"] += 1
             if f"chembl:{cid}" in w.index or w.carried(cid, w.cited):
+                w.report.counts["ids_checked"] += 1
                 return m.group(0)
-            w.report.counts["ids_unknown"] += 1
-            w.report.counts["redactions"] += 1
-            w.report.reject(path, f"inline ChEMBL id neither a chembl: record in the store nor carried by a cited record: {cid}")
-            return _REDACTED
+            return hole(f"inline ChEMBL id neither a chembl: record in the store nor carried by a cited record: {cid}")
         if m.group("rs") is not None:
             if not w.carried(m.group("rs"), w.cited):
                 note("dbSNP id not carried by any record the answer cites, left in place (not a citation)", m.group("rs"))
@@ -828,11 +897,10 @@ def _redact(text: str, path: str, w: _Walk) -> str:
         rid = _accession_id(m)
         assert rid is not None  # every remaining alternative maps to a record id
         what = "inline PMID not in the store" if m.group("pmid") is not None else "inline accession not in the store"
-        if check(rid, what):
-            return m.group(0)
-        return "PMID " + _REDACTED if m.group("pmid") is not None else _REDACTED
+        shown, ok = check(rid, what)
+        return m.group(0) if ok else shown  # "PMID 99999999" becomes the marker alone, not "PMID [^k]"
 
-    return _CITATION.sub(repl, text)
+    return unwrap(_CITATION.sub(repl, text))
 
 
 # ------------------------------------------------------------------- frequencies
@@ -992,7 +1060,19 @@ def _check_phenotype(item: dict[str, Any], path: str, w: _Walk) -> None:
     """PP4 stands only on the phenotype ranker's top gene; elsewhere it is disputed
     to not met, and without a stage-4 verdict it is left as the model called it."""
     code = _code_of(item)
-    if code not in PHENOTYPE_CODES or not item.get("met") or w.phenotype_rank is None:
+    if code not in PHENOTYPE_CODES or not item.get("met"):
+        return
+    if w.phenotype_rank is None:
+        return  # the caller does not run a phenotype ranker at all: the claim stands as written
+    if not w.phenotype_rank.get("ran", True):
+        # The ranker exists but did not run for this candidate: nothing can check the claim.
+        w.report.counts["phenotype_unverified"] += 1
+        reason = (f"{code} cannot be checked: the gene-blind phenotype ranker did not run for this candidate, so the "
+                  "phenotype's specificity to this gene rests on the model's word alone → not met; the model said met")
+        w.report.notes.append(f"{path}: {reason}")
+        w.report.disputes.append(Dispute(path, code, None, True, False, None, reason))
+        item["met"] = False
+        item["justification"] = f"{UNVERIFIED_MARK.format(reason=reason)} {item.get('justification', '')}".rstrip()
         return
     rank, rid = w.phenotype_rank.get("rank"), w.phenotype_rank.get("record_id")
     if rank == 1:

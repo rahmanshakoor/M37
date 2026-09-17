@@ -46,7 +46,9 @@ from engine.agents.client import DEFAULT_EFFORT, EFFORTS
               help="Tool-calling turns allowed per candidate (default: 10).")
 @click.option("--cache", "cache_root", type=click.Path(file_okay=False, path_type=Path),
               help="HTTP cache for Europe PMC (outside the repo). Default: $ENGINE_CACHE or ../cache.")
-@click.option("--offline", is_flag=True, help="Serve literature from the cache only; fail on any cache miss.")
+@click.option("--offline", is_flag=True, help="Serve literature and HPO terms from the cache only; fail on any "
+                                              "cache miss (a case term no store of the run holds and the cache "
+                                              "does not carry aborts the stage).")
 @click.option("--case", "case_path", type=click.Path(exists=True, dir_okay=False, path_type=Path),
               help="case.yaml, for the HPO terms when stage 4 has not run (default: 04_rank/joined.json).")
 @click.option("-v", "--verbose", is_flag=True, help="Name the candidates (gene symbols) on the terminal.")
